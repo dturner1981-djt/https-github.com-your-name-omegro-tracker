@@ -136,30 +136,74 @@ def _load_monthly(
     )
 
 
+def _pick_scorecard(client: GraphClient, spec: dict[str, Any]) -> Any | None:
+    """Newest scorecard in a folder, preferring the values snapshot.
+
+    Files are named by quarter ("Q226 - Operational Governance Scorecard -
+    June 2026 ..."), so sorting on the name alone would put Q1 after Q2 in some
+    years. Pick on last-modified, and among equally recent candidates prefer
+    the `prefer` marker.
+    """
+    children = [
+        c
+        for c in client.children(spec["drive_id"], spec["path"])
+        if not c.is_folder and fnmatch.fnmatch(c.name.lower(), spec["match"].lower())
+    ]
+    if not children:
+        return None
+    marker = (spec.get("prefer") or "").lower()
+    return max(
+        children,
+        key=lambda c: (c.last_modified, marker in c.name.lower() if marker else False),
+    )
+
+
 def _load_og(
     config: dict[str, Any], client: GraphClient | None, quarter: str
 ) -> tuple[list[Fact], list[Governance], SourceRun]:
-    spec = _source(config, "og_scorecard")
-    if client is None or spec is None:
-        return [], [], SourceRun("og_scorecard", "missing", "no Graph client", _now())
-    try:
-        item = client.item(spec["drive_id"], spec["item_id"])
-        path = client.download(spec["drive_id"], item)
-    except GraphError as exc:
-        return [], [], SourceRun("og_scorecard", "error", str(exc), _now())
+    """Read the OG scorecard from the Nelson leadership area.
 
-    facts, governance = og_scorecard.parse(
-        path, units=config["business_units"], period=spec.get("period", quarter)
-    )
-    status = "ok" if facts else "missing"
-    return facts, governance, SourceRun(
-        "og_scorecard",
-        status,
-        f"{len(facts)} facts across {len(governance)} units" if facts else "scanner matched no unit rows",
-        _now(),
-        item.last_modified,
-        len(facts),
-    )
+    Falls back to the portfolio site's copy: the two are cut at different
+    times and either can be the one that is current.
+    """
+    if client is None:
+        return [], [], SourceRun("og_scorecard", "missing", "no Graph client", _now())
+
+    attempts = [
+        _source(config, sid)
+        for sid in ("og_scorecard", "og_scorecard_portfolio_copy")
+    ]
+    problems: list[str] = []
+
+    for spec in attempts:
+        if spec is None:
+            continue
+        try:
+            item = _pick_scorecard(client, spec)
+            if item is None:
+                problems.append(f"{spec['id']}: no workbook matching {spec['match']}")
+                continue
+            path = client.download(spec["drive_id"], item)
+        except GraphError as exc:
+            problems.append(f"{spec['id']}: {exc}")
+            continue
+
+        facts, governance = og_scorecard.parse(
+            path, units=config["business_units"], period=spec.get("period", quarter)
+        )
+        if not facts:
+            problems.append(f"{spec['id']}: {item.name} matched no unit rows")
+            continue
+        return facts, governance, SourceRun(
+            "og_scorecard",
+            "ok",
+            f"{item.name} ({spec['id']}) — {len(facts)} facts across {len(governance)} units",
+            _now(),
+            item.last_modified,
+            len(facts),
+        )
+
+    return [], [], SourceRun("og_scorecard", "missing", "; ".join(problems), _now())
 
 
 def _load_omegro_monthly(

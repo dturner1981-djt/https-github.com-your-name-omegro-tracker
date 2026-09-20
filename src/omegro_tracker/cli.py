@@ -109,9 +109,18 @@ def cmd_validate(args: argparse.Namespace) -> int:
         print(f"error: unknown source {args.source!r}", file=sys.stderr)
         return 1
 
-    item = client.item(spec["drive_id"], spec["item_id"])
+    from .build import _pick_scorecard
+
+    if "item_id" in spec:
+        item = client.item(spec["drive_id"], spec["item_id"])
+    else:
+        item = _pick_scorecard(client, spec)
+        if item is None:
+            print(f"error: nothing in {spec['path']!r} matching {spec['match']!r}", file=sys.stderr)
+            return 1
     path = client.download(spec["drive_id"], item)
     print(f"{spec['id']}: {item.name} ({item.size:,} bytes, modified {item.last_modified})")
+    print(f"  from {spec['site']} / {spec['path']}")
     if args.source.startswith("og_scorecard"):
         print(og_scorecard.describe(path, config["business_units"]))
     else:

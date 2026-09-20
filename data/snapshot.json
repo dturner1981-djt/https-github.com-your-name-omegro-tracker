@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T03:26:24+00:00",
+  "generated_at": "2026-09-20T11:33:32+00:00",
   "period": "2026-08",
   "quarter": "2026-Q3",
   "group": {
@@ -1329,7 +1329,7 @@
       "source_id": "itds_qdsr",
       "status": "ok",
       "detail": "parsed 3 business units",
-      "fetched_at": "2026-09-20T03:26:24+00:00",
+      "fetched_at": "2026-09-20T11:33:32+00:00",
       "item_modified": null,
       "rows": 3
     },
@@ -1337,7 +1337,7 @@
       "source_id": "bu_monthly_submissions",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T03:26:24+00:00",
+      "fetched_at": "2026-09-20T11:33:32+00:00",
       "item_modified": null,
       "rows": 0
     },
@@ -1345,7 +1345,7 @@
       "source_id": "omegro_monthly",
       "status": "ok",
       "detail": "Omegro monthly reporting pack, periods 7 and 8 FY26 \u2014 committed extract read 2026-09-20",
-      "fetched_at": "2026-09-20T03:26:24+00:00",
+      "fetched_at": "2026-09-20T11:33:32+00:00",
       "item_modified": null,
       "rows": 128
     },
@@ -1353,7 +1353,7 @@
       "source_id": "og_scorecard",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T03:26:24+00:00",
+      "fetched_at": "2026-09-20T11:33:32+00:00",
       "item_modified": null,
       "rows": 0
     }

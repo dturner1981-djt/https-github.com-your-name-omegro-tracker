@@ -88,19 +88,31 @@ All ids in `config/sources.yml` are resolved against the Omegro tenant.
 | `itds_qdsr` | ITDS residual risk, posture, control effectiveness, key-area narratives, for all 14 Nelson VBUs | **Live.** Parsed and unit-tested against the published Q2-26 assessment. |
 | `monthly_review_template` | The canonical P&L and WC reporting schema | Located. Drives the parser layout. |
 | `bu_monthly_submissions` | Working capital, improvement-plan initiatives, OG stage per BU | **Not yet populated.** The template was issued Jun-26; the submission folder is being stood up. This is the missing piece for the working-capital pane. Parser written and tested against the template layout. |
-| `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU | **Needs one validation pass.** See below. |
+| `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU. Read from the **Nelson leadership area**, resolved as a folder so each new quarter is picked up automatically | **Needs one validation pass.** See below. |
+| `og_scorecard_portfolio_copy` | Fallback copy on the portfolio site, and the history | Registered. |
 | `qsr_submissions` | Per-BU QSR workbooks — the only source with a **full-year** view. Full Yr yr2026 at columns 23 (current forecast) / 28 (prior iteration) / 29 (var) on the confirmed TBL workbook | Located, layout confirmed, parser stub. |
 | `qsr_baseline` | The start-of-year QSR (Q4 2025 for FY26), whose Full Yr column **is** the baseline | Registered, parser stub. |
 | `vbu_qsrs` | The portfolio's own per-quarter copy of each VBU QSR; fallback where a workbook is missing from Leaders Shared, as Grosvenor's Q2-26 is | Located, parser stub. |
 
 ### Validate the OG scorecard mapping before trusting it
 
+The scorecard lives in the Nelson leadership area:
+
+    GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
+      Shared Documents / Leadership / 09. Operational Governance
+
+The portfolio site keeps its own copy under `Operational Governance / Scoring
+Assessment`, registered as a fallback. The two are cut at different times and
+either can be the more current — the leadership area holds the `_VALUES`
+snapshot (formula-free, so it parses cleanly) and the portfolio site holds the
+formula master.
+
 The scorecard is a wide matrix that is rebuilt every quarter, so the parser
 scans for the header row and matches BU rows by alias rather than indexing
 fixed cells. Those heuristics were written against the published metric
-vocabulary, not against a downloaded copy — the workbook is several megabytes
-and could not be retrieved when the parser was written. Before anyone acts on
-figures from it:
+vocabulary, not against a downloaded copy — the workbook is several megabytes,
+which is why it has to be downloaded and parsed locally rather than read
+through a workbook session. Before anyone acts on figures from it:
 
 ```bash
 omegro-tracker validate --source og_scorecard

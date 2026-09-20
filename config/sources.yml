@@ -50,23 +50,36 @@ sources:
     required: false   # folder is being stood up; template dated Jun-26
 
   - id: og_scorecard
-    kind: file
-    parser: og_scorecard
-    description: >
-      Quarterly Operational Governance Scorecard for the Nelson Portfolio.
-      Source of the OG stage, OG score and the core Volaris metric set
-      (Net Revenue, EBITA %, Organic Growth %, Core Ratio, WC %) per BU.
-      Large workbook — always parsed from a local download.
-    site: GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
-    drive_id: b!dSR7_AeeqEumTDDVXUh0hFz8Ec1k0qxKun28hMYRrQdDsM8Z-uSiQoBEB8FOs-4u
-    item_id: 01D6HCE5773TCAY5TTO5BJIUAAA3NW2DP7
-    path: Leadership/09. Operational Governance/Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx
-    period: 2026-Q2
-
-  - id: og_scorecard_history
     kind: folder
     parser: og_scorecard
-    description: Prior-quarter OG scorecards, used for stage/score trend.
+    description: >
+      Quarterly Operational Governance Scorecard — the source of the OG stage,
+      the OG score and the core Volaris metric set (Net Revenue, EBITA %,
+      Organic Growth %, Core Ratio, WC %) per BU.
+
+      CANONICAL LOCATION: the Nelson leadership area. Resolved as a folder and
+      not pinned to one workbook, so each new quarter is picked up without a
+      config change — the previous version pinned the Q2-26 item id and would
+      have silently gone stale at Q3.
+
+      Prefer the "_VALUES" variant where both exist: it is the formula-free
+      snapshot, so it parses without a recalculation pass.
+    site: GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
+    drive_id: b!dSR7_AeeqEumTDDVXUh0hFz8Ec1k0qxKun28hMYRrQdDsM8Z-uSiQoBEB8FOs-4u
+    path: Leadership/09. Operational Governance
+    match: "*Operational Governance Scorecard*.xlsx"
+    prefer: "_VALUES"
+    required: false
+
+  - id: og_scorecard_portfolio_copy
+    kind: folder
+    parser: og_scorecard
+    description: >
+      The portfolio site's own copy, kept as a fallback and for history. This
+      holds the formula master rather than the values snapshot, and at the time
+      of writing carried a more recent modification than the leadership copy
+      (Q226 touched 2026-09-16 against 2026-08-05) — so if the leadership area
+      looks behind, check here before assuming the quarter has not been cut.
     site: OmegroNelsonPortfolio
     drive_id: b!ayPo5FEIH0GWh0cdPGjFv4eHmM01eiBHko3XYfvDsfOWBOSnd6kvTIuh5B_-YXqX
     path: Operational Governance/Scoring Assessment

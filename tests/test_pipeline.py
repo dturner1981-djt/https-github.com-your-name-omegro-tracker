@@ -446,3 +446,60 @@ def test_no_exit_date_anywhere(config):
     html = render(_live(config), config)
     assert "exit by" not in html.lower()
     assert "expected exit" not in html.lower()
+
+
+# -- OG scorecard location --------------------------------------------------
+
+
+def test_og_scorecard_reads_from_the_nelson_leadership_area(config):
+    spec = next(s for s in config["sources"] if s["id"] == "og_scorecard")
+    assert spec["site"] == "GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership"
+    assert spec["path"] == "Leadership/09. Operational Governance"
+    # Resolved as a folder, never pinned to one quarter's workbook.
+    assert spec["kind"] == "folder"
+    assert "item_id" not in spec
+    assert spec["prefer"] == "_VALUES"
+
+
+def test_og_scorecard_has_a_portfolio_fallback(config):
+    spec = next(s for s in config["sources"] if s["id"] == "og_scorecard_portfolio_copy")
+    assert spec["site"] == "OmegroNelsonPortfolio"
+    assert spec["path"] == "Operational Governance/Scoring Assessment"
+
+
+def test_scorecard_pick_prefers_the_values_snapshot():
+    """Both copies exist for a quarter; the values snapshot is the parseable
+    one, so it wins a tie on modification time."""
+    from omegro_tracker.build import _pick_scorecard
+    from omegro_tracker.graph import DriveItem
+
+    def item(name, modified):
+        return DriveItem(id=name, name=name, size=1, last_modified=modified,
+                         download_url=None, is_folder=False)
+
+    class FakeClient:
+        def __init__(self, items):
+            self._items = items
+
+        def children(self, drive_id, path):
+            return iter(self._items)
+
+    spec = {
+        "drive_id": "d", "path": "p",
+        "match": "*Operational Governance Scorecard*.xlsx", "prefer": "_VALUES",
+    }
+
+    same_day = [
+        item("Q226 - Operational Governance Scorecard - June 2026.xlsx", "2026-08-05T13:54:11Z"),
+        item("Q226 - Operational Governance Scorecard - June 2026_VALUES.xlsx", "2026-08-05T13:54:11Z"),
+    ]
+    assert "_VALUES" in _pick_scorecard(FakeClient(same_day), spec).name
+
+    # A genuinely newer quarter beats the preference.
+    newer = same_day + [
+        item("Q326 - Operational Governance Scorecard - September 2026.xlsx", "2026-10-04T09:00:00Z")
+    ]
+    assert _pick_scorecard(FakeClient(newer), spec).name.startswith("Q326")
+
+    # Non-matching files are ignored, and an empty folder yields nothing.
+    assert _pick_scorecard(FakeClient([item("Goals 2026.xlsx", "2026-11-01T00:00:00Z")]), spec) is None
