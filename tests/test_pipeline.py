@@ -279,13 +279,74 @@ def test_snapshot_round_trips(config):
         assert restored.itds[0].key_areas[0].name == snap.itds[0].key_areas[0].name
 
 
-def test_seeded_build_is_flagged_as_seeded(config):
+def test_build_carries_live_financials(config):
     from omegro_tracker.build import build
 
     snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
-    assert snap.has_live_financials is False
-    assert snap.run("seed") is not None and snap.run("seed").status == "seed"
+    assert snap.has_live_financials is True
+    assert snap.run("omegro_monthly").status == "ok"
 
 
-def test_config_business_units_are_the_three_group_units(config):
-    assert [u["key"] for u in config["business_units"]] == ["tbl", "tlm", "grosvenor"]
+# Published figures from the Omegro P8 FY26 pack, "David Turner Group" band,
+# USD thousands. These assert the source of record, not our arithmetic.
+P8_QTD = {
+    "tbl": {"net_revenue": (581.784, 647.492), "ebita": (192.306, 241.657)},
+    "tlm": {"net_revenue": (1523.971, 1575.765), "ebita": (259.267, 375.920)},
+    "grosvenor": {"net_revenue": (1016.312, 1003.483), "ebita": (319.176, 284.754)},
+}
+
+
+@pytest.mark.parametrize("bu", list(P8_QTD))
+def test_qtd_financials_match_the_reporting_pack(config, bu):
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    for metric, (actual, forecast) in P8_QTD[bu].items():
+        assert snap.value(bu, metric, "qtd", "actual") == pytest.approx(actual)
+        assert snap.value(bu, metric, "qtd", "forecast") == pytest.approx(forecast)
+
+
+def test_group_totals_exclude_out_of_scope_units(config):
+    """AgentOS sits in the BPC group but not in the group leader's scope."""
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    assert [u["key"] for u in snap.business_units] == ["tbl", "tlm", "grosvenor"]
+
+    summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
+    rollup = derive.portfolio_rollup(summaries)
+    # 581.784 + 1523.971 + 1016.312, i.e. the group total less AgentOS.
+    assert rollup["net_revenue"].value == pytest.approx(3122.067)
+
+
+def test_ebita_margin_is_a_ratio_of_sums_not_an_average(config):
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
+    rollup = derive.portfolio_rollup(summaries)
+    expected = (192.306 + 259.267 + 319.176) / 3122.067
+    assert rollup["ebita_pct"].value == pytest.approx(expected)
+
+
+def test_commentary_is_attached_and_quoted(config):
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    opex = snap.commentary_for("tlm", "opex")
+    assert opex and "AI token usage" in opex[0].text
+
+
+def test_config_scopes_the_bpc_group_down_to_the_three_led_units(config):
+    """BPC's "David Turner Group" carries AgentOS as well; config keeps it
+    present but out of scope so it is one flag to bring in, not a rediscovery."""
+    keys = [u["key"] for u in config["business_units"]]
+    assert keys == ["tbl", "tlm", "grosvenor", "agentos"]
+    in_scope = [u["key"] for u in config["business_units"] if u.get("in_scope", True)]
+    assert in_scope == ["tbl", "tlm", "grosvenor"]
+
+
+def test_every_in_scope_unit_has_a_named_leader(config):
+    for unit in config["business_units"]:
+        if unit.get("in_scope", True):
+            assert unit.get("leader"), unit["key"]

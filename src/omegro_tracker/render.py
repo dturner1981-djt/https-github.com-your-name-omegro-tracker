@@ -289,6 +289,16 @@ def control_bar(itds: Any, *, width: int = 300) -> ControlBar | None:
 # -- view model -------------------------------------------------------------
 
 
+# The P&L bands, in reading order. A band whose source has not reported is
+# dropped from the table entirely rather than rendered as a column of dashes.
+PNL_BANDS = [
+    {"key": "month", "value_head": "Actual"},
+    {"key": "qtd", "value_head": "Actual"},
+    {"key": "ytd", "value_head": "Actual"},
+    {"key": "outturn", "value_head": "Projection"},
+]
+
+
 def _metric_row(
     snapshot: Snapshot,
     bu: str,
@@ -300,14 +310,16 @@ def _metric_row(
     unit = "pct" if cfg.get("unit") == "pct" else "k"
     band = derive.bands(config)
 
-    qtd = derive.variance(snapshot, bu, metric, "qtd", config=config)
-    ytd = derive.variance(snapshot, bu, metric, "ytd", config=config)
-    quarter = derive.variance(
-        snapshot, bu, metric, "quarter",
-        period=snapshot.quarter, value="projection", config=config,
-    )
+    sources = {
+        "month": derive.variance(snapshot, bu, metric, "month", period=snapshot.period, config=config),
+        "qtd": derive.variance(snapshot, bu, metric, "qtd", config=config),
+        "ytd": derive.variance(snapshot, bu, metric, "ytd", config=config),
+        "outturn": derive.variance(
+            snapshot, bu, metric, "quarter",
+            period=snapshot.quarter, value="projection", config=config,
+        ),
+    }
     nxt = snapshot.value(bu, metric, "next_quarter", "forecast", next_quarter(snapshot.quarter))
-    month = derive.variance(snapshot, bu, metric, "month", period=snapshot.period, config=config)
 
     def cell(v: Variance) -> dict[str, Any]:
         status = v.status(band)
@@ -330,11 +342,9 @@ def _metric_row(
         "key": metric,
         "label": SHORT_LABELS.get(metric, cfg.get("label", metric.replace("_", " ").title())),
         "unit": unit,
-        "month": cell(month),
-        "qtd": cell(qtd),
-        "ytd": cell(ytd),
-        "outturn": cell(quarter),
+        "cells": {k: cell(v) for k, v in sources.items()},
         "next": fmt_value(nxt, unit, currency),
+        "next_reported": nxt is not None,
     }
 
 
@@ -381,13 +391,14 @@ def _wc_row(
     }
 
 
-PNL_METRICS = ["net_revenue", "ebita", "ebita_pct", "og_pct", "bqr_pct"]
+PNL_METRICS = ["net_revenue", "opex", "ebita", "ebita_pct", "og_pct", "bqr_pct"]
 WC_METRICS = ["wc_pct", "wc_pct_ex_cash", "overdue_ar_pct", "wip_over_30_pct"]
 
 # The config labels are the ones the portfolio templates use and are kept for
 # reporting; the table needs names that survive a narrow first column.
 SHORT_LABELS = {
     "net_revenue": "Net revenue",
+    "opex": "OPEX",
     "ebita": "EBITA",
     "ebita_pct": "EBITA margin",
     "og_pct": "Organic growth",
@@ -416,7 +427,7 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
                 "key": bu,
                 "name": unit["name"],
                 "short": unit.get("short_name", unit["name"]),
-                "contact": unit.get("contact", "—"),
+                "leader": unit.get("leader") or "Not set",
                 "country": unit.get("country", ""),
                 "products": unit.get("products", []),
                 "overall": summary["overall"],
@@ -425,7 +436,22 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
                 "overall_glyph": STATUS_GLYPH[summary["overall"]],
                 "stage": (gov.stage if gov else None) or "Not reported",
                 "expected_exit": (gov.expected_exit if gov else None) or "—",
-                "pnl_rows": [_metric_row(snapshot, bu, m, config, currency) for m in PNL_METRICS],
+                "pnl_rows": [
+                    row
+                    for row in (
+                        _metric_row(snapshot, bu, m, config, currency) for m in PNL_METRICS
+                    )
+                    # A metric no source carries is left out rather than shown
+                    # as a row of dashes.
+                    if any(c["reported"] for c in row["cells"].values()) or row["next_reported"]
+                ],
+                "commentary": [
+                    {
+                        "metric": SHORT_LABELS.get(c.metric, c.metric.replace("_", " ").title()),
+                        "text": c.text,
+                    }
+                    for c in snapshot.commentary_for(bu)
+                ],
                 "wc_rows": [_wc_row(snapshot, bu, m, config, currency) for m in WC_METRICS],
                 "nr_chart": trajectory(snapshot, bu, "net_revenue", currency=currency),
                 "ebita_chart": trajectory(snapshot, bu, "ebita", currency=currency),
@@ -444,25 +470,42 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
                     }
                     for k in (itds.key_areas if itds else [])
                 ],
-                "improvements": [
-                    {
-                        "title": i.title,
-                        "owner": i.owner,
-                        "measure": i.measure_of_success,
-                        "target_date": fmt_date(i.target_date),
-                        "status": i.status,
-                        "status_label": STATUS_LABELS[i.status],
-                        "token": STATUS_TOKEN[i.status],
-                        "glyph": STATUS_GLYPH[i.status],
-                        "notes": i.notes,
-                    }
-                    for i in summary["initiatives"]
-                ],
             }
         )
 
-    seed_run = snapshot.run("seed")
+    # Drop any band no unit reported, so the table never shows a dead column.
+    active_bands = [
+        {
+            **b,
+            "label": {
+                "month": f"{month_label(snapshot.period)} month",
+                "qtd": "Quarter to date",
+                "ytd": "Year to date",
+                "outturn": f"{snapshot.quarter.replace('-', ' ')} outturn",
+            }[b["key"]],
+        }
+        for b in PNL_BANDS
+        if any(
+            row["cells"][b["key"]]["reported"]
+            for panel in panels
+            for row in panel["pnl_rows"]
+        )
+    ]
+    show_next = any(row["next_reported"] for panel in panels for row in panel["pnl_rows"])
+    wc_reported = any(
+        r["current"]["reported"] or r["previous"]["reported"]
+        for panel in panels
+        for r in panel["wc_rows"]
+    )
+    governance_reported = any(
+        p["stage"] != "Not reported" for p in panels
+    )
+
     return {
+        "bands": active_bands,
+        "show_next": show_next,
+        "wc_reported": wc_reported,
+        "governance_reported": governance_reported,
         "group": snapshot.group,
         "period_label": month_label(snapshot.period),
         "quarter_label": snapshot.quarter.replace("-", " "),
@@ -507,7 +550,11 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
             }
             for r in snapshot.runs
         ],
-        "seeded": seed_run is not None and seed_run.status == "seed",
+        "financials_source": (
+            snapshot.run("omegro_monthly").detail
+            if snapshot.run("omegro_monthly") and snapshot.run("omegro_monthly").status == "ok"
+            else None
+        ),
         "itds_period": (snapshot.itds[0].period if snapshot.itds else "—").replace("-", " "),
     }
 

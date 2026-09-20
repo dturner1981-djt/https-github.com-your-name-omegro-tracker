@@ -1,98 +1,15 @@
 {
-  "generated_at": "2026-09-20T02:53:20+00:00",
+  "_source": "Omegro monthly reporting pack, period 8 FY26 (August close)",
+  "_files": [
+    "FinanceAccountingCommunity/Monthly Reporting/2026/8. Aug/NR/Omegro/Omegro NR P8 FY26.xlsx (modified 2026-09-08)",
+    "FinanceAccountingCommunity/Monthly Reporting/2026/8. Aug/EBITA/Omegro/Omegro EBITA P8 FY26 commentary.xlsx (modified 2026-09-10)"
+  ],
+  "_read_at": "2026-09-20",
+  "_note": "Actual reported figures, USD, stored in thousands. Row band 'David Turner Group'. Reproduced automatically by parsers/omegro_monthly.py on an authenticated refresh.",
+  "_bpc_group": "David Turner Group",
+  "currency": "USD",
   "period": "2026-08",
   "quarter": "2026-Q3",
-  "group": {
-    "name": "Turner Group",
-    "portfolio": "Nelson Portfolio",
-    "operating_group": "Omegro",
-    "group_leader": "David Turner",
-    "portfolio_cfo": "Renuka Simpson",
-    "reporting_currency": "USD",
-    "bpc_group": "David Turner Group",
-    "finance_contacts": [
-      "Stephen Craig",
-      "Renuka Simpson",
-      "Jean Triquet"
-    ],
-    "fiscal_year_start_month": 1
-  },
-  "business_units": [
-    {
-      "key": "tbl",
-      "name": "Technology Blueprint",
-      "short_name": "TBL",
-      "aliases": [
-        "TBL",
-        "Technology Blueprint",
-        "Technology Blueprint Ltd",
-        "Technology Blueprint Limited",
-        "Technology Blueprint Consolidated",
-        "M_TBLCONS",
-        "E_TECHB"
-      ],
-      "country": "United Kingdom",
-      "currency": "GBP",
-      "products": [
-        "PropCo Enterprise",
-        "PropCo Web"
-      ],
-      "leader": "Colin Ma",
-      "reports": [
-        "pnl",
-        "working_capital"
-      ]
-    },
-    {
-      "key": "tlm",
-      "name": "tlmNexus",
-      "short_name": "TLM",
-      "aliases": [
-        "tlmNexus",
-        "TLM Nexus",
-        "tlmNexus Ltd",
-        "TlmNexus Ltd",
-        "M_TLMN",
-        "TLM"
-      ],
-      "country": "United Kingdom",
-      "currency": "GBP",
-      "products": [
-        "Observe",
-        "Asset Management"
-      ],
-      "leader": "David Appleton",
-      "reports": [
-        "pnl",
-        "working_capital"
-      ]
-    },
-    {
-      "key": "grosvenor",
-      "name": "Grosvenor Systems",
-      "short_name": "Grosvenor",
-      "aliases": [
-        "Grosvenor",
-        "Grosvenor Systems",
-        "Grosvenor Systems Limited",
-        "Grosvenor Consolidated",
-        "M_GROSVCONSOL",
-        "GROSV",
-        "E_GROSV"
-      ],
-      "country": "United Kingdom",
-      "currency": "GBP",
-      "products": [
-        "Propman",
-        "Progress Maintenance"
-      ],
-      "leader": "Paula McQuilan",
-      "reports": [
-        "pnl",
-        "working_capital"
-      ]
-    }
-  ],
   "facts": [
     {
       "bu": "tbl",
@@ -799,7 +716,6 @@
       "as_of": null
     }
   ],
-  "initiatives": [],
   "commentary": [
     {
       "bu": "tlm",
@@ -864,154 +780,6 @@
       "text": "Variance below reporting threshold. Classified temporary favourable.",
       "source": "omegro_monthly",
       "author": null
-    }
-  ],
-  "governance": [],
-  "itds": [
-    {
-      "bu": "tbl",
-      "period": "2026-Q2",
-      "posture": "Moderate",
-      "risk_current": 126.0,
-      "risk_initial": 18.0,
-      "risk_max": 400,
-      "controls_assessed": 50,
-      "controls_strong": 28,
-      "controls_focus": 22,
-      "controls_low": 4,
-      "average_kri": 6.8,
-      "not_met": 3,
-      "largely_not_met": 1,
-      "partially_met": 18,
-      "key_areas": [
-        {
-          "name": "Backup resilience",
-          "status": "good",
-          "narrative": "Backup resilience is comparatively strong, with no current residual risk recorded for the domain, although recurring operating evidence should continue to be retained."
-        },
-        {
-          "name": "IAM & MFA",
-          "status": "warning",
-          "narrative": "Network and infrastructure MFA remain incomplete, with additional gaps in local administrator and shared-account governance."
-        },
-        {
-          "name": "Detection & Response",
-          "status": "warning",
-          "narrative": "Logging reconciliation, security monitoring coverage and tested incident-response evidence are not yet complete."
-        }
-      ],
-      "summary": "TBL has a comparatively moderate residual-risk position, but weaknesses in vulnerability governance, technology lifecycle oversight and recurring control evidence continue to limit assurance.",
-      "source_file": "ITDS Assessment - TBL - Q2.xlsx",
-      "movement": 108.0,
-      "risk_pct": 0.315
-    },
-    {
-      "bu": "tlm",
-      "period": "2026-Q2",
-      "posture": "Strong",
-      "risk_current": 22.0,
-      "risk_initial": 22.0,
-      "risk_max": 400,
-      "controls_assessed": 50,
-      "controls_strong": 47,
-      "controls_focus": 3,
-      "controls_low": 2,
-      "average_kri": 9.4,
-      "not_met": 2,
-      "largely_not_met": 0,
-      "partially_met": 1,
-      "key_areas": [
-        {
-          "name": "Backup resilience",
-          "status": "good",
-          "narrative": "Backup retention, off-site protection, restore testing and monitoring are documented and operating, providing strong recovery assurance."
-        },
-        {
-          "name": "IAM & MFA",
-          "status": "good",
-          "narrative": "MFA and access controls are broadly implemented across infrastructure, applications and external access, with established credential processes."
-        },
-        {
-          "name": "Detection & Response",
-          "status": "warning",
-          "narrative": "Security logging is not consistently queryable for the full required period, and CrowdStrike deployment assurance remains under review."
-        }
-      ],
-      "summary": "tlmNexus demonstrates the strongest residual-risk position in the portfolio, with well-established core controls and limited remaining exposure in vulnerability governance and monitoring assurance.",
-      "source_file": "ITDS Assessment - tlmNexus - Q2.xlsx",
-      "movement": 0.0,
-      "risk_pct": 0.055
-    },
-    {
-      "bu": "grosvenor",
-      "period": "2026-Q2",
-      "posture": "Needs Improvement",
-      "risk_current": 200.0,
-      "risk_initial": 97.0,
-      "risk_max": 400,
-      "controls_assessed": 50,
-      "controls_strong": 15,
-      "controls_focus": 35,
-      "controls_low": 10,
-      "average_kri": 5.1,
-      "not_met": 9,
-      "largely_not_met": 1,
-      "partially_met": 25,
-      "key_areas": [
-        {
-          "name": "Backup resilience",
-          "status": "critical",
-          "narrative": "Recoverability is not demonstrated because restore testing and proactive monitoring are absent, while ransomware-resistant off-site protection is only partially evidenced."
-        },
-        {
-          "name": "IAM & MFA",
-          "status": "critical",
-          "narrative": "Coverage is incomplete across infrastructure, applications, local administrator credentials and identity-lifecycle controls."
-        },
-        {
-          "name": "Detection & Response",
-          "status": "warning",
-          "narrative": "EDR coverage is not fully reconciled to the asset estate, logging coverage is incomplete and tested incident-response readiness is not demonstrated."
-        }
-      ],
-      "summary": "Grosvenor Systems has implemented several core technologies, but weaknesses in vulnerability management, technology lifecycle oversight, email-security assurance and operational evidence weaken the control environment.",
-      "source_file": "ITDS Assessment - Grosvenor Systems - Q2.xlsx",
-      "movement": 103.0,
-      "risk_pct": 0.5
-    }
-  ],
-  "runs": [
-    {
-      "source_id": "itds_qdsr",
-      "status": "ok",
-      "detail": "parsed 3 business units",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
-      "item_modified": null,
-      "rows": 3
-    },
-    {
-      "source_id": "bu_monthly_submissions",
-      "status": "missing",
-      "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
-      "item_modified": null,
-      "rows": 0
-    },
-    {
-      "source_id": "omegro_monthly",
-      "status": "ok",
-      "detail": "Omegro monthly reporting pack, period 8 FY26 (August close) \u2014 committed extract read 2026-09-20",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
-      "item_modified": null,
-      "rows": 64
-    },
-    {
-      "source_id": "og_scorecard",
-      "status": "missing",
-      "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
-      "item_modified": null,
-      "rows": 0
     }
   ]
 }

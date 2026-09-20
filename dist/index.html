@@ -307,6 +307,34 @@ svg text { font-family: var(--mono); }
 .init .notes { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; line-height: 1.5; }
 .init .when { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
 
+/* ------------------------------------------------- coverage & commentary */
+.coverage {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  margin-top: 20px; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+}
+.cov-item { display: flex; gap: 9px; align-items: flex-start; background: var(--surface); padding: 11px 14px; }
+.cov-item .g { font-size: 9px; line-height: 1.8; flex: none; }
+.cov-item.ok .g { color: var(--good); }
+.cov-item.off .g { color: var(--ink-3); }
+.cov-item > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cov-item b { font-size: 12.5px; font-weight: 600; }
+.cov-item span:not(.g) { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+
+.note-row { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.note-row:last-child { border-bottom: 0; }
+.note-tag {
+  font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-2); background: var(--surface-sunk);
+  border: 1px solid var(--line); padding: 2px 7px; border-radius: var(--radius);
+  height: fit-content; white-space: nowrap;
+}
+.note-row p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); max-width: 78ch; }
+
+.empty-pane { padding: 16px; }
+.empty-pane p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; max-width: 66ch; margin: 0 0 8px; }
+.empty-pane p:last-child { margin-bottom: 0; }
+
 /* -------------------------------------------------------------- footer */
 .provenance { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 .provenance h2 { margin: 0; padding: 12px 16px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line); }
@@ -323,11 +351,13 @@ table.sources td.detail { color: var(--ink-2); }
   .panel-body { grid-template-columns: 1fr; }
   .panel-main { border-right: 0; border-bottom: 1px solid var(--line); }
   .readouts { grid-template-columns: repeat(2, 1fr); }
+  .coverage { grid-template-columns: repeat(2, 1fr); }
   .readout:nth-child(2) { border-right: 0; }
   .readout:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
 }
 @media (max-width: 560px) {
-  .readouts { grid-template-columns: 1fr; }
+  .readouts, .coverage { grid-template-columns: 1fr; }
+  .note-row { grid-template-columns: 1fr; }
   .readout { border-right: 0; border-bottom: 1px solid var(--line); }
   .readout:last-child { border-bottom: 0; }
   .panel-head .facts { margin-left: 0; }
@@ -351,20 +381,23 @@ table.sources td.detail { color: var(--ink-2); }
     <div class="period-stack">
       <div><span class="k">Close</span><span class="v">Aug-26</span></div>
       <div><span class="k">Quarter</span><span class="v">2026 Q3</span></div>
-      <div><span class="k">Currency</span><span class="v">GBP</span></div>
-      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 02:28 UTC</span></div>
+      <div><span class="k">Currency</span><span class="v">USD</span></div>
+      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 02:53 UTC</span></div>
     </div>
   </div>
 </header>
 
 <div class="wrap">
 
-<div class="banner" role="note">
-  <span class="mark" aria-hidden="true">!</span>
-  <span><strong>Financial figures on this page are illustrative placeholders, not actual results.</strong>
-  No live financial source is connected yet &mdash; run <code style="font-family:var(--mono)">omegro-tracker refresh</code>
-  with Graph credentials to replace them. The governance and ITDS panes below are live:
-  they carry the published 2026 Q2 assessment.</span>
+<div class="coverage" role="note">
+  <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
+    <div><b>P&amp;L &mdash; live</b><span>Aug-26 close, Omegro monthly reporting pack</span></div></div>
+  <div class="cov-item off"><span class="g" aria-hidden="true">&ndash;</span>
+    <div><b>Working capital &mdash; not connected</b><span>needs the BU Progress Report WC sheet</span></div></div>
+  <div class="cov-item off"><span class="g" aria-hidden="true">&ndash;</span>
+    <div><b>OG stage &mdash; not connected</b><span>needs the Operational Governance Scorecard</span></div></div>
+  <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
+    <div><b>ITDS &mdash; live</b><span>published 2026 Q2 Portfolio Security Assessment</span></div></div>
 </div>
 
 <div class="toolbar">
@@ -392,34 +425,34 @@ table.sources td.detail { color: var(--ink-2); }
   <div class="readouts">
     <div class="readout">
       <div class="k">Net revenue QTD</div>
-      <div class="v">£2.85m</div>
+      <div class="v">$3.12m</div>
       <div class="meta">
-        <span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.0%</span>
-        <span>vs £2.94m fcst</span>
+        <span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.2%</span>
+        <span>vs $3.23m fcst</span>
       </div>
     </div>
     <div class="readout">
       <div class="k">EBITA QTD</div>
-      <div class="v">£580k</div>
+      <div class="v">$771k</div>
       <div class="meta">
         <span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-14.6%</span>
-        <span>vs £679k fcst</span>
+        <span>vs $902k fcst</span>
       </div>
     </div>
     <div class="readout">
       <div class="k">EBITA margin QTD</div>
-      <div class="v">20.4%</div>
+      <div class="v">24.7%</div>
       <div class="meta">
-        <span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-2.8pt</span>
-        <span>vs 23.1% fcst</span>
+        <span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-3.3pt</span>
+        <span>vs 28.0% fcst</span>
       </div>
     </div>
     <div class="readout">
       <div class="k">Unit status</div>
       <div class="v">2<span style="font-size:15px;color:var(--ink-3);font-weight:500"> off track</span></div>
       <div class="ledger">
-        <span class="tick tone-good">0 on track</span>
-        <span class="tick tone-warning">1 at risk</span>
+        <span class="tick tone-good">1 on track</span>
+        <span class="tick tone-warning">0 at risk</span>
         <span class="tick tone-critical">2 off track</span>
       </div>
     </div>
@@ -432,9 +465,9 @@ table.sources td.detail { color: var(--ink-2); }
     <h3 id="bu-tbl">Technology Blueprint</h3>
     <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
     <div class="facts">
-      <span><b>Lead</b> Stephen Craig</span>
-      <span><b>OG stage</b> Monitor</span>
-      <span><b>Exit by</b> Mar-27</span>
+      <span><b>Leader</b> Colin Ma</span>
+      <span><b>OG stage</b> Not reported</span>
+      <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Moderate</span>
     </div>
   </div>
@@ -446,243 +479,74 @@ table.sources td.detail { color: var(--ink-2); }
       <div data-view-pane="pnl">
         <div class="table-scroll">
           <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast</caption>
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast &mdash; USD&rsquo;000</caption>
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2">Aug-26 month</th>
-                <th colspan="2" class="sep">Quarter to date</th>
-                <th colspan="2" class="sep">Year to date</th>
+                <th colspan="2" >Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
-                <th class="sep">2026 Q4</th>
               </tr>
               <tr>
                 <th>Metric</th>
-                <th>Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
+                <th >Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
-                <th class="sep">Forecast</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td>£584k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.5%</span>
+                <td >$582k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-10.1%</span>
 </td>
-                <td class="sep">£1.18m</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-2.9%</span>
+                <td class="sep">$940k</td>
+                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-6.4%</span>
 </td>
-                <td class="sep">£4.75m</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.6%</span>
+              </tr>
+              <tr>
+                <td>OPEX</td>
+                <td >$348k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-1.2%</span>
 </td>
-                <td class="sep">£1.87m</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+4.4%</span>
+                <td class="sep">$522k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.7%</span>
 </td>
-                <td class="sep ref">£1.91m</td>
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td>£112k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-19.4%</span>
+                <td >$192k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-20.4%</span>
 </td>
-                <td class="sep">£238k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-15.0%</span>
+                <td class="sep">$339k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-14.7%</span>
 </td>
-                <td class="sep">£923k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-18.6%</span>
-</td>
-                <td class="sep">£401k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+7.8%</span>
-</td>
-                <td class="sep ref">£421k</td>
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
+                <td >33.1%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-4.3pt</span>
 </td>
-                <td class="sep">20.1%</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-2.9pt</span>
+                <td class="sep">36.1%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-3.5pt</span>
 </td>
-                <td class="sep">19.4%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-3.6pt</span>
-</td>
-                <td class="sep">21.5%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+0.7pt</span>
-</td>
-                <td class="sep ref">22.1%</td>
-              </tr>
-              <tr>
-                <td>Organic growth</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">2.8%</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-1.3pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>BQR</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">91.0%</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-3.0pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="charts">
-          <figure class="chart">
-  <figcaption>Net revenue by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="20.6" width="29.5" height="85.4"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £612k</title>
-    </rect>
-    <rect x="48.8" y="22.6" width="29.5" height="83.4"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £598k</title>
-    </rect>
-    <rect x="103.0" y="21.6" width="29.5" height="84.4"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £605k</title>
-    </rect>
-    <rect x="135.5" y="24.6" width="29.5" height="81.4"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £584k</title>
-    </rect>
-    <rect x="205.9" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £631k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
-          <figure class="chart">
-  <figcaption>EBITA by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="24.4" width="29.5" height="81.6"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £141k</title>
-    </rect>
-    <rect x="48.8" y="33.1" width="29.5" height="72.9"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £126k</title>
-    </rect>
-    <rect x="103.0" y="25.5" width="29.5" height="80.5"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £139k</title>
-    </rect>
-    <rect x="135.5" y="41.2" width="29.5" height="64.8"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £112k</title>
-    </rect>
-    <rect x="205.9" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £152k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
+          
+          
         </div>
       </div>
 
       <!-- Working capital -->
       <div data-view-pane="wc" hidden>
-        <div class="table-scroll">
-          <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Working capital vs target</caption>
-            <thead>
-              <tr class="band">
-                <th></th>
-                <th colspan="3">Previous month</th>
-                <th colspan="3" class="sep">Aug-26</th>
-                <th class="sep">Next</th>
-              </tr>
-              <tr>
-                <th>Metric</th>
-                <th>Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Working capital</td>
-                <td class="ref">12.0%</td>
-                <td>12.6%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+0.6pt</span></td>
-                <td class="sep ref">11.8%</td>
-                <td>13.1%</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>+1.3pt</span></td>
-                <td class="sep ref">11.2%</td>
-              </tr>
-              <tr>
-                <td>WC excl. cash</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">16.5%</td>
-                <td>17.8%</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>+1.3pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>Overdue AR</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">9.0%</td>
-                <td>14.3%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+5.3pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>WIP over 30 days</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">12.0%</td>
-                <td>15.5%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+3.5pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="empty-pane">
+          <p class="block-title">Working capital</p>
+          <p>No working-capital source is connected for Technology Blueprint.</p>
+          <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
+             monthly reporting pack. They come from the Working Capital sheet of the Business Unit
+             Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
+             and this pane fills in.</p>
         </div>
       </div>
 
@@ -691,51 +555,34 @@ table.sources td.detail { color: var(--ink-2); }
         <div style="padding:14px 16px 16px">
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
-            <span><b>Stage</b> Monitor</span>
-            <span><b>Expected exit</b> Mar-27</span>
+            <span><b>Stage</b> Not reported</span>
+            <span><b>Expected exit</b> —</span>
             <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             Stage and expected exit come from the business unit's monthly Progress Report header and the
-            quarterly Operational Governance Scorecard. Improvement plan progress is listed below.
-          </p>
+No governance stage is connected. It comes from the quarterly
+            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
+            Colin Ma&rsquo;s monthly Business Unit Progress Report.          </p>
         </div>
       </div>
 
-      <!-- Improvement plan -->
+      <!-- Variance commentary, quoted from the reporting pack -->
       <div class="initiatives">
-        <p class="block-title">Improvement plan &amp; working capital actions</p>
+        <p class="block-title">Variance commentary &mdash; Aug-26, as submitted</p>
         <div class="init-list">
-          <div class="init">
-            <div class="title">
-              Sales bookings
-<span class="owner">SC</span>            </div>
-            <div class="when">
-              <span>30 Sep 2026</span>
-              <span class="pill tone-warning"><span class="g" aria-hidden="true">▲</span>At Risk</span>
-            </div>
-<div class="measure">Deliver bookings of £750k in Q3: PS £250k; SaaS £500k</div><div class="notes">QTD bookings £430k (PS £160k, SaaS £270k). Two enterprise renewals slipped to September; fall-back pipeline of £310k identified.</div>          </div>
-          <div class="init">
-            <div class="title">
-              PropCo Web migration
-<span class="owner">SC</span>            </div>
-            <div class="when">
-              <span>31 Dec 2026</span>
-              <span class="pill tone-good"><span class="g" aria-hidden="true">●</span>On Track</span>
-            </div>
-<div class="measure">60% of maintenance base migrated to PropCo Web by year end</div><div class="notes">48% migrated at August close, tracking to plan. Migration team fully staffed following two hires in July.</div>          </div>
-          <div class="init">
-            <div class="title">
-              Overdue AR reduction
-<span class="owner">SC</span>            </div>
-            <div class="when">
-              <span>30 Nov 2026</span>
-              <span class="pill tone-warning"><span class="g" aria-hidden="true">▲</span>At Risk</span>
-            </div>
-<div class="measure">Overdue AR below 9% of billed revenue</div><div class="notes">Overdue AR 14.3% against a 9% target. Two accounts represent 60% of the balance; escalated to account management with payment plans proposed.</div>          </div>
+          <div class="note-row">
+            <span class="note-tag">Net revenue</span>
+            <p>Variance below reporting threshold. Classified permanent unfavourable; outlook adjusted. No additional upsides or risks reported.</p>
+          </div>
+          <div class="note-row">
+            <span class="note-tag">OPEX</span>
+            <p>Variance below reporting threshold. Classified permanent favourable; outlook adjusted.</p>
+          </div>
         </div>
       </div>
     </div>
+
 
     <!-- ITDS side panel -->
     <aside class="panel-side">
@@ -805,13 +652,13 @@ table.sources td.detail { color: var(--ink-2); }
     </aside>
   </div>
 </section>
-<section class="panel" data-bu="tlm" data-overall="at_risk" aria-labelledby="bu-tlm">
+<section class="panel" data-bu="tlm" data-overall="off_track" aria-labelledby="bu-tlm">
   <div class="panel-head">
     <h3 id="bu-tlm">tlmNexus</h3>
-    <span class="pill tone-warning"><span class="g" aria-hidden="true">▲</span>At Risk</span>
+    <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
     <div class="facts">
-      <span><b>Lead</b> Jean Triquet</span>
-      <span><b>OG stage</b> Grow</span>
+      <span><b>Leader</b> David Appleton</span>
+      <span><b>OG stage</b> Not reported</span>
       <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Strong</span>
     </div>
@@ -824,243 +671,74 @@ table.sources td.detail { color: var(--ink-2); }
       <div data-view-pane="pnl">
         <div class="table-scroll">
           <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast</caption>
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast &mdash; USD&rsquo;000</caption>
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2">Aug-26 month</th>
-                <th colspan="2" class="sep">Quarter to date</th>
-                <th colspan="2" class="sep">Year to date</th>
+                <th colspan="2" >Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
-                <th class="sep">2026 Q4</th>
               </tr>
               <tr>
                 <th>Metric</th>
-                <th>Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
+                <th >Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
-                <th class="sep">Forecast</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td>£388k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+4.3%</span>
+                <td >$1.52m</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.3%</span>
 </td>
-                <td class="sep">£769k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+3.8%</span>
+                <td class="sep">$2.31m</td>
+                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-5.0%</span>
 </td>
-                <td class="sep">£3.09m</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+3.0%</span>
+              </tr>
+              <tr>
+                <td>OPEX</td>
+                <td >$1.17m</td>
+                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>+6.1%</span>
 </td>
-                <td class="sep">£1.16m</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+2.9%</span>
+                <td class="sep">$1.94m</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+16.5%</span>
 </td>
-                <td class="sep ref">£1.17m</td>
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td>£109k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+12.4%</span>
+                <td >$259k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-31.0%</span>
 </td>
-                <td class="sep">£213k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+10.4%</span>
+                <td class="sep">$235k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-62.4%</span>
 </td>
-                <td class="sep">£826k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+5.6%</span>
-</td>
-                <td class="sep">£318k</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+8.2%</span>
-</td>
-                <td class="sep ref">£305k</td>
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
+                <td >17.0%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-6.8pt</span>
 </td>
-                <td class="sep">27.7%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+1.7pt</span>
+                <td class="sep">10.2%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-15.5pt</span>
 </td>
-                <td class="sep">26.7%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+0.7pt</span>
-</td>
-                <td class="sep">27.5%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+1.3pt</span>
-</td>
-                <td class="sep ref">26.1%</td>
-              </tr>
-              <tr>
-                <td>Organic growth</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">7.1%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+0.9pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>BQR</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">98.0%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+2.0pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="charts">
-          <figure class="chart">
-  <figcaption>Net revenue by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="22.3" width="29.5" height="83.7"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £369k</title>
-    </rect>
-    <rect x="48.8" y="19.6" width="29.5" height="86.4"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £381k</title>
-    </rect>
-    <rect x="103.0" y="21.6" width="29.5" height="84.4"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £372k</title>
-    </rect>
-    <rect x="135.5" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £388k</title>
-    </rect>
-    <rect x="205.9" y="18.9" width="29.5" height="87.1"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £384k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
-          <figure class="chart">
-  <figcaption>EBITA by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="28.5" width="29.5" height="77.5"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £96k</title>
-    </rect>
-    <rect x="48.8" y="22.0" width="29.5" height="84.0"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £104k</title>
-    </rect>
-    <rect x="103.0" y="27.7" width="29.5" height="78.3"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £97k</title>
-    </rect>
-    <rect x="135.5" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £109k</title>
-    </rect>
-    <rect x="205.9" y="24.5" width="29.5" height="81.5"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £101k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
+          
+          
         </div>
       </div>
 
       <!-- Working capital -->
       <div data-view-pane="wc" hidden>
-        <div class="table-scroll">
-          <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Working capital vs target</caption>
-            <thead>
-              <tr class="band">
-                <th></th>
-                <th colspan="3">Previous month</th>
-                <th colspan="3" class="sep">Aug-26</th>
-                <th class="sep">Next</th>
-              </tr>
-              <tr>
-                <th>Metric</th>
-                <th>Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Working capital</td>
-                <td class="ref">8.8%</td>
-                <td>8.4%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.4pt</span></td>
-                <td class="sep ref">8.5%</td>
-                <td>7.9%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.6pt</span></td>
-                <td class="sep ref">8.2%</td>
-              </tr>
-              <tr>
-                <td>WC excl. cash</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">12.1%</td>
-                <td>11.4%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.7pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>Overdue AR</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">7.0%</td>
-                <td>5.2%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-1.8pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>WIP over 30 days</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">10.0%</td>
-                <td>6.8%</td>
-                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.2pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="empty-pane">
+          <p class="block-title">Working capital</p>
+          <p>No working-capital source is connected for tlmNexus.</p>
+          <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
+             monthly reporting pack. They come from the Working Capital sheet of the Business Unit
+             Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
+             and this pane fills in.</p>
         </div>
       </div>
 
@@ -1069,51 +747,38 @@ table.sources td.detail { color: var(--ink-2); }
         <div style="padding:14px 16px 16px">
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
-            <span><b>Stage</b> Grow</span>
+            <span><b>Stage</b> Not reported</span>
             <span><b>Expected exit</b> —</span>
-            <span><b>Overall</b> At Risk</span>
+            <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             Stage and expected exit come from the business unit's monthly Progress Report header and the
-            quarterly Operational Governance Scorecard. Improvement plan progress is listed below.
-          </p>
+No governance stage is connected. It comes from the quarterly
+            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
+            David Appleton&rsquo;s monthly Business Unit Progress Report.          </p>
         </div>
       </div>
 
-      <!-- Improvement plan -->
+      <!-- Variance commentary, quoted from the reporting pack -->
       <div class="initiatives">
-        <p class="block-title">Improvement plan &amp; working capital actions</p>
+        <p class="block-title">Variance commentary &mdash; Aug-26, as submitted</p>
         <div class="init-list">
-          <div class="init">
-            <div class="title">
-              Defence framework renewal
-<span class="owner">JT</span>            </div>
-            <div class="when">
-              <span>31 Oct 2026</span>
-              <span class="pill tone-good"><span class="g" aria-hidden="true">●</span>On Track</span>
-            </div>
-<div class="measure">Renew primary MoD framework at or above current value</div><div class="notes">Renewal paperwork submitted; verbal confirmation received. No change expected to commercial terms.</div>          </div>
-          <div class="init">
-            <div class="title">
-              Observe recurring revenue growth
-<span class="owner">JT</span>            </div>
-            <div class="when">
-              <span>31 Dec 2026</span>
-              <span class="pill tone-good"><span class="g" aria-hidden="true">●</span>On Track</span>
-            </div>
-<div class="measure">Grow Observe managed service ARR by 8% in H2</div><div class="notes">Two new managed-service contracts signed in the quarter; ARR up 5.2% at August close.</div>          </div>
-          <div class="init">
-            <div class="title">
-              Security logging retention
-<span class="owner">JT</span>            </div>
-            <div class="when">
-              <span>30 Nov 2026</span>
-              <span class="pill tone-warning"><span class="g" aria-hidden="true">▲</span>At Risk</span>
-            </div>
-<div class="measure">Security logs queryable for the full required retention period</div><div class="notes">Only remaining ITDS focus control. Log retention extension scoped; awaiting change window.</div>          </div>
+          <div class="note-row">
+            <span class="note-tag">Net revenue</span>
+            <p>Net revenue is $52k below forecast, primarily due to a revenue recognition reassessment for Project Hawk VF3. Revenue previously forecast as Professional Services in the QSR (Lot 3 software rewrite) was determined to be non-distinct and is therefore being recognised as part of the SaaS bundle over the remaining contract term. This creates a permanent Professional Services revenue shortfall versus QSR. Full quarter update is a gap of $122k driven by the revenue recognition assessment noted with the reminder relating to timing difference on PS project implementation, being pushed back to Q4.</p>
+          </div>
+          <div class="note-row">
+            <span class="note-tag">Net revenue</span>
+            <p>No additional material upsides or risks are currently anticipated; however, revenue remains subject to timing of project delivery, contract activity and customer requirements.</p>
+          </div>
+          <div class="note-row">
+            <span class="note-tag">OPEX</span>
+            <p>Operating expenses were £42k/$68k above QSR, primarily due to AI-related costs (£20k AI token usage) and £22k related to AI Accelerator and Quadrants recharges not included in QSR. Q3 overspend vs QSR of $274k primarily driven by restructuring costs of £150k/$200k not included in QSR plus QTD overspends on AI tokens and Quadrants/AI Accelerator costs.</p>
+          </div>
         </div>
       </div>
     </div>
+
 
     <!-- ITDS side panel -->
     <aside class="panel-side">
@@ -1183,14 +848,14 @@ table.sources td.detail { color: var(--ink-2); }
     </aside>
   </div>
 </section>
-<section class="panel" data-bu="grosvenor" data-overall="off_track" aria-labelledby="bu-grosvenor">
+<section class="panel" data-bu="grosvenor" data-overall="on_track" aria-labelledby="bu-grosvenor">
   <div class="panel-head">
     <h3 id="bu-grosvenor">Grosvenor Systems</h3>
-    <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
+    <span class="pill tone-good"><span class="g" aria-hidden="true">●</span>On Track</span>
     <div class="facts">
-      <span><b>Lead</b> Renuka Simpson</span>
-      <span><b>OG stage</b> Take Action</span>
-      <span><b>Exit by</b> Jun-27</span>
+      <span><b>Leader</b> Paula McQuilan</span>
+      <span><b>OG stage</b> Not reported</span>
+      <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Needs Improvement</span>
     </div>
   </div>
@@ -1202,243 +867,74 @@ table.sources td.detail { color: var(--ink-2); }
       <div data-view-pane="pnl">
         <div class="table-scroll">
           <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast</caption>
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast &mdash; USD&rsquo;000</caption>
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2">Aug-26 month</th>
-                <th colspan="2" class="sep">Quarter to date</th>
-                <th colspan="2" class="sep">Year to date</th>
+                <th colspan="2" >Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
-                <th class="sep">2026 Q4</th>
               </tr>
               <tr>
                 <th>Metric</th>
-                <th>Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
+                <th >Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
-                <th class="sep">Forecast</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td>£441k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-10.2%</span>
+                <td >$1.02m</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+1.3%</span>
 </td>
-                <td class="sep">£896k</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-8.3%</span>
+                <td class="sep">$1.54m</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.3%</span>
 </td>
-                <td class="sep">£3.60m</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-9.0%</span>
+              </tr>
+              <tr>
+                <td>OPEX</td>
+                <td >$617k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.0%</span>
 </td>
-                <td class="sep">£1.35m</td>
-                <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-8.6%</span>
+                <td class="sep">$965k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.3%</span>
 </td>
-                <td class="sep ref">£1.52m</td>
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td>£58k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-44.2%</span>
+                <td >$319k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+12.1%</span>
 </td>
-                <td class="sep">£129k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-37.4%</span>
+                <td class="sep">$444k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+6.3%</span>
 </td>
-                <td class="sep">£501k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-39.9%</span>
-</td>
-                <td class="sep">£186k</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-41.3%</span>
-</td>
-                <td class="sep ref">£334k</td>
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
+                <td >31.4%</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+3.0pt</span>
 </td>
-                <td class="sep">14.4%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-6.7pt</span>
+                <td class="sep">28.8%</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+1.8pt</span>
 </td>
-                <td class="sep">13.9%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-7.2pt</span>
-</td>
-                <td class="sep">13.8%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-7.7pt</span>
-</td>
-                <td class="sep ref">22.0%</td>
-              </tr>
-              <tr>
-                <td>Organic growth</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">-1.4%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-3.9pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>BQR</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">86.0%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-6.0pt</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep">—</td>
-                <td><span class="chip tone-muted">—</span>
-</td>
-                <td class="sep ref">—</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div class="charts">
-          <figure class="chart">
-  <figcaption>Net revenue by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="21.0" width="29.5" height="85.0"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £486k</title>
-    </rect>
-    <rect x="48.8" y="26.4" width="29.5" height="79.6"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £455k</title>
-    </rect>
-    <rect x="103.0" y="20.1" width="29.5" height="85.9"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £491k</title>
-    </rect>
-    <rect x="135.5" y="28.8" width="29.5" height="77.2"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £441k</title>
-    </rect>
-    <rect x="205.9" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £503k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
-          <figure class="chart">
-  <figcaption>EBITA by month — 2026 Q3</figcaption>
-  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
-    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
-    <rect x="16.4" y="25.1" width="29.5" height="80.9"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Jul-26 forecast: £102k</title>
-    </rect>
-    <rect x="48.8" y="49.7" width="29.5" height="56.3"
-          rx="2" fill="var(--chart-actual)">
-      <title>Jul-26 actual: £71k</title>
-    </rect>
-    <rect x="103.0" y="23.5" width="29.5" height="82.5"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Aug-26 forecast: £104k</title>
-    </rect>
-    <rect x="135.5" y="60.0" width="29.5" height="46.0"
-          rx="2" fill="var(--chart-actual)">
-      <title>Aug-26 actual: £58k</title>
-    </rect>
-    <rect x="205.9" y="18.0" width="29.5" height="88.0"
-          rx="2" fill="var(--chart-forecast)">
-      <title>Sep-26 forecast: £111k</title>
-    </rect>
-    <text x="47.3" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
-    <text x="134.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
-    <text x="220.7" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Sep-26</text>
-  </svg>
-  <div class="legend">
-    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
-    <span><i style="background:var(--chart-actual)"></i>Actual</span>
-  </div>
-</figure>
-
+          
+          
         </div>
       </div>
 
       <!-- Working capital -->
       <div data-view-pane="wc" hidden>
-        <div class="table-scroll">
-          <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Working capital vs target</caption>
-            <thead>
-              <tr class="band">
-                <th></th>
-                <th colspan="3">Previous month</th>
-                <th colspan="3" class="sep">Aug-26</th>
-                <th class="sep">Next</th>
-              </tr>
-              <tr>
-                <th>Metric</th>
-                <th>Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Working capital</td>
-                <td class="ref">14.5%</td>
-                <td>18.1%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+3.6pt</span></td>
-                <td class="sep ref">14.0%</td>
-                <td>19.6%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+5.6pt</span></td>
-                <td class="sep ref">13.5%</td>
-              </tr>
-              <tr>
-                <td>WC excl. cash</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">20.8%</td>
-                <td>27.1%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+6.3pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>Overdue AR</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">10.0%</td>
-                <td>22.4%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+12.4pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-              <tr>
-                <td>WIP over 30 days</td>
-                <td class="ref">—</td>
-                <td>—</td>
-                <td><span class="chip tone-muted">—</span></td>
-                <td class="sep ref">12.0%</td>
-                <td>26.3%</td>
-                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+14.3pt</span></td>
-                <td class="sep ref">—</td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="empty-pane">
+          <p class="block-title">Working capital</p>
+          <p>No working-capital source is connected for Grosvenor Systems.</p>
+          <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
+             monthly reporting pack. They come from the Working Capital sheet of the Business Unit
+             Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
+             and this pane fills in.</p>
         </div>
       </div>
 
@@ -1447,60 +943,34 @@ table.sources td.detail { color: var(--ink-2); }
         <div style="padding:14px 16px 16px">
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
-            <span><b>Stage</b> Take Action</span>
-            <span><b>Expected exit</b> Jun-27</span>
-            <span><b>Overall</b> Off Track</span>
+            <span><b>Stage</b> Not reported</span>
+            <span><b>Expected exit</b> —</span>
+            <span><b>Overall</b> On Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             Stage and expected exit come from the business unit's monthly Progress Report header and the
-            quarterly Operational Governance Scorecard. Improvement plan progress is listed below.
-          </p>
+No governance stage is connected. It comes from the quarterly
+            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
+            Paula McQuilan&rsquo;s monthly Business Unit Progress Report.          </p>
         </div>
       </div>
 
-      <!-- Improvement plan -->
+      <!-- Variance commentary, quoted from the reporting pack -->
       <div class="initiatives">
-        <p class="block-title">Improvement plan &amp; working capital actions</p>
+        <p class="block-title">Variance commentary &mdash; Aug-26, as submitted</p>
         <div class="init-list">
-          <div class="init">
-            <div class="title">
-              OPEX reduction
-<span class="owner">RS</span>            </div>
-            <div class="when">
-              <span>31 Dec 2026</span>
-              <span class="pill tone-warning"><span class="g" aria-hidden="true">▲</span>At Risk</span>
-            </div>
-<div class="measure">Reduce OPEX — annualised impact £420k: headcount (4) £260k; property £95k; software £65k</div><div class="notes">Headcount reductions notified, savings commence 1 Oct. Property exit delayed to Q1-27 by lease break terms. £28k of £65k software savings identified.</div>          </div>
-          <div class="init">
-            <div class="title">
-              Propman maintenance retention
-<span class="owner">RS</span>            </div>
-            <div class="when">
-              <span>31 Dec 2026</span>
-              <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
-            </div>
-<div class="measure">Hold maintenance attrition below 4% for the year</div><div class="notes">Attrition 6.8% YTD, driven by four mid-tier managing agents lost to a competitor. Retention programme launched; two at-risk accounts recovered in August.</div>          </div>
-          <div class="init">
-            <div class="title">
-              ITDS remediation — backup and IAM
-<span class="owner">RS</span>            </div>
-            <div class="when">
-              <span>31 Dec 2026</span>
-              <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
-            </div>
-<div class="measure">Reduce ITDS current risk total from 200 to below 140 by Q4 assessment</div><div class="notes">Residual risk has risen 103 points since baseline. Restore testing not yet evidenced and MFA coverage incomplete across infrastructure and applications. Remediation owner assigned; plan due for portfolio review.</div>          </div>
-          <div class="init">
-            <div class="title">
-              Overdue AR and WIP recovery
-<span class="owner">RS</span>            </div>
-            <div class="when">
-              <span>31 Mar 2027</span>
-              <span class="pill tone-critical"><span class="g" aria-hidden="true">■</span>Off Track</span>
-            </div>
-<div class="measure">WC% back to 14% and overdue AR below 10%</div><div class="notes">WC% 19.6% against a 14% target. Overdue AR 22.4% and WIP over 30 days 26.3%. Weekly cash call established with the group FD from September.</div>          </div>
+          <div class="note-row">
+            <span class="note-tag">Net revenue</span>
+            <p>Variance below reporting threshold. Classified temporary favourable; outlook adjusted for a September net revenue risk. Small net revenue risk due to delayed projects in September.</p>
+          </div>
+          <div class="note-row">
+            <span class="note-tag">OPEX</span>
+            <p>Variance below reporting threshold. Classified permanent favourable; outlook adjusted. Nothing further has been included in the projection.</p>
+          </div>
         </div>
       </div>
     </div>
+
 
     <!-- ITDS side panel -->
     <aside class="panel-side">
@@ -1587,7 +1057,7 @@ table.sources td.detail { color: var(--ink-2); }
           </td>
           <td class="detail">parsed 3 business units</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:28 UTC</td>
+          <td class="detail">20 Sep 2026 02:53 UTC</td>
         </tr>
         <tr>
           <td class="id">bu_monthly_submissions</td>
@@ -1596,7 +1066,16 @@ table.sources td.detail { color: var(--ink-2); }
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:28 UTC</td>
+          <td class="detail">20 Sep 2026 02:53 UTC</td>
+        </tr>
+        <tr>
+          <td class="id">omegro_monthly</td>
+          <td>
+            <span class="pill tone-good">ok</span>
+          </td>
+          <td class="detail">Omegro monthly reporting pack, period 8 FY26 (August close) — committed extract read 2026-09-20</td>
+          <td class="detail">—</td>
+          <td class="detail">20 Sep 2026 02:53 UTC</td>
         </tr>
         <tr>
           <td class="id">og_scorecard</td>
@@ -1605,16 +1084,7 @@ table.sources td.detail { color: var(--ink-2); }
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:28 UTC</td>
-        </tr>
-        <tr>
-          <td class="id">seed</td>
-          <td>
-            <span class="pill tone-warning">seed</span>
-          </td>
-          <td class="detail">illustrative figures — no live financial source connected</td>
-          <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:28 UTC</td>
+          <td class="detail">20 Sep 2026 02:53 UTC</td>
         </tr>
       </tbody>
     </table>

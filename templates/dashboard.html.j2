@@ -307,6 +307,34 @@ svg text { font-family: var(--mono); }
 .init .notes { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; line-height: 1.5; }
 .init .when { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
 
+/* ------------------------------------------------- coverage & commentary */
+.coverage {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  margin-top: 20px; background: var(--line);
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+}
+.cov-item { display: flex; gap: 9px; align-items: flex-start; background: var(--surface); padding: 11px 14px; }
+.cov-item .g { font-size: 9px; line-height: 1.8; flex: none; }
+.cov-item.ok .g { color: var(--good); }
+.cov-item.off .g { color: var(--ink-3); }
+.cov-item > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.cov-item b { font-size: 12.5px; font-weight: 600; }
+.cov-item span:not(.g) { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
+
+.note-row { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.note-row:last-child { border-bottom: 0; }
+.note-tag {
+  font-family: var(--mono); font-size: 10px; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-2); background: var(--surface-sunk);
+  border: 1px solid var(--line); padding: 2px 7px; border-radius: var(--radius);
+  height: fit-content; white-space: nowrap;
+}
+.note-row p { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--ink-2); max-width: 78ch; }
+
+.empty-pane { padding: 16px; }
+.empty-pane p { font-size: 12.5px; color: var(--ink-2); line-height: 1.55; max-width: 66ch; margin: 0 0 8px; }
+.empty-pane p:last-child { margin-bottom: 0; }
+
 /* -------------------------------------------------------------- footer */
 .provenance { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 .provenance h2 { margin: 0; padding: 12px 16px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line); }
@@ -323,11 +351,13 @@ table.sources td.detail { color: var(--ink-2); }
   .panel-body { grid-template-columns: 1fr; }
   .panel-main { border-right: 0; border-bottom: 1px solid var(--line); }
   .readouts { grid-template-columns: repeat(2, 1fr); }
+  .coverage { grid-template-columns: repeat(2, 1fr); }
   .readout:nth-child(2) { border-right: 0; }
   .readout:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
 }
 @media (max-width: 560px) {
-  .readouts { grid-template-columns: 1fr; }
+  .readouts, .coverage { grid-template-columns: 1fr; }
+  .note-row { grid-template-columns: 1fr; }
   .readout { border-right: 0; border-bottom: 1px solid var(--line); }
   .readout:last-child { border-bottom: 0; }
   .panel-head .facts { margin-left: 0; }
@@ -385,15 +415,16 @@ table.sources td.detail { color: var(--ink-2); }
 
 <div class="wrap">
 
-{% if seeded %}
-<div class="banner" role="note">
-  <span class="mark" aria-hidden="true">!</span>
-  <span><strong>Financial figures on this page are illustrative placeholders, not actual results.</strong>
-  No live financial source is connected yet &mdash; run <code style="font-family:var(--mono)">omegro-tracker refresh</code>
-  with Graph credentials to replace them. The governance and ITDS panes below are live:
-  they carry the published {{ itds_period }} assessment.</span>
+<div class="coverage" role="note">
+  <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
+    <div><b>P&amp;L &mdash; live</b><span>{{ period_label }} close, Omegro monthly reporting pack</span></div></div>
+  <div class="cov-item {{ 'ok' if wc_reported else 'off' }}"><span class="g" aria-hidden="true">{% if wc_reported %}&#9679;{% else %}&ndash;{% endif %}</span>
+    <div><b>Working capital &mdash; {{ 'live' if wc_reported else 'not connected' }}</b><span>{{ 'from the monthly submission' if wc_reported else 'needs the BU Progress Report WC sheet' }}</span></div></div>
+  <div class="cov-item {{ 'ok' if governance_reported else 'off' }}"><span class="g" aria-hidden="true">{% if governance_reported %}&#9679;{% else %}&ndash;{% endif %}</span>
+    <div><b>OG stage &mdash; {{ 'live' if governance_reported else 'not connected' }}</b><span>{{ 'from the scorecard' if governance_reported else 'needs the Operational Governance Scorecard' }}</span></div></div>
+  <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
+    <div><b>ITDS &mdash; live</b><span>published {{ itds_period }} Portfolio Security Assessment</span></div></div>
 </div>
-{% endif %}
 
 <div class="toolbar">
   <div class="seg" role="group" aria-label="Filter business units">
@@ -461,7 +492,7 @@ table.sources td.detail { color: var(--ink-2); }
     <h3 id="bu-{{ p.key }}">{{ p.name }}</h3>
     <span class="pill tone-{{ p.overall_token }}"><span class="g" aria-hidden="true">{{ p.overall_glyph }}</span>{{ p.overall_label }}</span>
     <div class="facts">
-      <span><b>Lead</b> {{ p.contact }}</span>
+      <span><b>Leader</b> {{ p.leader }}</span>
       <span><b>OG stage</b> {{ p.stage }}</span>
       <span><b>Exit by</b> {{ p.expected_exit }}</span>
       <span><b>ITDS</b> {{ p.itds_posture }}</span>
@@ -475,38 +506,32 @@ table.sources td.detail { color: var(--ink-2); }
       <div data-view-pane="pnl">
         <div class="table-scroll">
           <table class="data">
-            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast</caption>
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast &mdash; {{ currency }}&rsquo;000</caption>
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2">{{ period_label }} month</th>
-                <th colspan="2" class="sep">Quarter to date</th>
-                <th colspan="2" class="sep">Year to date</th>
-                <th colspan="2" class="sep">{{ quarter_label }} outturn</th>
-                <th class="sep">{{ next_quarter_label }}</th>
+                {% for b in bands %}
+                <th colspan="2" {% if not loop.first %}class="sep"{% endif %}>{{ b.label }}</th>
+                {% endfor %}
+                {% if show_next %}<th class="sep">{{ next_quarter_label }}</th>{% endif %}
               </tr>
               <tr>
                 <th>Metric</th>
-                <th>Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
-                <th class="sep">Actual</th><th>Var</th>
-                <th class="sep">Projection</th><th>Var</th>
-                <th class="sep">Forecast</th>
+                {% for b in bands %}
+                <th {% if not loop.first %}class="sep"{% endif %}>{{ b.value_head }}</th><th>Var</th>
+                {% endfor %}
+                {% if show_next %}<th class="sep">Forecast</th>{% endif %}
               </tr>
             </thead>
             <tbody>
               {% for r in p.pnl_rows %}
               <tr>
                 <td>{{ r.label }}</td>
-                <td>{{ r.month.value }}</td>
-                <td>{{ chip(r.month) }}</td>
-                <td class="sep">{{ r.qtd.value }}</td>
-                <td>{{ chip(r.qtd) }}</td>
-                <td class="sep">{{ r.ytd.value }}</td>
-                <td>{{ chip(r.ytd) }}</td>
-                <td class="sep">{{ r.outturn.value }}</td>
-                <td>{{ chip(r.outturn) }}</td>
-                <td class="sep ref">{{ r.next }}</td>
+                {% for b in bands %}
+                <td {% if not loop.first %}class="sep"{% endif %}>{{ r.cells[b.key].value }}</td>
+                <td>{{ chip(r.cells[b.key]) }}</td>
+                {% endfor %}
+                {% if show_next %}<td class="sep ref">{{ r.next }}</td>{% endif %}
               </tr>
               {% endfor %}
             </tbody>
@@ -520,22 +545,15 @@ table.sources td.detail { color: var(--ink-2); }
 
       <!-- Working capital -->
       <div data-view-pane="wc" hidden>
+        {% if wc_reported %}
         <div class="table-scroll">
           <table class="data">
             <caption class="block-title" style="text-align:left;padding:13px 16px 0">Working capital vs target</caption>
             <thead>
-              <tr class="band">
-                <th></th>
-                <th colspan="3">Previous month</th>
-                <th colspan="3" class="sep">{{ period_label }}</th>
-                <th class="sep">Next</th>
-              </tr>
-              <tr>
-                <th>Metric</th>
-                <th>Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th><th>Actual</th><th>Var</th>
-                <th class="sep">Target</th>
-              </tr>
+              <tr class="band"><th></th><th colspan="3">Previous month</th>
+                <th colspan="3" class="sep">{{ period_label }}</th><th class="sep">Next</th></tr>
+              <tr><th>Metric</th><th>Target</th><th>Actual</th><th>Var</th>
+                <th class="sep">Target</th><th>Actual</th><th>Var</th><th class="sep">Target</th></tr>
             </thead>
             <tbody>
               {% for r in p.wc_rows %}
@@ -553,6 +571,16 @@ table.sources td.detail { color: var(--ink-2); }
             </tbody>
           </table>
         </div>
+        {% else %}
+        <div class="empty-pane">
+          <p class="block-title">Working capital</p>
+          <p>No working-capital source is connected for {{ p.name }}.</p>
+          <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
+             monthly reporting pack. They come from the Working Capital sheet of the Business Unit
+             Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
+             and this pane fills in.</p>
+        </div>
+        {% endif %}
       </div>
 
       <!-- Governance pane placeholder keeps the grid stable on narrow views -->
@@ -566,34 +594,30 @@ table.sources td.detail { color: var(--ink-2); }
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             Stage and expected exit come from the business unit's monthly Progress Report header and the
-            quarterly Operational Governance Scorecard. Improvement plan progress is listed below.
+            {% if governance_reported %}Stage and expected exit come from the quarterly Operational
+            Governance Scorecard.{% else %}No governance stage is connected. It comes from the quarterly
+            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
+            {{ p.leader }}&rsquo;s monthly Business Unit Progress Report.{% endif %}
           </p>
         </div>
       </div>
 
-      <!-- Improvement plan -->
+      <!-- Variance commentary, quoted from the reporting pack -->
+      {% if p.commentary %}
       <div class="initiatives">
-        <p class="block-title">Improvement plan &amp; working capital actions</p>
+        <p class="block-title">Variance commentary &mdash; {{ period_label }}, as submitted</p>
         <div class="init-list">
-          {% for i in p.improvements %}
-          <div class="init">
-            <div class="title">
-              {{ i.title }}
-              {% if i.owner %}<span class="owner">{{ i.owner }}</span>{% endif %}
-            </div>
-            <div class="when">
-              <span>{{ i.target_date }}</span>
-              <span class="pill tone-{{ i.token }}"><span class="g" aria-hidden="true">{{ i.glyph }}</span>{{ i.status_label }}</span>
-            </div>
-            {% if i.measure %}<div class="measure">{{ i.measure }}</div>{% endif %}
-            {% if i.notes %}<div class="notes">{{ i.notes }}</div>{% endif %}
+          {% for c in p.commentary %}
+          <div class="note-row">
+            <span class="note-tag">{{ c.metric }}</span>
+            <p>{{ c.text }}</p>
           </div>
-          {% else %}
-          <p style="font-size:12.5px;color:var(--ink-3);margin:0">No initiatives reported for this period.</p>
           {% endfor %}
         </div>
       </div>
+      {% endif %}
     </div>
+
 
     <!-- ITDS side panel -->
     <aside class="panel-side">

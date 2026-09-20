@@ -114,3 +114,22 @@ sources:
     path: Shared Documents/ITDS Assessments
     match: "ITDS Assessment - {bu_alias} - *.xlsx"
     required: false
+
+  # ---------------------------------------------- the actual financial source
+
+  - id: omegro_monthly
+    kind: folder
+    parser: omegro_monthly
+    description: >
+      Omegro monthly reporting pack — Net Revenue, OPEX and EBITA for every
+      Omegro VBU, quarter-to-date actual vs approved QSR forecast plus the
+      full-quarter projection (outturn), with the preparer's variance
+      commentary. Our units sit in the "David Turner Group" row band.
+      This is where the group's real financials live; it is produced and
+      signed off by Group Finance each period.
+    site: FinanceAccountingCommunity
+    drive_id: b!LE1uBnhZ_Ee5guDFudeznsuuCOdBuMtIiij7fzkNDFGyedbgU9orQYTQMqhN6OGH
+    path: "Monthly Reporting/{year}/{month_folder}"
+    match: "*omegro*p*fy*.xlsx"
+    currency: USD
+    period_lag_days: 8   # P8 landed 2026-09-08; the pack follows group close

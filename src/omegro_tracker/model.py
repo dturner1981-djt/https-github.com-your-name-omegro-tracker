@@ -77,6 +77,23 @@ class Initiative:
 
 
 @dataclass
+class Commentary:
+    """A preparer's own explanation of a variance, lifted verbatim.
+
+    The monthly pack requires commentary wherever a variance breaches the
+    materiality threshold, and that text is the most useful thing on the page —
+    it says *why*. It is quoted, never paraphrased.
+    """
+
+    bu: str
+    metric: str
+    period: str
+    text: str
+    source: str = "unknown"
+    author: str | None = None
+
+
+@dataclass
 class Governance:
     """Operational Governance position for one BU at one quarter end."""
 
@@ -166,6 +183,7 @@ class Snapshot:
     business_units: list[dict[str, Any]] = field(default_factory=list)
     facts: list[Fact] = field(default_factory=list)
     initiatives: list[Initiative] = field(default_factory=list)
+    commentary: list[Commentary] = field(default_factory=list)
     governance: list[Governance] = field(default_factory=list)
     itds: list[ITDS] = field(default_factory=list)
     runs: list[SourceRun] = field(default_factory=list)
@@ -206,6 +224,13 @@ class Snapshot:
             if i.bu == bu and (kind is None or i.kind == kind)
         ]
 
+    def commentary_for(self, bu: str, metric: str | None = None) -> list[Commentary]:
+        return [
+            c
+            for c in self.commentary
+            if c.bu == bu and (metric is None or c.metric == metric)
+        ]
+
     def run(self, source_id: str) -> SourceRun | None:
         return next((r for r in self.runs if r.source_id == source_id), None)
 
@@ -214,7 +239,9 @@ class Snapshot:
         """True once a financial source has actually returned data. Drives the
         provenance banner — a dashboard showing seeded figures must say so."""
         return any(
-            r.status == "ok" and r.source_id in {"bu_monthly_submissions", "og_scorecard", "qsr_submissions"}
+            r.status == "ok"
+            and r.source_id
+            in {"omegro_monthly", "bu_monthly_submissions", "og_scorecard", "qsr_submissions"}
             for r in self.runs
         )
 
@@ -243,6 +270,7 @@ class Snapshot:
             business_units=d.get("business_units", []),
             facts=[Fact(**f) for f in d.get("facts", [])],
             initiatives=[Initiative(**i) for i in d.get("initiatives", [])],
+            commentary=[Commentary(**c) for c in d.get("commentary", [])],
             governance=[Governance(**g) for g in d.get("governance", [])],
             itds=[
                 ITDS(

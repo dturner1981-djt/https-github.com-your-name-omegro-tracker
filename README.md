@@ -12,6 +12,8 @@ table, and renders a single self-contained HTML page covering:
   (projection) and next quarter's forecast, all against approved forecast.
 * **Working capital** — WC%, WC% excluding cash, overdue AR and WIP over 30
   days, previous month / current month / next month target.
+* **Variance commentary** — the preparer's own explanation of each material
+  variance, quoted from the reporting pack.
 * **Operational governance** — OG stage, expected date to exit stage, overall
   status and improvement-plan progress.
 * **ITDS** — Portfolio Security Assessment residual risk out of 400, posture,
@@ -40,7 +42,7 @@ pip install -e .
 omegro-tracker build            # refresh from SharePoint, then render
 omegro-tracker refresh          # sources -> data/snapshot.json
 omegro-tracker render           # snapshot.json -> dist/index.html
-omegro-tracker --offline build  # render from cache and seed, no network
+omegro-tracker --offline build  # render from the committed extract, no network
 ```
 
 `refresh` never fails on an unreachable source. It records the reason against
@@ -51,9 +53,17 @@ listed in the **Data sources** table at the foot of the page.
 
 ## Connecting the live data
 
-Everything except ITDS currently renders from `data/seed/financials.json`,
-which is **illustrative placeholder data, not actual results**. The page says
-so in a banner until a financial source resolves. To replace it:
+P&L and ITDS are live. Working capital and OG stage are not yet connected, and
+the page says which is which in the coverage strip at the top.
+
+The financials come from the **Omegro monthly reporting pack** — not from the
+BU Progress Report folder, which is not yet populated. Group Finance produces
+one workbook per period covering every Omegro VBU; our units sit in the row
+band **"David Turner Group"**. `data/extracted/2026-08.json` is a committed
+extract of the P8 FY26 pack carrying its own provenance; an authenticated
+refresh reproduces it from the source and supersedes it.
+
+To run the refresh live:
 
 1. Register an Entra app with the application permissions `Sites.Read.All` and
    `Files.Read.All`, admin-consented on the `ourvolaris` tenant.
@@ -72,9 +82,10 @@ All ids in `config/sources.yml` are resolved against the Omegro tenant.
 
 | Source | What it gives | State |
 |---|---|---|
+| `omegro_monthly` | **Net Revenue, OPEX, EBITA** — QTD actual vs approved QSR forecast, full-quarter projection (outturn), and the preparer's variance commentary | **Live.** P8 FY26 (Aug close), unit-tested against the published figures. |
 | `itds_qdsr` | ITDS residual risk, posture, control effectiveness, key-area narratives, for all 14 Nelson VBUs | **Live.** Parsed and unit-tested against the published Q2-26 assessment. |
 | `monthly_review_template` | The canonical P&L and WC reporting schema | Located. Drives the parser layout. |
-| `bu_monthly_submissions` | Per-BU monthly Progress Reports — QTD actual vs forecast, quarter projection, next-quarter forecast, improvement plan | **Not yet populated.** The template was issued Jun-26; the submission folder is being stood up. Parser is written and tested against the template layout. |
+| `bu_monthly_submissions` | Working capital, improvement-plan initiatives, OG stage per BU | **Not yet populated.** The template was issued Jun-26; the submission folder is being stood up. This is the missing piece for the working-capital pane. Parser written and tested against the template layout. |
 | `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU | **Needs one validation pass.** See below. |
 | `qsr_submissions` | Approved quarterly forecast | Located, parser stub. |
 
@@ -112,6 +123,33 @@ rows it matched, so the mapping can be checked against the real workbook.
   directly comparable between units.
 * **Ratios are recomputed, not averaged.** Group EBITA margin is summed EBITA
   over summed Net Revenue.
+
+## Scope
+
+BPC reports this group as **"David Turner Group"** and it contains a fourth
+unit, **AgentOS**, alongside the three named by the group leader. AgentOS is in
+`config/portfolio.yml` with `in_scope: false`, so its figures are available but
+excluded from every total — flip the flag to bring it in.
+
+Business unit leads: Colin Ma (Technology Blueprint), David Appleton
+(tlmNexus), Paula McQuilan (Grosvenor Systems). Stephen Craig, Renuka Simpson
+and Jean Triquet are the finance contacts who produce and sign off the numbers
+this tool reads.
+
+The group reports in **USD** even though all three units have GBP as their
+functional currency; the dashboard follows the group reporting currency so the
+units add up.
+
+## Current position — Q3-26 quarter to date (USD'000)
+
+| | Net revenue | vs fcst | EBITA | vs fcst | Q3 outturn EBITA | vs fcst |
+|---|---|---|---|---|---|---|
+| Technology Blueprint | 582 | −10.1% | 192 | −20.4% | 339 | −14.7% |
+| tlmNexus | 1,524 | −3.3% | 259 | −31.0% | 235 | −62.4% |
+| Grosvenor Systems | 1,016 | +1.3% | 319 | +12.1% | 444 | +6.3% |
+| **Group** | **3,122** | **−3.2%** | **771** | **−14.6%** | **1,018** | **−22.5%** |
+
+Source: Omegro NR/EBITA pack, period 8 FY26.
 
 ## Current position (Q2-26 ITDS, live)
 

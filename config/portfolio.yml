@@ -12,7 +12,13 @@ group:
   operating_group: Omegro
   group_leader: David Turner
   portfolio_cfo: Renuka Simpson
-  reporting_currency: GBP
+  # BPC reports this group as "David Turner Group" in USD, even though every
+  # unit's functional currency is GBP. The dashboard reports in the group
+  # reporting currency so the units add up; each unit's own currency is below.
+  reporting_currency: USD
+  bpc_group: David Turner Group
+  # Finance contacts who produce and sign off the numbers this tool reads.
+  finance_contacts: [Stephen Craig, Renuka Simpson, Jean Triquet]
   # Volaris/Omegro reporting runs on calendar quarters.
   fiscal_year_start_month: 1
 
@@ -20,32 +26,45 @@ business_units:
   - key: tbl
     name: Technology Blueprint
     short_name: TBL
-    aliases: ["TBL", "Technology Blueprint", "Technology Blueprint Ltd", "Technology Blueprint Limited", "E_TECHB"]
+    aliases: ["TBL", "Technology Blueprint", "Technology Blueprint Ltd", "Technology Blueprint Limited", "Technology Blueprint Consolidated", "M_TBLCONS", "E_TECHB"]
     country: United Kingdom
     currency: GBP
     products: ["PropCo Enterprise", "PropCo Web"]
-    contact: Stephen Craig
+    leader: Colin Ma
     reports: [pnl, working_capital]
 
   - key: tlm
     name: tlmNexus
     short_name: TLM
-    aliases: ["tlmNexus", "TLM Nexus", "tlmNexus Ltd", "TLM"]
+    aliases: ["tlmNexus", "TLM Nexus", "tlmNexus Ltd", "TlmNexus Ltd", "M_TLMN", "TLM"]
     country: United Kingdom
     currency: GBP
     products: ["Observe", "Asset Management"]
-    contact: Jean Triquet
+    leader: David Appleton
     reports: [pnl, working_capital]
 
   - key: grosvenor
     name: Grosvenor Systems
     short_name: Grosvenor
-    aliases: ["Grosvenor", "Grosvenor Systems", "Grosvenor Systems Limited", "GROSV", "E_GROSV"]
+    aliases: ["Grosvenor", "Grosvenor Systems", "Grosvenor Systems Limited", "Grosvenor Consolidated", "M_GROSVCONSOL", "GROSV", "E_GROSV"]
     country: United Kingdom
     currency: GBP
     products: ["Propman", "Progress Maintenance"]
-    contact: Renuka Simpson
+    leader: Paula McQuilan
     reports: [pnl, working_capital]
+
+  # BPC's "David Turner Group" carries a fourth unit. It is excluded because
+  # the group leader named three; flip `in_scope` to true to bring it in —
+  # the sources already return its figures.
+  - key: agentos
+    name: AgentOS
+    short_name: AgentOS
+    aliases: ["AgentOS", "Agent OS", "M_AGENTOS"]
+    country: United Kingdom
+    currency: GBP
+    leader: null
+    in_scope: false
+    reports: [pnl]
 
 # Volaris standard metrics. `direction` says which way is good; the RAG bands
 # below are read against variance-to-forecast unless `absolute` is set.
@@ -58,6 +77,10 @@ metrics:
     label: EBITA
     unit: kGBP
     direction: higher
+  opex:
+    label: OPEX
+    unit: kGBP
+    direction: lower
   ebita_pct:
     label: EBITA %
     unit: pct

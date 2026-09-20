@@ -18,6 +18,7 @@ import yaml
 
 from .graph import GraphClient, GraphError
 from .model import (
+    Commentary,
     Fact,
     Governance,
     Initiative,
@@ -28,10 +29,10 @@ from .model import (
     default_period,
     quarter_of,
 )
-from .parsers import itds_qdsr, monthly_review, og_scorecard
+from .parsers import itds_qdsr, monthly_review, og_scorecard, omegro_monthly
 
 CONFIG_DIR = Path("config")
-SEED_DIR = Path("data/seed")
+EXTRACT_DIR = Path("data/extracted")
 
 
 def _now() -> str:
@@ -161,27 +162,71 @@ def _load_og(
     )
 
 
-def _load_seed(period: str, quarter: str) -> tuple[list[Fact], list[Initiative], list[Governance], SourceRun]:
-    """Illustrative financials, used only when no live financial source
-    resolved. Everything loaded here is flagged so the dashboard can say so."""
-    path = SEED_DIR / "financials.json"
+def _load_omegro_monthly(
+    config: dict[str, Any], client: GraphClient | None, period: str, quarter: str
+) -> tuple[list[Fact], list[Commentary], SourceRun]:
+    """The group's actual financials.
+
+    Live path: pull the period's NR/EBITA pack from the Finance & Accounting
+    Community library and parse it. Offline path: use the committed extract of
+    the same workbooks, which carries its own provenance and is reproduced
+    exactly by the parser on the next authenticated refresh.
+    """
+    spec = _source(config, "omegro_monthly")
+    units = config["business_units"]
+
+    if client is not None and spec is not None:
+        try:
+            folder = spec["path"].format(year=period.split("-")[0], month_folder=_month_folder(period))
+            children = [c for c in client.children(spec["drive_id"], folder) if not c.is_folder]
+            matched = [c for c in children if fnmatch.fnmatch(c.name.lower(), spec["match"].lower())]
+            if matched:
+                facts: list[Fact] = []
+                commentary: list[Commentary] = []
+                modified = None
+                for item in sorted(matched, key=lambda c: c.last_modified)[-2:]:
+                    path = client.download(spec["drive_id"], item)
+                    f, c = omegro_monthly.parse(
+                        path, units=units, period=period, quarter=quarter
+                    )
+                    facts += f
+                    commentary += c
+                    modified = item.last_modified
+                facts += omegro_monthly.derive_margin(facts)
+                return facts, commentary, SourceRun(
+                    "omegro_monthly",
+                    "ok",
+                    ", ".join(i.name for i in matched),
+                    _now(),
+                    modified,
+                    len(facts),
+                )
+        except GraphError as exc:
+            return [], [], SourceRun("omegro_monthly", "error", str(exc), _now())
+
+    path = EXTRACT_DIR / f"{period}.json"
     if not path.exists():
-        return [], [], [], SourceRun("seed", "missing", "no seed file", _now())
+        return [], [], SourceRun(
+            "omegro_monthly", "missing", f"no live pack and no extract for {period}", _now()
+        )
 
     raw = json.loads(path.read_text())
-    facts = [
-        Fact(**{**f, "source": "seed"})
-        for f in raw.get("facts", [])
-    ]
-    initiatives = [Initiative(**i) for i in raw.get("initiatives", [])]
-    governance = [Governance(**g) for g in raw.get("governance", [])]
-    return facts, initiatives, governance, SourceRun(
-        "seed",
-        "seed",
-        "illustrative figures — no live financial source connected",
+    facts = [Fact(**f) for f in raw.get("facts", [])]
+    commentary = [Commentary(**c) for c in raw.get("commentary", [])]
+    return facts, commentary, SourceRun(
+        "omegro_monthly",
+        "ok",
+        f"{raw.get('_source', path.name)} — committed extract read {raw.get('_read_at', 'unknown')}",
         _now(),
         rows=len(facts),
     )
+
+
+def _month_folder(period: str) -> str:
+    """Finance names the month folders "8. Aug", "11. Nov"."""
+    month = int(period.split("-")[1])
+    name = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()[month - 1]
+    return f"{month}. {name}"
 
 
 # -- orchestration ----------------------------------------------------------
@@ -193,14 +238,17 @@ def build(
     config_dir: Path = CONFIG_DIR,
     client: GraphClient | None = None,
     offline: Path | None = None,
-    allow_seed: bool = True,
 ) -> Snapshot:
     config = load_config(config_dir)
+    config["business_units"] = [
+        u for u in config["business_units"] if u.get("in_scope", True)
+    ]
     period = period or default_period()
     quarter = quarter_of(period)
 
     facts: list[Fact] = []
     initiatives: list[Initiative] = []
+    commentary: list[Commentary] = []
     governance: list[Governance] = []
     runs: list[SourceRun] = []
 
@@ -212,6 +260,11 @@ def build(
     initiatives += m_initiatives
     governance += m_gov
     runs.append(m_run)
+
+    om_facts, om_commentary, om_run = _load_omegro_monthly(config, client, period, quarter)
+    facts += om_facts
+    commentary += om_commentary
+    runs.append(om_run)
 
     og_facts, og_gov, og_run = _load_og(config, client, quarter)
     facts += og_facts
@@ -228,17 +281,6 @@ def build(
             by_bu[g.bu] = g
     governance = list(by_bu.values())
 
-    financial_live = any(
-        r.status == "ok" for r in runs if r.source_id in {"bu_monthly_submissions", "og_scorecard"}
-    )
-    if not financial_live and allow_seed:
-        s_facts, s_initiatives, s_gov, s_run = _load_seed(period, quarter)
-        facts += s_facts
-        initiatives += s_initiatives
-        seen = {g.bu for g in governance}
-        governance += [g for g in s_gov if g.bu not in seen]
-        runs.append(s_run)
-
     return Snapshot(
         generated_at=_now(),
         period=period,
@@ -247,6 +289,7 @@ def build(
         business_units=config["business_units"],
         facts=facts,
         initiatives=initiatives,
+        commentary=commentary,
         governance=governance,
         itds=itds,
         runs=runs,

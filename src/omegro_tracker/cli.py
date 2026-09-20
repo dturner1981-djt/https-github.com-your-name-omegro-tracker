@@ -57,7 +57,6 @@ def cmd_refresh(args: argparse.Namespace) -> int:
         config_dir=Path(args.config),
         client=client,
         offline=Path(config["graph"].get("download_dir", ".cache/graph")),
-        allow_seed=not args.no_seed,
     )
     out = Path(args.snapshot)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -132,7 +131,6 @@ def main(argv: list[str] | None = None) -> int:
     for name, fn in (("refresh", cmd_refresh), ("build", cmd_build)):
         p = sub.add_parser(name)
         p.add_argument("--period", default=None, help=f"YYYY-MM (default {default_period()})")
-        p.add_argument("--no-seed", action="store_true", help="fail rather than seed placeholders")
         p.add_argument("--output", default=str(DEFAULT_OUTPUT))
         p.set_defaults(func=fn)
 
