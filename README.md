@@ -126,10 +126,11 @@ rows it matched, so the mapping can be checked against the real workbook.
 
 ## Scope
 
-BPC reports this group as **"David Turner Group"** and it contains a fourth
-unit, **AgentOS**, alongside the three named by the group leader. AgentOS is in
-`config/portfolio.yml` with `in_scope: false`, so its figures are available but
-excluded from every total — flip the flag to bring it in.
+BPC's **"David Turner Group"** row band still carries a fourth unit, **AgentOS**,
+which is divesting. It is marked `in_scope: false` in `config/portfolio.yml`
+and dropped on load: no panel, no total, and no facts in the snapshot. The
+entry is kept only so its alias keeps matching — otherwise its rows would read
+as an unrecognised unit for as long as BPC leaves the band in place.
 
 Business unit leads: Colin Ma (Technology Blueprint), David Appleton
 (tlmNexus), Paula McQuilan (Grosvenor Systems). Stephen Craig, Renuka Simpson

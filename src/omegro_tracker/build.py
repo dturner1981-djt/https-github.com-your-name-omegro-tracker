@@ -240,9 +240,12 @@ def build(
     offline: Path | None = None,
 ) -> Snapshot:
     config = load_config(config_dir)
-    config["business_units"] = [
-        u for u in config["business_units"] if u.get("in_scope", True)
-    ]
+    # Out-of-scope units are kept in config so their aliases still match — a
+    # divesting business lingers in the BPC row band after it leaves the group
+    # — but nothing they carry reaches the snapshot.
+    all_units = config["business_units"]
+    config["business_units"] = [u for u in all_units if u.get("in_scope", True)]
+    in_scope = {u["key"] for u in config["business_units"]}
     period = period or default_period()
     quarter = quarter_of(period)
 
@@ -280,6 +283,11 @@ def build(
         else:
             by_bu[g.bu] = g
     governance = list(by_bu.values())
+
+    facts = [f for f in facts if f.bu in in_scope]
+    commentary = [c for c in commentary if c.bu in in_scope]
+    initiatives = [i for i in initiatives if i.bu in in_scope]
+    governance = [g for g in governance if g.bu in in_scope]
 
     return Snapshot(
         generated_at=_now(),

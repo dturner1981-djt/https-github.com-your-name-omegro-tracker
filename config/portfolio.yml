@@ -53,9 +53,11 @@ business_units:
     leader: Paula McQuilan
     reports: [pnl, working_capital]
 
-  # BPC's "David Turner Group" carries a fourth unit. It is excluded because
-  # the group leader named three; flip `in_scope` to true to bring it in —
-  # the sources already return its figures.
+  # BPC's "David Turner Group" row band still carries AgentOS. It is leaving
+  # the group, so it is out of scope: its figures are dropped on load and
+  # never reach the snapshot, the totals or the page. The entry stays only so
+  # the alias keeps matching — otherwise its rows would be silently mistaken
+  # for an unrecognised unit when BPC is slow to drop the band.
   - key: agentos
     name: AgentOS
     short_name: AgentOS
@@ -64,6 +66,7 @@ business_units:
     currency: GBP
     leader: null
     in_scope: false
+    out_of_scope_reason: Divesting — excluded from the group from 2026-09.
     reports: [pnl]
 
 # Volaris standard metrics. `direction` says which way is good; the RAG bands

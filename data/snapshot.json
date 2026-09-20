@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T02:53:20+00:00",
+  "generated_at": "2026-09-20T02:54:30+00:00",
   "period": "2026-08",
   "quarter": "2026-Q3",
   "group": {
@@ -621,182 +621,6 @@
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "net_revenue",
-      "basis": "qtd",
-      "measure": "forecast",
-      "period": "2026-08",
-      "value": 426.948,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "net_revenue",
-      "basis": "qtd",
-      "measure": "actual",
-      "period": "2026-08",
-      "value": 416.104,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "net_revenue",
-      "basis": "quarter",
-      "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 649.113,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "net_revenue",
-      "basis": "quarter",
-      "measure": "projection",
-      "period": "2026-Q3",
-      "value": 654.605,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "opex",
-      "basis": "qtd",
-      "measure": "forecast",
-      "period": "2026-08",
-      "value": 292.006,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "opex",
-      "basis": "qtd",
-      "measure": "actual",
-      "period": "2026-08",
-      "value": 293.017,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "opex",
-      "basis": "quarter",
-      "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 434.617,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "opex",
-      "basis": "quarter",
-      "measure": "projection",
-      "period": "2026-Q3",
-      "value": 438.279,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita",
-      "basis": "qtd",
-      "measure": "forecast",
-      "period": "2026-08",
-      "value": 109.325,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita",
-      "basis": "qtd",
-      "measure": "actual",
-      "period": "2026-08",
-      "value": 98.12,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita",
-      "basis": "quarter",
-      "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 175.549,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita",
-      "basis": "quarter",
-      "measure": "projection",
-      "period": "2026-Q3",
-      "value": 176.335,
-      "unit": "k",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita_pct",
-      "basis": "qtd",
-      "measure": "forecast",
-      "period": "2026-08",
-      "value": 0.25606,
-      "unit": "pct",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita_pct",
-      "basis": "qtd",
-      "measure": "actual",
-      "period": "2026-08",
-      "value": 0.23581,
-      "unit": "pct",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita_pct",
-      "basis": "quarter",
-      "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 0.27044,
-      "unit": "pct",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "ebita_pct",
-      "basis": "quarter",
-      "measure": "projection",
-      "period": "2026-Q3",
-      "value": 0.26938,
-      "unit": "pct",
-      "source": "omegro_monthly",
-      "as_of": null
     }
   ],
   "initiatives": [],
@@ -854,14 +678,6 @@
       "metric": "opex",
       "period": "2026-08",
       "text": "Variance below reporting threshold. Classified permanent favourable; outlook adjusted.",
-      "source": "omegro_monthly",
-      "author": null
-    },
-    {
-      "bu": "agentos",
-      "metric": "net_revenue",
-      "period": "2026-08",
-      "text": "Variance below reporting threshold. Classified temporary favourable.",
       "source": "omegro_monthly",
       "author": null
     }
@@ -985,7 +801,7 @@
       "source_id": "itds_qdsr",
       "status": "ok",
       "detail": "parsed 3 business units",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
+      "fetched_at": "2026-09-20T02:54:30+00:00",
       "item_modified": null,
       "rows": 3
     },
@@ -993,7 +809,7 @@
       "source_id": "bu_monthly_submissions",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
+      "fetched_at": "2026-09-20T02:54:30+00:00",
       "item_modified": null,
       "rows": 0
     },
@@ -1001,7 +817,7 @@
       "source_id": "omegro_monthly",
       "status": "ok",
       "detail": "Omegro monthly reporting pack, period 8 FY26 (August close) \u2014 committed extract read 2026-09-20",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
+      "fetched_at": "2026-09-20T02:54:30+00:00",
       "item_modified": null,
       "rows": 64
     },
@@ -1009,7 +825,7 @@
       "source_id": "og_scorecard",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:53:20+00:00",
+      "fetched_at": "2026-09-20T02:54:30+00:00",
       "item_modified": null,
       "rows": 0
     }

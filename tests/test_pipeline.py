@@ -306,12 +306,16 @@ def test_qtd_financials_match_the_reporting_pack(config, bu):
         assert snap.value(bu, metric, "qtd", "forecast") == pytest.approx(forecast)
 
 
-def test_group_totals_exclude_out_of_scope_units(config):
-    """AgentOS sits in the BPC group but not in the group leader's scope."""
+def test_out_of_scope_units_are_dropped_entirely(config):
+    """A divesting unit must not survive anywhere in the snapshot — not as a
+    panel, not in a total, and not as a stray fact in the committed file."""
     from omegro_tracker.build import build
 
     snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
     assert [u["key"] for u in snap.business_units] == ["tbl", "tlm", "grosvenor"]
+    assert not [f for f in snap.facts if f.bu == "agentos"]
+    assert not [c for c in snap.commentary if c.bu == "agentos"]
+    assert "agentos" not in snap.to_json()
 
     summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
     rollup = derive.portfolio_rollup(summaries)
@@ -338,8 +342,9 @@ def test_commentary_is_attached_and_quoted(config):
 
 
 def test_config_scopes_the_bpc_group_down_to_the_three_led_units(config):
-    """BPC's "David Turner Group" carries AgentOS as well; config keeps it
-    present but out of scope so it is one flag to bring in, not a rediscovery."""
+    """BPC's "David Turner Group" row band still carries AgentOS, which is
+    divesting. The entry stays so its alias keeps matching, but it is out of
+    scope and nothing it carries may reach the snapshot."""
     keys = [u["key"] for u in config["business_units"]]
     assert keys == ["tbl", "tlm", "grosvenor", "agentos"]
     in_scope = [u["key"] for u in config["business_units"] if u.get("in_scope", True)]
