@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-20T02:54:30+00:00",
+  "generated_at": "2026-09-20T03:13:54+00:00",
   "period": "2026-08",
   "quarter": "2026-Q3",
   "group": {
@@ -97,10 +97,43 @@
     {
       "bu": "tbl",
       "metric": "net_revenue",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 326.198,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 323.746,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 255.586,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 647.492,
+      "value": 323.746,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -119,10 +152,10 @@
     {
       "bu": "tbl",
       "metric": "net_revenue",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 1004.533,
+      "period": "2026-08",
+      "value": 647.492,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -140,11 +173,55 @@
     },
     {
       "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1004.533,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
       "metric": "opex",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 176.302,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 175.713,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 172.096,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "opex",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 352.628,
+      "value": 176.915,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -163,10 +240,10 @@
     {
       "bu": "tbl",
       "metric": "opex",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 525.212,
+      "period": "2026-08",
+      "value": 352.628,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -184,11 +261,55 @@
     },
     {
       "bu": "tbl",
+      "metric": "opex",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 525.212,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
       "metric": "ebita",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 122.545,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 121.429,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 69.761,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 241.657,
+      "value": 120.228,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -207,10 +328,10 @@
     {
       "bu": "tbl",
       "metric": "ebita",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 397.511,
+      "period": "2026-08",
+      "value": 241.657,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -228,6 +349,72 @@
     },
     {
       "bu": "tbl",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 397.511,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.375677,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 0.375075,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.272945,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.330545,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.371365,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tbl",
       "metric": "ebita_pct",
       "basis": "qtd",
       "measure": "forecast",
@@ -240,10 +427,10 @@
     {
       "bu": "tbl",
       "metric": "ebita_pct",
-      "basis": "qtd",
-      "measure": "actual",
-      "period": "2026-08",
-      "value": 0.33055,
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 0.360937,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -254,18 +441,7 @@
       "basis": "quarter",
       "measure": "forecast",
       "period": "2026-Q3",
-      "value": 0.39572,
-      "unit": "pct",
-      "source": "omegro_monthly",
-      "as_of": null
-    },
-    {
-      "bu": "tbl",
-      "metric": "ebita_pct",
-      "basis": "quarter",
-      "measure": "projection",
-      "period": "2026-Q3",
-      "value": 0.36094,
+      "value": 0.395717,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -273,10 +449,43 @@
     {
       "bu": "tlm",
       "metric": "net_revenue",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 760.396,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 800.913,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 763.575,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 1575.765,
+      "value": 774.852,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -295,10 +504,10 @@
     {
       "bu": "tlm",
       "metric": "net_revenue",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 2431.789,
+      "period": "2026-08",
+      "value": 1575.765,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -316,11 +525,55 @@
     },
     {
       "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 2431.789,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
       "metric": "opex",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 555.843,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 549.573,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 617.422,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "opex",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 1105.299,
+      "value": 555.726,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -339,10 +592,10 @@
     {
       "bu": "tlm",
       "metric": "opex",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 1661.025,
+      "period": "2026-08",
+      "value": 1105.299,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -360,11 +613,55 @@
     },
     {
       "bu": "tlm",
+      "metric": "opex",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1661.025,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
       "metric": "ebita",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 158.929,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 203.285,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 100.338,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 375.92,
+      "value": 172.635,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -383,10 +680,10 @@
     {
       "bu": "tlm",
       "metric": "ebita",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 624.856,
+      "period": "2026-08",
+      "value": 375.92,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -404,11 +701,44 @@
     },
     {
       "bu": "tlm",
-      "metric": "ebita_pct",
-      "basis": "qtd",
+      "metric": "ebita",
+      "basis": "quarter",
       "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 624.856,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.209008,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 0.253817,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
       "period": "2026-08",
-      "value": 0.23856,
+      "value": 0.131406,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -419,7 +749,7 @@
       "basis": "qtd",
       "measure": "actual",
       "period": "2026-08",
-      "value": 0.17013,
+      "value": 0.170126,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -427,10 +757,21 @@
     {
       "bu": "tlm",
       "metric": "ebita_pct",
-      "basis": "quarter",
+      "basis": "month",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 0.25695,
+      "period": "2026-08",
+      "value": 0.222797,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.238563,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -441,7 +782,18 @@
       "basis": "quarter",
       "measure": "projection",
       "period": "2026-Q3",
-      "value": 0.10163,
+      "value": 0.101628,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 0.256953,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -449,10 +801,43 @@
     {
       "bu": "grosvenor",
       "metric": "net_revenue",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 513.713,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 499.323,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 502.599,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 1003.483,
+      "value": 504.16,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -471,10 +856,10 @@
     {
       "bu": "grosvenor",
       "metric": "net_revenue",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 1544.947,
+      "period": "2026-08",
+      "value": 1003.483,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -492,11 +877,55 @@
     },
     {
       "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1544.947,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
       "metric": "opex",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 322.408,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 323.644,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "opex",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 294.198,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "opex",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 635.624,
+      "value": 311.98,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -515,10 +944,10 @@
     {
       "bu": "grosvenor",
       "metric": "opex",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 997.741,
+      "period": "2026-08",
+      "value": 635.624,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -536,11 +965,55 @@
     },
     {
       "bu": "grosvenor",
+      "metric": "opex",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 997.741,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
       "metric": "ebita",
-      "basis": "qtd",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 154.726,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 133.527,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 164.45,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
       "measure": "forecast",
       "period": "2026-08",
-      "value": 284.754,
+      "value": 151.227,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -559,10 +1032,10 @@
     {
       "bu": "grosvenor",
       "metric": "ebita",
-      "basis": "quarter",
+      "basis": "qtd",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 417.455,
+      "period": "2026-08",
+      "value": 284.754,
       "unit": "k",
       "source": "omegro_monthly",
       "as_of": null
@@ -580,11 +1053,44 @@
     },
     {
       "bu": "grosvenor",
-      "metric": "ebita_pct",
-      "basis": "qtd",
+      "metric": "ebita",
+      "basis": "quarter",
       "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 417.455,
+      "unit": "k",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.301192,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 0.267416,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "month",
+      "measure": "actual",
       "period": "2026-08",
-      "value": 0.28377,
+      "value": 0.327199,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -595,7 +1101,7 @@
       "basis": "qtd",
       "measure": "actual",
       "period": "2026-08",
-      "value": 0.31405,
+      "value": 0.314053,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -603,10 +1109,21 @@
     {
       "bu": "grosvenor",
       "metric": "ebita_pct",
-      "basis": "quarter",
+      "basis": "month",
       "measure": "forecast",
-      "period": "2026-Q3",
-      "value": 0.27021,
+      "period": "2026-08",
+      "value": 0.299958,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.283766,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -617,7 +1134,18 @@
       "basis": "quarter",
       "measure": "projection",
       "period": "2026-Q3",
-      "value": 0.28799,
+      "value": 0.287988,
+      "unit": "pct",
+      "source": "omegro_monthly",
+      "as_of": null
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 0.270207,
       "unit": "pct",
       "source": "omegro_monthly",
       "as_of": null
@@ -653,7 +1181,7 @@
       "bu": "grosvenor",
       "metric": "net_revenue",
       "period": "2026-08",
-      "text": "Variance below reporting threshold. Classified temporary favourable; outlook adjusted for a September net revenue risk. Small net revenue risk due to delayed projects in September.",
+      "text": "Variance below reporting threshold. Classified temporary favourable; the outlook is not adjusted because there is a professional services revenue risk in September which could outweigh it.",
       "source": "omegro_monthly",
       "author": null
     },
@@ -661,7 +1189,7 @@
       "bu": "grosvenor",
       "metric": "opex",
       "period": "2026-08",
-      "text": "Variance below reporting threshold. Classified permanent favourable; outlook adjusted. Nothing further has been included in the projection.",
+      "text": "Variance below reporting threshold. Classified temporary favourable; nothing further has been included in the projection.",
       "source": "omegro_monthly",
       "author": null
     },
@@ -677,7 +1205,7 @@
       "bu": "tbl",
       "metric": "opex",
       "period": "2026-08",
-      "text": "Variance below reporting threshold. Classified permanent favourable; outlook adjusted.",
+      "text": "Variance below reporting threshold. Classified temporary favourable.",
       "source": "omegro_monthly",
       "author": null
     }
@@ -801,7 +1329,7 @@
       "source_id": "itds_qdsr",
       "status": "ok",
       "detail": "parsed 3 business units",
-      "fetched_at": "2026-09-20T02:54:30+00:00",
+      "fetched_at": "2026-09-20T03:13:54+00:00",
       "item_modified": null,
       "rows": 3
     },
@@ -809,23 +1337,23 @@
       "source_id": "bu_monthly_submissions",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:54:30+00:00",
+      "fetched_at": "2026-09-20T03:13:54+00:00",
       "item_modified": null,
       "rows": 0
     },
     {
       "source_id": "omegro_monthly",
       "status": "ok",
-      "detail": "Omegro monthly reporting pack, period 8 FY26 (August close) \u2014 committed extract read 2026-09-20",
-      "fetched_at": "2026-09-20T02:54:30+00:00",
+      "detail": "Omegro monthly reporting pack, periods 7 and 8 FY26 \u2014 committed extract read 2026-09-20",
+      "fetched_at": "2026-09-20T03:13:54+00:00",
       "item_modified": null,
-      "rows": 64
+      "rows": 128
     },
     {
       "source_id": "og_scorecard",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-20T02:54:30+00:00",
+      "fetched_at": "2026-09-20T03:13:54+00:00",
       "item_modified": null,
       "rows": 0
     }

@@ -14,8 +14,10 @@ table, and renders a single self-contained HTML page covering:
   days, previous month / current month / next month target.
 * **Variance commentary** — the preparer's own explanation of each material
   variance, quoted from the reporting pack.
-* **Operational governance** — OG stage, expected date to exit stage, overall
-  status and improvement-plan progress.
+* **Group summary** — group totals by metric across three horizons: the closed
+  month, quarter to date, and the expected full year, each against plan.
+* **Operational governance** — OG stage, overall status and improvement-plan
+  progress.
 * **ITDS** — Portfolio Security Assessment residual risk out of 400, posture,
   movement against baseline, control effectiveness and the three key areas.
 
@@ -123,6 +125,15 @@ rows it matched, so the mapping can be checked against the real workbook.
   directly comparable between units.
 * **Ratios are recomputed, not averaged.** Group EBITA margin is summed EBITA
   over summed Net Revenue.
+* **"Plan" is the approved QSR forecast**, which is the plan of record for the
+  period. The page says so on the group table.
+* **A group total needs every unit.** If one business has not reported a
+  metric for a horizon, no total is shown for it — a sum over a partial set
+  reads as the group's number while silently omitting a business.
+* **The month split is exact, not apportioned.** The pack reports quarter to
+  date, so August is P8 QTD less P7 QTD. July, being month one of the quarter,
+  is its own QTD.
+* **The group does not sell**, so no stage-exit or exit date is tracked.
 
 ## Scope
 
@@ -151,6 +162,17 @@ units add up.
 | **Group** | **3,122** | **−3.2%** | **771** | **−14.6%** | **1,018** | **−22.5%** |
 
 Source: Omegro NR/EBITA pack, period 8 FY26.
+
+August alone is the sharper read — Technology Blueprint's net revenue came in
+21% under plan in the month, and both it and tlmNexus lost about 42% of
+month EBITA against plan.
+
+**FY26 is not yet connected.** The monthly pack carries the quarter only. The
+full-year view lives in the per-BU QSR workbooks (`qsr_submissions` /
+`vbu_qsrs`): the CONSOL sheet's Full Yr columns hold the FY26 forecast and a
+prior-QSR comparison. Note that "Prior Fcst" there is the *previous quarter's*
+QSR, not a year-start baseline — if "vs plan" must mean the year-start
+baseline, the Q4-25 QSR is the column to compare against.
 
 ## Current position (Q2-26 ITDS, live)
 

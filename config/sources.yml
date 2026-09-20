@@ -77,12 +77,33 @@ sources:
     kind: folder
     parser: qsr
     description: >
-      Quarterly Submission Review packs. Source of the approved forecast that
-      QTD actuals and the full-quarter projection are measured against.
+      Per-BU QSR workbooks. The only source carrying a FULL-YEAR view: the
+      "CONSOL" sheet runs quarterly columns from 2022 to 2027 and then Full Yr
+      columns per year, with a Prior Fcst / Var pair against the previous QSR.
+      Needed for the group summary's FY26 column, which is otherwise blank.
+      Confirmed layout on "2026.06 - TBL - Q2 QSR - Craig Delaney.xlsx":
+      Full Yr yr2026 sits at columns 23 (Fcst), 28 (Prior Fcst), 29 (Var).
+      NOTE: "Prior Fcst" is the previous quarter's QSR, not a year-start
+      baseline. If "vs plan" must mean the year-start baseline, point this at
+      the Q4-25 QSR as well and compare against that column instead.
     site: OmegroLeadership
     drive_id: b!Wqpygzjwi0CkYecDMvCqTtkywNeqj0BOmu6p9sE8eoEhjQv7d4x8QLb2bg6DLogn
-    path: Omegro Leaders Shared/QSR Submissions
-    match: "*{bu_alias}*"
+    path: Omegro Leaders Shared/QSR Submissions/{qsr_folder}
+    match: "*{bu_alias}*Q*QSR*.xlsx"
+    required: false
+
+  - id: vbu_qsrs
+    kind: folder
+    parser: qsr
+    description: >
+      The portfolio's own copy of each VBU's QSR, filed per quarter per unit
+      (e.g. "2026 Q1/Grosvenor/GSL - QSR - Q1 2026 v4.3 ...xlsx"). Fallback for
+      units whose workbook is not in the Leaders Shared folder — Grosvenor's
+      Q2-26 workbook was not, only its deck.
+    site: GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
+    drive_id: b!dSR7_AeeqEumTDDVXUh0hFz8Ec1k0qxKun28hMYRrQdDsM8Z-uSiQoBEB8FOs-4u
+    path: Leadership/01. QSR/VBU QSRs
+    match: "*QSR*.xlsx"
     required: false
 
   # ------------------------------------------------- governance / ITDS / risk

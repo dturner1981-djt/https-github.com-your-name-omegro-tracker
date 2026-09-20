@@ -163,7 +163,15 @@ body {
 }
 .portfolio-head h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: -.005em; }
 .portfolio-head .note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-.readouts { display: grid; grid-template-columns: repeat(4, 1fr); }
+.readouts { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
+.group-table-wrap { padding-bottom: 4px; }
+table.group-table tbody td:first-child { font-weight: 600; }
+.table-note {
+  margin: 0; padding: 0 16px 14px; font-size: 12px; color: var(--ink-2);
+  line-height: 1.5; max-width: 74ch;
+}
+.table-note b { color: var(--ink); font-weight: 600; }
+.table-note code { font-family: var(--mono); font-size: 11px; }
 .readout { padding: 14px 16px 15px; border-right: 1px solid var(--line); }
 .readout:last-child { border-right: 0; }
 .readout .k {
@@ -483,6 +491,45 @@ table.sources td.detail { color: var(--ink-2); }
       </div>
     </div>
   </div>
+
+  <div class="table-scroll group-table-wrap">
+    <table class="data group-table">
+      <caption class="block-title" style="text-align:left;padding:13px 16px 0">Group totals vs plan &mdash; {{ currency }}&rsquo;000. Plan is the approved QSR forecast.</caption>
+      <thead>
+        <tr class="band">
+          <th></th>
+          {% for b in group_bands %}
+          <th colspan="2" {% if not loop.first %}class="sep"{% endif %}>{{ b.label }}</th>
+          {% endfor %}
+        </tr>
+        <tr>
+          <th>Metric</th>
+          {% for b in group_bands %}
+          <th {% if not loop.first %}class="sep"{% endif %}>{{ b.value_head }}</th><th>vs plan</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in group_rows %}
+        <tr>
+          <td>{{ r.label }}</td>
+          {% for b in group_bands %}
+          <td {% if not loop.first %}class="sep"{% endif %}>{{ r.cells[b.key].value }}</td>
+          <td>{{ chip(r.cells[b.key]) }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if not fy_reported %}
+  <p class="table-note">
+    <b>FY26 expected is not connected.</b> The monthly pack carries the quarter only.
+    A full-year outlook against plan needs the FY26 baseline and current projection
+    from the QSR pack &mdash; <code>qsr_submissions</code> in the source registry.
+  </p>
+  {% endif %}
+</section>
 </section>
 
 <!-- --------------------------------------------------------- BU panels -->
@@ -494,7 +541,6 @@ table.sources td.detail { color: var(--ink-2); }
     <div class="facts">
       <span><b>Leader</b> {{ p.leader }}</span>
       <span><b>OG stage</b> {{ p.stage }}</span>
-      <span><b>Exit by</b> {{ p.expected_exit }}</span>
       <span><b>ITDS</b> {{ p.itds_posture }}</span>
     </div>
   </div>
@@ -589,12 +635,10 @@ table.sources td.detail { color: var(--ink-2); }
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
             <span><b>Stage</b> {{ p.stage }}</span>
-            <span><b>Expected exit</b> {{ p.expected_exit }}</span>
             <span><b>Overall</b> {{ p.overall_label }}</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-            Stage and expected exit come from the business unit's monthly Progress Report header and the
-            {% if governance_reported %}Stage and expected exit come from the quarterly Operational
+            {% if governance_reported %}Stage comes from the quarterly Operational
             Governance Scorecard.{% else %}No governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             {{ p.leader }}&rsquo;s monthly Business Unit Progress Report.{% endif %}

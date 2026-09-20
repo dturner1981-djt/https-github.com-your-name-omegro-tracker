@@ -3,7 +3,7 @@
 Workbook shape (from "Monthly Review Template.xlsx"):
 
   "P&L Progress Report"
-      row 2-3   header block: BU name, OG stage, expected exit, period, status
+      row 2-3   header block: BU name, OG stage, period, status
       row 5-6   executive summary
       row 11+   improvement plan / IM value driver rows
       row 20    band header: QUARTER TO DATE | THIS QUARTER | NEXT QUARTER
@@ -150,8 +150,6 @@ def _header(sheet: Any) -> dict[str, str]:
         "businessunit:": "business_unit",
         "operationalgovernancestage:": "og_stage",
         "overallstatus:": "overall_status",
-        "expecteddatetoexitstage:": "expected_exit",
-        "expecteddatetotargetwc%:": "expected_exit",
         "period:": "period",
         "reportdate:": "report_date",
     }
@@ -326,7 +324,6 @@ def parse(
                     bu=bu,
                     period=quarter_of(period),
                     stage=head.get("og_stage"),
-                    expected_exit=head.get("expected_exit"),
                     overall_status=_status(head.get("overall_status")),  # type: ignore[arg-type]
                 )
         elif "workingcapital" in squashed:

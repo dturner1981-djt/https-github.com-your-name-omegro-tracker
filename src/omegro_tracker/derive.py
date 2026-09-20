@@ -242,7 +242,12 @@ def bu_summary(snapshot: Snapshot, unit: dict[str, Any], config: dict[str, Any])
 def portfolio_rollup(summaries: list[dict[str, Any]]) -> dict[str, Any]:
     """Group-level aggregation. Money adds up; ratios do not — EBITA % is
     recomputed from the summed components rather than averaged."""
-    def total(metric: str, basis: str, measure: str, snapshot: Snapshot | None = None) -> float | None:
+    def total(metric: str, measure: str) -> float | None:
+        """Sum across units, but only when every unit reported.
+
+        A total over a partial set is not a smaller total, it is a wrong one —
+        it reads as the group's number while silently omitting a business.
+        """
         values = [
             s["headline"][metric]["variance"].value
             if measure == "actual"
@@ -250,13 +255,14 @@ def portfolio_rollup(summaries: list[dict[str, Any]]) -> dict[str, Any]:
             for s in summaries
             if metric in s["headline"]
         ]
-        present = [v for v in values if v is not None]
-        return sum(present) if present else None
+        if not values or any(v is None for v in values):
+            return None
+        return sum(values)  # type: ignore[arg-type]
 
-    nr_actual = total("net_revenue", "qtd", "actual")
-    nr_forecast = total("net_revenue", "qtd", "forecast")
-    ebita_actual = total("ebita", "qtd", "actual")
-    ebita_forecast = total("ebita", "qtd", "forecast")
+    nr_actual = total("net_revenue", "actual")
+    nr_forecast = total("net_revenue", "forecast")
+    ebita_actual = total("ebita", "actual")
+    ebita_forecast = total("ebita", "forecast")
 
     counts = {"on_track": 0, "at_risk": 0, "off_track": 0, "unknown": 0}
     for s in summaries:

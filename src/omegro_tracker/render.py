@@ -414,6 +414,7 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
     currency = config.get("group", {}).get("reporting_currency", "GBP")
     summaries = [derive.bu_summary(snapshot, u, config) for u in snapshot.business_units]
     rollup = derive.portfolio_rollup(summaries)
+    group_rows = _group_rows(snapshot, summaries, config, currency)
 
     panels = []
     for summary in summaries:
@@ -435,7 +436,6 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
                 "overall_token": STATUS_TOKEN[summary["overall"]],
                 "overall_glyph": STATUS_GLYPH[summary["overall"]],
                 "stage": (gov.stage if gov else None) or "Not reported",
-                "expected_exit": (gov.expected_exit if gov else None) or "—",
                 "pnl_rows": [
                     row
                     for row in (
@@ -502,6 +502,12 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
     )
 
     return {
+        "group_rows": group_rows,
+        "group_bands": [
+            {**b, "label": b["label"] or f"{month_label(snapshot.period)} month"}
+            for b in GROUP_BANDS
+        ],
+        "fy_reported": any(r["cells"]["fy"]["reported"] for r in group_rows),
         "bands": active_bands,
         "show_next": show_next,
         "wc_reported": wc_reported,
@@ -557,6 +563,88 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
         ),
         "itds_period": (snapshot.itds[0].period if snapshot.itds else "—").replace("-", " "),
     }
+
+
+GROUP_METRICS = ["net_revenue", "opex", "ebita", "ebita_pct"]
+
+# The group summary reads across three horizons: the closed month, the quarter
+# so far, and where the year is expected to land. The last needs an FY source;
+# until one is connected the column says so rather than being dropped, because
+# its absence is itself the thing to fix.
+GROUP_BANDS = [
+    {"key": "month", "label": None, "value_head": "Actual"},
+    {"key": "qtd", "label": "Quarter to date", "value_head": "Actual"},
+    {"key": "fy", "label": "FY26 expected", "value_head": "Projection"},
+]
+
+
+def _group_rows(
+    snapshot: Snapshot,
+    summaries: list[dict[str, Any]],
+    config: dict[str, Any],
+    currency: str,
+) -> list[dict[str, Any]]:
+    """Group totals by metric and horizon.
+
+    Money adds across units; a margin does not, so EBITA % is recomputed from
+    the summed components. Any horizon where a unit has not reported yields no
+    total at all — a sum over a partial set reads as the group's number while
+    silently omitting a business.
+    """
+    band = derive.bands(config)
+    units = [s["unit"]["key"] for s in summaries]
+    rows = []
+
+    def totals(metric: str, basis: str, period: str, measure: str) -> float | None:
+        values = [snapshot.value(bu, metric, basis, measure, period) for bu in units]
+        return None if not values or any(v is None for v in values) else sum(values)
+
+    horizons = [
+        ("month", "month", snapshot.period, "actual"),
+        ("qtd", "qtd", snapshot.period, "actual"),
+        ("fy", "year", snapshot.period.split("-")[0], "projection"),
+    ]
+
+    for metric in GROUP_METRICS:
+        cfg = config.get("metrics", {}).get(metric, {})
+        unit = "pct" if cfg.get("unit") == "pct" else "k"
+        cells = {}
+        for key, basis, period, measure in horizons:
+            if metric == "ebita_pct":
+                nr_a = totals("net_revenue", basis, period, measure)
+                nr_f = totals("net_revenue", basis, period, "forecast")
+                eb_a = totals("ebita", basis, period, measure)
+                eb_f = totals("ebita", basis, period, "forecast")
+                v = Variance(
+                    (eb_f / nr_f) if nr_f else None,
+                    (eb_a / nr_a) if nr_a else None,
+                    "pct",
+                    "higher",
+                )
+            else:
+                v = Variance(
+                    totals(metric, basis, period, "forecast"),
+                    totals(metric, basis, period, measure),
+                    unit,
+                    cfg.get("direction", "higher"),
+                )
+            status = v.status(band)
+            cells[key] = {
+                "value": fmt_value(v.value, unit, currency),
+                "reference": fmt_value(v.reference, unit, currency),
+                "display": fmt_delta(v, currency) if unit == "pct" else fmt_delta_pct(v),
+                "token": STATUS_TOKEN[status],
+                "glyph": STATUS_GLYPH[status],
+                "reported": v.reported,
+            }
+        rows.append(
+            {
+                "key": metric,
+                "label": SHORT_LABELS.get(metric, cfg.get("label", metric)),
+                "cells": cells,
+            }
+        )
+    return rows
 
 
 def render(snapshot: Snapshot, config: dict[str, Any], template_dir: Path | None = None) -> str:

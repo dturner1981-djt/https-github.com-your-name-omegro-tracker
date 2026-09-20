@@ -355,3 +355,66 @@ def test_every_in_scope_unit_has_a_named_leader(config):
     for unit in config["business_units"]:
         if unit.get("in_scope", True):
             assert unit.get("leader"), unit["key"]
+
+
+# -- group summary ----------------------------------------------------------
+
+
+def _live(config):
+    from omegro_tracker.build import build
+
+    return build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+
+
+def test_august_month_is_p8_qtd_less_p7_qtd(config):
+    """July is month 1 of Q3, so the month split is exact, not apportioned."""
+    snap = _live(config)
+    for bu, jul, qtd in (
+        ("tbl", 326.198, 581.784),
+        ("tlm", 760.396, 1523.971),
+        ("grosvenor", 513.713, 1016.312),
+    ):
+        assert snap.value(bu, "net_revenue", "month", "actual", "2026-07") == pytest.approx(jul)
+        assert snap.value(bu, "net_revenue", "month", "actual", "2026-08") == pytest.approx(qtd - jul)
+
+
+def test_group_month_totals(config):
+    from omegro_tracker.render import _group_rows
+
+    snap = _live(config)
+    summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
+    rows = {r["key"]: r for r in _group_rows(snap, summaries, config, "USD")}
+    # 255.586 + 763.575 + 502.599
+    assert rows["net_revenue"]["cells"]["month"]["value"] == "$1.52m"
+    assert rows["net_revenue"]["cells"]["qtd"]["value"] == "$3.12m"
+    # No FY source is connected, so the column must be empty, not a partial sum.
+    assert rows["net_revenue"]["cells"]["fy"]["reported"] is False
+    assert rows["net_revenue"]["cells"]["fy"]["value"] == "—"
+
+
+def test_group_total_is_withheld_when_a_unit_has_not_reported(config):
+    """A sum over a partial set reads as the group's number while omitting a
+    business, so it must not be produced at all."""
+    from omegro_tracker.render import _group_rows
+
+    snap = _live(config)
+    snap.facts = [
+        f for f in snap.facts
+        if not (f.bu == "tlm" and f.metric == "net_revenue" and f.basis == "qtd")
+    ]
+    summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
+    rows = {r["key"]: r for r in _group_rows(snap, summaries, config, "USD")}
+    assert rows["net_revenue"]["cells"]["qtd"]["reported"] is False
+    # The month column is untouched and still totals.
+    assert rows["net_revenue"]["cells"]["month"]["reported"] is True
+
+
+def test_no_exit_date_anywhere(config):
+    """The group does not sell, so an "expected date to exit" is meaningless."""
+    from omegro_tracker.model import Governance
+    from omegro_tracker.render import render
+
+    assert not hasattr(Governance(bu="x", period="2026-Q3"), "expected_exit")
+    html = render(_live(config), config)
+    assert "exit by" not in html.lower()
+    assert "expected exit" not in html.lower()

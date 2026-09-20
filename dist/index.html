@@ -163,7 +163,15 @@ body {
 }
 .portfolio-head h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: -.005em; }
 .portfolio-head .note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-.readouts { display: grid; grid-template-columns: repeat(4, 1fr); }
+.readouts { display: grid; grid-template-columns: repeat(4, 1fr); border-bottom: 1px solid var(--line); }
+.group-table-wrap { padding-bottom: 4px; }
+table.group-table tbody td:first-child { font-weight: 600; }
+.table-note {
+  margin: 0; padding: 0 16px 14px; font-size: 12px; color: var(--ink-2);
+  line-height: 1.5; max-width: 74ch;
+}
+.table-note b { color: var(--ink); font-weight: 600; }
+.table-note code { font-family: var(--mono); font-size: 11px; }
 .readout { padding: 14px 16px 15px; border-right: 1px solid var(--line); }
 .readout:last-child { border-right: 0; }
 .readout .k {
@@ -382,7 +390,7 @@ table.sources td.detail { color: var(--ink-2); }
       <div><span class="k">Close</span><span class="v">Aug-26</span></div>
       <div><span class="k">Quarter</span><span class="v">2026 Q3</span></div>
       <div><span class="k">Currency</span><span class="v">USD</span></div>
-      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 02:54 UTC</span></div>
+      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 03:13 UTC</span></div>
     </div>
   </div>
 </header>
@@ -457,6 +465,82 @@ table.sources td.detail { color: var(--ink-2); }
       </div>
     </div>
   </div>
+
+  <div class="table-scroll group-table-wrap">
+    <table class="data group-table">
+      <caption class="block-title" style="text-align:left;padding:13px 16px 0">Group totals vs plan &mdash; USD&rsquo;000. Plan is the approved QSR forecast.</caption>
+      <thead>
+        <tr class="band">
+          <th></th>
+          <th colspan="2" >Aug-26 month</th>
+          <th colspan="2" class="sep">Quarter to date</th>
+          <th colspan="2" class="sep">FY26 expected</th>
+        </tr>
+        <tr>
+          <th>Metric</th>
+          <th >Actual</th><th>vs plan</th>
+          <th class="sep">Actual</th><th>vs plan</th>
+          <th class="sep">Projection</th><th>vs plan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Net revenue</td>
+          <td >$1.52m</td>
+          <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>-5.1%</span>
+</td>
+          <td class="sep">$3.12m</td>
+          <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.2%</span>
+</td>
+          <td class="sep">—</td>
+          <td><span class="chip tone-muted">—</span>
+</td>
+        </tr>
+        <tr>
+          <td>OPEX</td>
+          <td >$1.08m</td>
+          <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+3.7%</span>
+</td>
+          <td class="sep">$2.14m</td>
+          <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+2.1%</span>
+</td>
+          <td class="sep">—</td>
+          <td><span class="chip tone-muted">—</span>
+</td>
+        </tr>
+        <tr>
+          <td>EBITA</td>
+          <td >$335k</td>
+          <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-24.7%</span>
+</td>
+          <td class="sep">$771k</td>
+          <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-14.6%</span>
+</td>
+          <td class="sep">—</td>
+          <td><span class="chip tone-muted">—</span>
+</td>
+        </tr>
+        <tr>
+          <td>EBITA margin</td>
+          <td >22.0%</td>
+          <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-5.7pt</span>
+</td>
+          <td class="sep">24.7%</td>
+          <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-3.3pt</span>
+</td>
+          <td class="sep">—</td>
+          <td><span class="chip tone-muted">—</span>
+</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="table-note">
+    <b>FY26 expected is not connected.</b> The monthly pack carries the quarter only.
+    A full-year outlook against plan needs the FY26 baseline and current projection
+    from the QSR pack &mdash; <code>qsr_submissions</code> in the source registry.
+  </p>
+</section>
 </section>
 
 <!-- --------------------------------------------------------- BU panels -->
@@ -467,7 +551,6 @@ table.sources td.detail { color: var(--ink-2); }
     <div class="facts">
       <span><b>Leader</b> Colin Ma</span>
       <span><b>OG stage</b> Not reported</span>
-      <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Moderate</span>
     </div>
   </div>
@@ -483,19 +566,24 @@ table.sources td.detail { color: var(--ink-2); }
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2" >Quarter to date</th>
+                <th colspan="2" >Aug-26 month</th>
+                <th colspan="2" class="sep">Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
               </tr>
               <tr>
                 <th>Metric</th>
                 <th >Actual</th><th>Var</th>
+                <th class="sep">Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td >$582k</td>
+                <td >$256k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-21.1%</span>
+</td>
+                <td class="sep">$582k</td>
                 <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-10.1%</span>
 </td>
                 <td class="sep">$940k</td>
@@ -504,7 +592,10 @@ table.sources td.detail { color: var(--ink-2); }
               </tr>
               <tr>
                 <td>OPEX</td>
-                <td >$348k</td>
+                <td >$172k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-2.7%</span>
+</td>
+                <td class="sep">$348k</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-1.2%</span>
 </td>
                 <td class="sep">$522k</td>
@@ -513,7 +604,10 @@ table.sources td.detail { color: var(--ink-2); }
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td >$192k</td>
+                <td >$70k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-42.0%</span>
+</td>
+                <td class="sep">$192k</td>
                 <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-20.4%</span>
 </td>
                 <td class="sep">$339k</td>
@@ -522,7 +616,10 @@ table.sources td.detail { color: var(--ink-2); }
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td >33.1%</td>
+                <td >27.3%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-9.8pt</span>
+</td>
+                <td class="sep">33.1%</td>
                 <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-4.3pt</span>
 </td>
                 <td class="sep">36.1%</td>
@@ -533,8 +630,64 @@ table.sources td.detail { color: var(--ink-2); }
           </table>
         </div>
         <div class="charts">
-          
-          
+          <figure class="chart">
+  <figcaption>Net revenue by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="18.7" width="30.0" height="87.3"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $324k</title>
+    </rect>
+    <rect x="70.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $326k</title>
+    </rect>
+    <rect x="167.5" y="18.7" width="30.0" height="87.3"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $324k</title>
+    </rect>
+    <rect x="200.5" y="37.0" width="30.0" height="69.0"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $256k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
+          <figure class="chart">
+  <figcaption>EBITA by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="18.8" width="30.0" height="87.2"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $121k</title>
+    </rect>
+    <rect x="70.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $123k</title>
+    </rect>
+    <rect x="167.5" y="19.7" width="30.0" height="86.3"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $120k</title>
+    </rect>
+    <rect x="200.5" y="55.9" width="30.0" height="50.1"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $70k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
         </div>
       </div>
 
@@ -556,11 +709,9 @@ table.sources td.detail { color: var(--ink-2); }
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
             <span><b>Stage</b> Not reported</span>
-            <span><b>Expected exit</b> —</span>
             <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-            Stage and expected exit come from the business unit's monthly Progress Report header and the
 No governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             Colin Ma&rsquo;s monthly Business Unit Progress Report.          </p>
@@ -577,7 +728,7 @@ No governance stage is connected. It comes from the quarterly
           </div>
           <div class="note-row">
             <span class="note-tag">OPEX</span>
-            <p>Variance below reporting threshold. Classified permanent favourable; outlook adjusted.</p>
+            <p>Variance below reporting threshold. Classified temporary favourable.</p>
           </div>
         </div>
       </div>
@@ -659,7 +810,6 @@ No governance stage is connected. It comes from the quarterly
     <div class="facts">
       <span><b>Leader</b> David Appleton</span>
       <span><b>OG stage</b> Not reported</span>
-      <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Strong</span>
     </div>
   </div>
@@ -675,19 +825,24 @@ No governance stage is connected. It comes from the quarterly
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2" >Quarter to date</th>
+                <th colspan="2" >Aug-26 month</th>
+                <th colspan="2" class="sep">Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
               </tr>
               <tr>
                 <th>Metric</th>
                 <th >Actual</th><th>Var</th>
+                <th class="sep">Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td >$1.52m</td>
+                <td >$764k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-1.5%</span>
+</td>
+                <td class="sep">$1.52m</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.3%</span>
 </td>
                 <td class="sep">$2.31m</td>
@@ -696,7 +851,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>OPEX</td>
-                <td >$1.17m</td>
+                <td >$617k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>+11.1%</span>
+</td>
+                <td class="sep">$1.17m</td>
                 <td><span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>+6.1%</span>
 </td>
                 <td class="sep">$1.94m</td>
@@ -705,7 +863,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td >$259k</td>
+                <td >$100k</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-41.9%</span>
+</td>
+                <td class="sep">$259k</td>
                 <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-31.0%</span>
 </td>
                 <td class="sep">$235k</td>
@@ -714,7 +875,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td >17.0%</td>
+                <td >13.1%</td>
+                <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-9.1pt</span>
+</td>
+                <td class="sep">17.0%</td>
                 <td><span class="chip tone-critical"><span class="g" aria-hidden="true">■</span>-6.8pt</span>
 </td>
                 <td class="sep">10.2%</td>
@@ -725,8 +889,64 @@ No governance stage is connected. It comes from the quarterly
           </table>
         </div>
         <div class="charts">
-          
-          
+          <figure class="chart">
+  <figcaption>Net revenue by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $801k</title>
+    </rect>
+    <rect x="70.5" y="22.5" width="30.0" height="83.5"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $760k</title>
+    </rect>
+    <rect x="167.5" y="20.9" width="30.0" height="85.1"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $775k</title>
+    </rect>
+    <rect x="200.5" y="22.1" width="30.0" height="83.9"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $764k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
+          <figure class="chart">
+  <figcaption>EBITA by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $203k</title>
+    </rect>
+    <rect x="70.5" y="37.2" width="30.0" height="68.8"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $159k</title>
+    </rect>
+    <rect x="167.5" y="31.3" width="30.0" height="74.7"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $173k</title>
+    </rect>
+    <rect x="200.5" y="62.6" width="30.0" height="43.4"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $100k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
         </div>
       </div>
 
@@ -748,11 +968,9 @@ No governance stage is connected. It comes from the quarterly
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
             <span><b>Stage</b> Not reported</span>
-            <span><b>Expected exit</b> —</span>
             <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-            Stage and expected exit come from the business unit's monthly Progress Report header and the
 No governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             David Appleton&rsquo;s monthly Business Unit Progress Report.          </p>
@@ -855,7 +1073,6 @@ No governance stage is connected. It comes from the quarterly
     <div class="facts">
       <span><b>Leader</b> Paula McQuilan</span>
       <span><b>OG stage</b> Not reported</span>
-      <span><b>Exit by</b> —</span>
       <span><b>ITDS</b> Needs Improvement</span>
     </div>
   </div>
@@ -871,19 +1088,24 @@ No governance stage is connected. It comes from the quarterly
             <thead>
               <tr class="band">
                 <th></th>
-                <th colspan="2" >Quarter to date</th>
+                <th colspan="2" >Aug-26 month</th>
+                <th colspan="2" class="sep">Quarter to date</th>
                 <th colspan="2" class="sep">2026 Q3 outturn</th>
               </tr>
               <tr>
                 <th>Metric</th>
                 <th >Actual</th><th>Var</th>
+                <th class="sep">Actual</th><th>Var</th>
                 <th class="sep">Projection</th><th>Var</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Net revenue</td>
-                <td >$1.02m</td>
+                <td >$503k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-0.3%</span>
+</td>
+                <td class="sep">$1.02m</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+1.3%</span>
 </td>
                 <td class="sep">$1.54m</td>
@@ -892,7 +1114,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>OPEX</td>
-                <td >$617k</td>
+                <td >$294k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-5.7%</span>
+</td>
+                <td class="sep">$617k</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>-3.0%</span>
 </td>
                 <td class="sep">$965k</td>
@@ -901,7 +1126,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>EBITA</td>
-                <td >$319k</td>
+                <td >$164k</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+8.7%</span>
+</td>
+                <td class="sep">$319k</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+12.1%</span>
 </td>
                 <td class="sep">$444k</td>
@@ -910,7 +1138,10 @@ No governance stage is connected. It comes from the quarterly
               </tr>
               <tr>
                 <td>EBITA margin</td>
-                <td >31.4%</td>
+                <td >32.7%</td>
+                <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+2.7pt</span>
+</td>
+                <td class="sep">31.4%</td>
                 <td><span class="chip tone-good"><span class="g" aria-hidden="true">●</span>+3.0pt</span>
 </td>
                 <td class="sep">28.8%</td>
@@ -921,8 +1152,64 @@ No governance stage is connected. It comes from the quarterly
           </table>
         </div>
         <div class="charts">
-          
-          
+          <figure class="chart">
+  <figcaption>Net revenue by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="Net revenue by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="20.5" width="30.0" height="85.5"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $499k</title>
+    </rect>
+    <rect x="70.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $514k</title>
+    </rect>
+    <rect x="167.5" y="19.6" width="30.0" height="86.4"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $504k</title>
+    </rect>
+    <rect x="200.5" y="19.9" width="30.0" height="86.1"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $503k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
+          <figure class="chart">
+  <figcaption>EBITA by month — 2026 Q3</figcaption>
+  <svg width="268" height="128" viewBox="0 0 268 128" role="img" aria-label="EBITA by month — 2026 Q3 by month, forecast against actual">
+    <line x1="0" y1="106" x2="268" y2="106" stroke="var(--chart-baseline)" stroke-width="1"/>
+    <rect x="37.5" y="34.5" width="30.0" height="71.5"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Jul-26 forecast: $134k</title>
+    </rect>
+    <rect x="70.5" y="23.2" width="30.0" height="82.8"
+          rx="2" fill="var(--chart-actual)">
+      <title>Jul-26 actual: $155k</title>
+    </rect>
+    <rect x="167.5" y="25.1" width="30.0" height="80.9"
+          rx="2" fill="var(--chart-forecast)">
+      <title>Aug-26 forecast: $151k</title>
+    </rect>
+    <rect x="200.5" y="18.0" width="30.0" height="88.0"
+          rx="2" fill="var(--chart-actual)">
+      <title>Aug-26 actual: $164k</title>
+    </rect>
+    <text x="69.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Jul-26</text>
+    <text x="199.0" y="121" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">Aug-26</text>
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+
         </div>
       </div>
 
@@ -944,11 +1231,9 @@ No governance stage is connected. It comes from the quarterly
           <p class="block-title">Operational governance</p>
           <div class="side-stat" style="margin-top:0">
             <span><b>Stage</b> Not reported</span>
-            <span><b>Expected exit</b> —</span>
             <span><b>Overall</b> On Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-            Stage and expected exit come from the business unit's monthly Progress Report header and the
 No governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             Paula McQuilan&rsquo;s monthly Business Unit Progress Report.          </p>
@@ -961,11 +1246,11 @@ No governance stage is connected. It comes from the quarterly
         <div class="init-list">
           <div class="note-row">
             <span class="note-tag">Net revenue</span>
-            <p>Variance below reporting threshold. Classified temporary favourable; outlook adjusted for a September net revenue risk. Small net revenue risk due to delayed projects in September.</p>
+            <p>Variance below reporting threshold. Classified temporary favourable; the outlook is not adjusted because there is a professional services revenue risk in September which could outweigh it.</p>
           </div>
           <div class="note-row">
             <span class="note-tag">OPEX</span>
-            <p>Variance below reporting threshold. Classified permanent favourable; outlook adjusted. Nothing further has been included in the projection.</p>
+            <p>Variance below reporting threshold. Classified temporary favourable; nothing further has been included in the projection.</p>
           </div>
         </div>
       </div>
@@ -1057,7 +1342,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">parsed 3 business units</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:54 UTC</td>
+          <td class="detail">20 Sep 2026 03:13 UTC</td>
         </tr>
         <tr>
           <td class="id">bu_monthly_submissions</td>
@@ -1066,16 +1351,16 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:54 UTC</td>
+          <td class="detail">20 Sep 2026 03:13 UTC</td>
         </tr>
         <tr>
           <td class="id">omegro_monthly</td>
           <td>
             <span class="pill tone-good">ok</span>
           </td>
-          <td class="detail">Omegro monthly reporting pack, period 8 FY26 (August close) — committed extract read 2026-09-20</td>
+          <td class="detail">Omegro monthly reporting pack, periods 7 and 8 FY26 — committed extract read 2026-09-20</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:54 UTC</td>
+          <td class="detail">20 Sep 2026 03:13 UTC</td>
         </tr>
         <tr>
           <td class="id">og_scorecard</td>
@@ -1084,7 +1369,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 02:54 UTC</td>
+          <td class="detail">20 Sep 2026 03:13 UTC</td>
         </tr>
       </tbody>
     </table>

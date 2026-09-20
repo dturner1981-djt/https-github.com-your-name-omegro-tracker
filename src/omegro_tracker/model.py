@@ -100,7 +100,6 @@ class Governance:
     bu: str
     period: str
     stage: str | None = None
-    expected_exit: str | None = None
     score: float | None = None
     score_max: float | None = None
     overall_status: Status = "unknown"
