@@ -1,0 +1,48 @@
+name: Refresh dashboard
+
+# Monthly submissions are due within 7 business days of close, so the
+# scheduled run lands mid-morning on the 11th. Also runs on demand.
+on:
+  schedule:
+    - cron: "0 7 11 * *"
+  workflow_dispatch:
+    inputs:
+      period:
+        description: "Reporting month (YYYY-MM). Blank = latest closed."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+      - name: Refresh from SharePoint and render
+        env:
+          OMEGRO_TRACKER_TENANT_ID: ${{ secrets.OMEGRO_TRACKER_TENANT_ID }}
+          OMEGRO_TRACKER_CLIENT_ID: ${{ secrets.OMEGRO_TRACKER_CLIENT_ID }}
+          OMEGRO_TRACKER_CLIENT_SECRET: ${{ secrets.OMEGRO_TRACKER_CLIENT_SECRET }}
+        run: |
+          python -m omegro_tracker.cli build ${{ inputs.period && format('--period {0}', inputs.period) || '' }}
+
+      - name: Commit the refreshed snapshot
+        run: |
+          git config user.name  "omegro-tracker"
+          git config user.email "noreply@omegro.com"
+          git add data/snapshot.json dist/index.html
+          git diff --staged --quiet || git commit -m "Refresh dashboard ($(date -u +%Y-%m-%d))"
+          git push
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dashboard
+          path: dist/index.html

@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.cache/
+dist/_preview.html
+.venv/
+.pytest_cache/
+*.egg-info/

@@ -1,0 +1,1581 @@
+{
+  "_comment": "ILLUSTRATIVE SEED DATA. Not actual results. Used only when no live financial source resolves; every fact is tagged source=seed and the dashboard displays a provenance banner.",
+  "period": "2026-08",
+  "quarter": "2026-Q3",
+  "facts": [
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 612,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 141,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 598,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 126,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 605,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 139,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 584,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 112,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 631,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 152,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 1217,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 1182,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 280,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 238,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2301,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.2014,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.041,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.028,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.94,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.91,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 4929,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 4752,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 1134,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 923,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2301,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.1942,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1790,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 1868,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 372,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 401,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 0.2078,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 0.2147,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "net_revenue",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 1905,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 421,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "ebita_pct",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 0.221,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-07",
+      "value": 0.12,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.126,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.118,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.131,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-09",
+      "value": 0.112,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.118,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.131,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.165,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.178,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.09,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.143,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.12,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tbl",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.155,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 369,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 96,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 381,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 104,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 372,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 97,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 388,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 109,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 384,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 101,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 741,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 769,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 193,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 213,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2605,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.277,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.062,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.071,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.96,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.98,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 3001,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 3091,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 782,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 826,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2606,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.2672,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1125,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 1158,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 294,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 318,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 0.2613,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 0.2746,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "net_revenue",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 1168,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 305,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "ebita_pct",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 0.2611,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-07",
+      "value": 0.088,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.084,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.085,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.079,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-09",
+      "value": 0.082,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.085,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.079,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.121,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.114,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.07,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.052,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.1,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "tlm",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.068,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 486,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-07",
+      "value": 102,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 455,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 71,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 491,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 104,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 441,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 58,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 503,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "month",
+      "measure": "forecast",
+      "period": "2026-09",
+      "value": 111,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 977,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 896,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 206,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 129,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2108,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.144,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.025,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "og_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": -0.014,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.92,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "bqr_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.86,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 3957,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 3602,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 834,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 501,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.2108,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "ytd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.1391,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 1480,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 1352,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 317,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 186,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "forecast",
+      "period": "2026-Q3",
+      "value": 0.2142,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "quarter",
+      "measure": "projection",
+      "period": "2026-Q3",
+      "value": 0.1376,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "net_revenue",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 1521,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 334,
+      "unit": "kGBP",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "ebita_pct",
+      "basis": "next_quarter",
+      "measure": "forecast",
+      "period": "2026-Q4",
+      "value": 0.2196,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-07",
+      "value": 0.145,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-07",
+      "value": 0.181,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.14,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.196,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-09",
+      "value": 0.135,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "forecast",
+      "period": "2026-08",
+      "value": 0.14,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct",
+      "basis": "qtd",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.196,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.208,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wc_pct_ex_cash",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.271,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.1,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "overdue_ar_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.224,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "target",
+      "period": "2026-08",
+      "value": 0.12,
+      "unit": "pct",
+      "source": "seed"
+    },
+    {
+      "bu": "grosvenor",
+      "metric": "wip_over_30_pct",
+      "basis": "month",
+      "measure": "actual",
+      "period": "2026-08",
+      "value": 0.263,
+      "unit": "pct",
+      "source": "seed"
+    }
+  ],
+  "initiatives": [
+    {
+      "bu": "tbl",
+      "title": "Sales bookings",
+      "owner": "SC",
+      "measure_of_success": "Deliver bookings of \u00a3750k in Q3: PS \u00a3250k; SaaS \u00a3500k",
+      "target_date": "2026-09-30",
+      "status": "at_risk",
+      "notes": "QTD bookings \u00a3430k (PS \u00a3160k, SaaS \u00a3270k). Two enterprise renewals slipped to September; fall-back pipeline of \u00a3310k identified.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "tbl",
+      "title": "PropCo Web migration",
+      "owner": "SC",
+      "measure_of_success": "60% of maintenance base migrated to PropCo Web by year end",
+      "target_date": "2026-12-31",
+      "status": "on_track",
+      "notes": "48% migrated at August close, tracking to plan. Migration team fully staffed following two hires in July.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "tbl",
+      "title": "Overdue AR reduction",
+      "owner": "SC",
+      "measure_of_success": "Overdue AR below 9% of billed revenue",
+      "target_date": "2026-11-30",
+      "status": "at_risk",
+      "notes": "Overdue AR 14.3% against a 9% target. Two accounts represent 60% of the balance; escalated to account management with payment plans proposed.",
+      "kind": "working_capital"
+    },
+    {
+      "bu": "tlm",
+      "title": "Defence framework renewal",
+      "owner": "JT",
+      "measure_of_success": "Renew primary MoD framework at or above current value",
+      "target_date": "2026-10-31",
+      "status": "on_track",
+      "notes": "Renewal paperwork submitted; verbal confirmation received. No change expected to commercial terms.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "tlm",
+      "title": "Observe recurring revenue growth",
+      "owner": "JT",
+      "measure_of_success": "Grow Observe managed service ARR by 8% in H2",
+      "target_date": "2026-12-31",
+      "status": "on_track",
+      "notes": "Two new managed-service contracts signed in the quarter; ARR up 5.2% at August close.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "tlm",
+      "title": "Security logging retention",
+      "owner": "JT",
+      "measure_of_success": "Security logs queryable for the full required retention period",
+      "target_date": "2026-11-30",
+      "status": "at_risk",
+      "notes": "Only remaining ITDS focus control. Log retention extension scoped; awaiting change window.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "grosvenor",
+      "title": "OPEX reduction",
+      "owner": "RS",
+      "measure_of_success": "Reduce OPEX \u2014 annualised impact \u00a3420k: headcount (4) \u00a3260k; property \u00a395k; software \u00a365k",
+      "target_date": "2026-12-31",
+      "status": "at_risk",
+      "notes": "Headcount reductions notified, savings commence 1 Oct. Property exit delayed to Q1-27 by lease break terms. \u00a328k of \u00a365k software savings identified.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "grosvenor",
+      "title": "Propman maintenance retention",
+      "owner": "RS",
+      "measure_of_success": "Hold maintenance attrition below 4% for the year",
+      "target_date": "2026-12-31",
+      "status": "off_track",
+      "notes": "Attrition 6.8% YTD, driven by four mid-tier managing agents lost to a competitor. Retention programme launched; two at-risk accounts recovered in August.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "grosvenor",
+      "title": "ITDS remediation \u2014 backup and IAM",
+      "owner": "RS",
+      "measure_of_success": "Reduce ITDS current risk total from 200 to below 140 by Q4 assessment",
+      "target_date": "2026-12-31",
+      "status": "off_track",
+      "notes": "Residual risk has risen 103 points since baseline. Restore testing not yet evidenced and MFA coverage incomplete across infrastructure and applications. Remediation owner assigned; plan due for portfolio review.",
+      "kind": "improvement"
+    },
+    {
+      "bu": "grosvenor",
+      "title": "Overdue AR and WIP recovery",
+      "owner": "RS",
+      "measure_of_success": "WC% back to 14% and overdue AR below 10%",
+      "target_date": "2027-03-31",
+      "status": "off_track",
+      "notes": "WC% 19.6% against a 14% target. Overdue AR 22.4% and WIP over 30 days 26.3%. Weekly cash call established with the group FD from September.",
+      "kind": "working_capital"
+    }
+  ],
+  "governance": [
+    {
+      "bu": "tbl",
+      "period": "2026-Q3",
+      "stage": "Monitor",
+      "expected_exit": "Mar-27",
+      "score": null,
+      "score_max": null,
+      "overall_status": "at_risk",
+      "commentary": ""
+    },
+    {
+      "bu": "tlm",
+      "period": "2026-Q3",
+      "stage": "Grow",
+      "expected_exit": "\u2014",
+      "score": null,
+      "score_max": null,
+      "overall_status": "on_track",
+      "commentary": ""
+    },
+    {
+      "bu": "grosvenor",
+      "period": "2026-Q3",
+      "stage": "Take Action",
+      "expected_exit": "Jun-27",
+      "score": null,
+      "score_max": null,
+      "overall_status": "off_track",
+      "commentary": ""
+    }
+  ]
+}

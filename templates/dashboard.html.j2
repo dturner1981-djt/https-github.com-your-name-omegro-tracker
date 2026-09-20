@@ -1,0 +1,751 @@
+<title>Turner Group Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root {
+  /* Cool-neutral ground with a faint green bias, so it reads as chosen
+     rather than as default grey. */
+  --ground:        #eef1f0;
+  --surface:       #ffffff;
+  --surface-sunk:  #f6f8f7;
+  --ink:           #141817;
+  --ink-2:         #4f5956;
+  --ink-3:         #818b88;
+  --line:          #dfe4e2;
+  --line-strong:   #c6cecb;
+  --accent:        #0d4f52;
+  --accent-ink:    #ffffff;
+
+  /* Reserved status palette. Never used for a series. */
+  --good:     #0ca30c;
+  --warning:  #fab219;
+  --serious:  #ec835a;
+  --critical: #d03b3b;
+  --muted:    #818b88;
+  --good-wash:     rgba(12,163,12,.10);
+  --warning-wash:  rgba(250,178,25,.16);
+  --serious-wash:  rgba(236,131,90,.16);
+  --critical-wash: rgba(208,59,59,.11);
+  --muted-wash:    rgba(129,139,136,.12);
+
+  /* Chart ink */
+  --chart-forecast: #c6cecb;
+  --chart-actual:   #0d4f52;
+  --chart-grid:     #e6eae8;
+  --chart-baseline: #c6cecb;
+
+  --radius: 3px;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:        #0d100f;
+    --surface:       #181c1b;
+    --surface-sunk:  #141817;
+    --ink:           #f2f5f4;
+    --ink-2:         #b3bcb9;
+    --ink-3:         #7f8986;
+    --line:          #272d2b;
+    --line-strong:   #3a4240;
+    --accent:        #63b9bd;
+    --accent-ink:    #08211f;
+    --good-wash:     rgba(12,163,12,.16);
+    --warning-wash:  rgba(250,178,25,.18);
+    --serious-wash:  rgba(236,131,90,.18);
+    --critical-wash: rgba(208,59,59,.18);
+    --muted-wash:    rgba(129,139,136,.16);
+    --chart-forecast: #3a4240;
+    --chart-actual:   #63b9bd;
+    --chart-grid:     #242a28;
+    --chart-baseline: #3a4240;
+  }
+}
+:root[data-theme="dark"] {
+  --ground:        #0d100f;
+  --surface:       #181c1b;
+  --surface-sunk:  #141817;
+  --ink:           #f2f5f4;
+  --ink-2:         #b3bcb9;
+  --ink-3:         #7f8986;
+  --line:          #272d2b;
+  --line-strong:   #3a4240;
+  --accent:        #63b9bd;
+  --accent-ink:    #08211f;
+  --good-wash:     rgba(12,163,12,.16);
+  --warning-wash:  rgba(250,178,25,.18);
+  --serious-wash:  rgba(236,131,90,.18);
+  --critical-wash: rgba(208,59,59,.18);
+  --muted-wash:    rgba(129,139,136,.16);
+  --chart-forecast: #3a4240;
+  --chart-actual:   #63b9bd;
+  --chart-grid:     #242a28;
+  --chart-baseline: #3a4240;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 0 56px; }
+
+/* ---------------------------------------------------------- masthead */
+.masthead {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+}
+.masthead-inner {
+  max-width: 1180px; margin: 0 auto; padding-inline: 16px;
+  padding-block: 12px; display: flex; flex-wrap: wrap;
+  align-items: baseline; gap: 10px 20px;
+}
+.wordmark { display: flex; align-items: baseline; gap: 10px; margin-right: auto; }
+.wordmark h1 {
+  margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.01em;
+  text-wrap: balance;
+}
+.wordmark .sub {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-3);
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.period-stack { display: flex; gap: 18px; font-family: var(--mono); font-size: 11px; }
+.period-stack div { display: flex; flex-direction: column; gap: 1px; }
+.period-stack .k { color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; font-size: 9.5px; }
+.period-stack .v { color: var(--ink); font-weight: 600; font-size: 12px; }
+
+/* ------------------------------------------------------------- banner */
+.banner {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: var(--warning-wash); border: 1px solid var(--warning);
+  border-radius: var(--radius); padding: 11px 14px; margin-top: 20px;
+  font-size: 12.5px; line-height: 1.5;
+}
+.banner .mark { font-family: var(--mono); font-weight: 600; color: var(--ink); flex: none; }
+.banner strong { font-weight: 600; }
+
+/* ------------------------------------------------------------ toolbar */
+.toolbar {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+  margin-top: 22px;
+}
+.seg {
+  display: inline-flex; border: 1px solid var(--line-strong);
+  border-radius: var(--radius); overflow: hidden; background: var(--surface);
+}
+.seg button {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+  letter-spacing: .03em; color: var(--ink-2);
+  padding: 7px 13px; border-right: 1px solid var(--line);
+}
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--surface-sunk); color: var(--ink); }
+.seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.toolbar .spacer { margin-left: auto; }
+.toolbar .hint { font-size: 11.5px; color: var(--ink-3); font-family: var(--mono); }
+
+/* ----------------------------------------------------- portfolio bar */
+.portfolio {
+  margin-top: 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius);
+}
+.portfolio-head {
+  padding: 12px 16px; border-bottom: 1px solid var(--line);
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+}
+.portfolio-head h2 { margin: 0; font-size: 13px; font-weight: 600; letter-spacing: -.005em; }
+.portfolio-head .note { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.readouts { display: grid; grid-template-columns: repeat(4, 1fr); }
+.readout { padding: 14px 16px 15px; border-right: 1px solid var(--line); }
+.readout:last-child { border-right: 0; }
+.readout .k {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink-3);
+}
+.readout .v {
+  font-size: 24px; font-weight: 600; letter-spacing: -.02em;
+  margin-top: 5px; line-height: 1.1;
+}
+.readout .meta {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-2);
+  margin-top: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.ledger { display: flex; gap: 5px; margin-top: 7px; flex-wrap: wrap; }
+.ledger .tick {
+  font-family: var(--mono); font-size: 10.5px; padding: 2px 7px;
+  border-radius: var(--radius); font-weight: 500;
+}
+
+/* --------------------------------------------------------- BU panels */
+.panel {
+  margin-top: 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  border-left: 3px solid var(--line-strong);
+}
+.panel[data-overall="off_track"] { border-left-color: var(--critical); }
+.panel[data-overall="at_risk"]   { border-left-color: var(--warning); }
+.panel[data-overall="on_track"]  { border-left-color: var(--good); }
+
+.panel-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px;
+  padding: 13px 16px; border-bottom: 1px solid var(--line);
+}
+.panel-head h3 { margin: 0; font-size: 16px; font-weight: 700; letter-spacing: -.015em; }
+.panel-head .facts {
+  display: flex; gap: 14px; flex-wrap: wrap; margin-left: auto;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-2);
+}
+.panel-head .facts span b { color: var(--ink-3); font-weight: 500; }
+
+.pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: var(--radius); white-space: nowrap;
+}
+.pill .g { font-size: 8px; line-height: 1; }
+.tone-good     { background: var(--good-wash);     color: var(--ink); box-shadow: inset 0 0 0 1px var(--good); }
+.tone-warning  { background: var(--warning-wash);  color: var(--ink); box-shadow: inset 0 0 0 1px var(--warning); }
+.tone-serious  { background: var(--serious-wash);  color: var(--ink); box-shadow: inset 0 0 0 1px var(--serious); }
+.tone-critical { background: var(--critical-wash); color: var(--ink); box-shadow: inset 0 0 0 1px var(--critical); }
+.tone-muted    { background: var(--muted-wash);    color: var(--ink-2); box-shadow: inset 0 0 0 1px var(--line-strong); }
+
+.panel-body { display: grid; grid-template-columns: minmax(0,2.05fr) minmax(0,1fr); }
+.panel-main { padding: 0; border-right: 1px solid var(--line); min-width: 0; }
+.panel-side { padding: 16px; min-width: 0; background: var(--surface-sunk); }
+
+.block-title {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-3); margin: 0 0 9px;
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------- data table */
+.table-scroll { overflow-x: auto; }
+table.data { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 620px; }
+table.data th, table.data td { padding: 6px 7px; text-align: right; white-space: nowrap; }
+table.data th:first-child, table.data td:first-child {
+  text-align: left; white-space: normal; padding-left: 16px; width: 1%; min-width: 92px;
+}
+table.data th:last-child, table.data td:last-child { padding-right: 16px; }
+table.data thead th {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-3); font-weight: 600;
+  border-bottom: 1px solid var(--line-strong); padding-top: 12px;
+}
+table.data thead tr.band th {
+  border-bottom: 0; padding-bottom: 2px; color: var(--ink-2);
+  border-left: 1px solid var(--line);
+}
+table.data thead tr.band th:first-child { border-left: 0; }
+table.data tbody td { border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; font-family: var(--mono); }
+table.data tbody td:first-child { font-family: var(--sans); font-weight: 500; }
+table.data tbody tr:last-child td { border-bottom: 0; }
+table.data tbody tr:hover td { background: var(--surface-sunk); }
+table.data .sep { border-left: 1px solid var(--line); }
+table.data .ref { color: var(--ink-3); }
+.chip {
+  display: inline-flex; align-items: center; gap: 4px; justify-content: flex-end;
+  font-family: var(--mono); font-size: 11.5px; font-weight: 600;
+  padding: 1px 6px; border-radius: var(--radius);
+}
+.chip .g { font-size: 7.5px; line-height: 1; }
+.chip.tone-good     { background: var(--good-wash);     color: var(--ink); box-shadow: none; }
+.chip.tone-warning  { background: var(--warning-wash);  color: var(--ink); box-shadow: none; }
+.chip.tone-critical { background: var(--critical-wash); color: var(--ink); box-shadow: none; }
+.chip.tone-muted    { background: transparent; color: var(--ink-3); box-shadow: none; }
+
+/* -------------------------------------------------------------- charts */
+.charts { display: flex; gap: 20px; flex-wrap: wrap; padding: 14px 16px 16px; border-top: 1px solid var(--line); }
+.chart figcaption {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink-3); font-weight: 600; margin-bottom: 2px;
+}
+.chart .legend { display: flex; gap: 12px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); margin-top: 2px; }
+.chart .legend i { display: inline-block; width: 9px; height: 9px; margin-right: 4px; vertical-align: -1px; }
+figure.chart { margin: 0; }
+svg text { font-family: var(--mono); }
+
+/* ------------------------------------------------------------ ITDS pane */
+.risk-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.risk-score { font-size: 27px; font-weight: 600; letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums; }
+.risk-of { font-family: var(--mono); font-size: 11.5px; color: var(--ink-3); }
+.risk-move { font-family: var(--mono); font-size: 11.5px; margin-left: auto; }
+.rail-labels { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9.5px; color: var(--ink-3); margin-top: 1px; }
+.control-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-2); margin-top: 6px; }
+.control-legend i { display: inline-block; width: 9px; height: 9px; margin-right: 5px; vertical-align: -1px; }
+.key-areas { list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+.key-areas li { font-size: 12px; line-height: 1.45; color: var(--ink-2); }
+.key-areas .name { display: inline-flex; align-items: center; gap: 5px; color: var(--ink); font-weight: 600; }
+.key-areas .name .g { font-size: 8px; }
+.side-stat { display: flex; gap: 16px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-top: 12px; }
+.side-stat b { color: var(--ink); font-weight: 600; }
+
+/* ---------------------------------------------------------- initiatives */
+.initiatives { padding: 14px 16px 16px; border-top: 1px solid var(--line); }
+.init-list { display: flex; flex-direction: column; gap: 0; }
+.init {
+  display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 14px;
+  padding: 11px 0; border-bottom: 1px solid var(--line);
+}
+.init:last-child { border-bottom: 0; }
+.init .title { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.init .owner {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-2);
+  background: var(--surface-sunk); border: 1px solid var(--line);
+  padding: 1px 5px; border-radius: var(--radius);
+}
+.init .measure { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; }
+.init .notes { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; line-height: 1.5; }
+.init .when { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
+
+/* -------------------------------------------------------------- footer */
+.provenance { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.provenance h2 { margin: 0; padding: 12px 16px; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--line); }
+table.sources { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 520px; }
+table.sources th, table.sources td { padding: 8px 16px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+table.sources thead th { font-family: var(--mono); font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+table.sources tbody tr:last-child td { border-bottom: 0; }
+table.sources td.id { font-family: var(--mono); color: var(--ink); }
+table.sources td.detail { color: var(--ink-2); }
+.colophon { margin-top: 18px; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
+.colophon code { font-family: var(--mono); font-size: 11px; background: var(--surface); border: 1px solid var(--line); padding: 1px 4px; border-radius: var(--radius); }
+
+@media (max-width: 900px) {
+  .panel-body { grid-template-columns: 1fr; }
+  .panel-main { border-right: 0; border-bottom: 1px solid var(--line); }
+  .readouts { grid-template-columns: repeat(2, 1fr); }
+  .readout:nth-child(2) { border-right: 0; }
+  .readout:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 560px) {
+  .readouts { grid-template-columns: 1fr; }
+  .readout { border-right: 0; border-bottom: 1px solid var(--line); }
+  .readout:last-child { border-bottom: 0; }
+  .panel-head .facts { margin-left: 0; }
+  .init { grid-template-columns: 1fr; }
+}
+@media print {
+  .toolbar, .masthead { position: static; }
+  .panel, .portfolio, .provenance { break-inside: avoid; }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+{% macro chip(cell) %}
+<span class="chip tone-{{ cell.token }}">{% if cell.reported %}<span class="g" aria-hidden="true">{{ cell.glyph }}</span>{% endif %}{{ cell.display }}</span>
+{% endmacro %}
+
+{% macro traj(chart, caption) %}
+{% if chart %}
+<figure class="chart">
+  <figcaption>{{ caption }}</figcaption>
+  <svg width="{{ chart.width }}" height="{{ chart.height }}" viewBox="0 0 {{ chart.width }} {{ chart.height }}" role="img" aria-label="{{ caption }} by month, forecast against actual">
+    <line x1="0" y1="{{ chart.baseline_y }}" x2="{{ chart.width }}" y2="{{ chart.baseline_y }}" stroke="var(--chart-baseline)" stroke-width="1"/>
+    {% for b in chart.bars %}
+    <rect x="{{ '%.1f'|format(b.x) }}" y="{{ '%.1f'|format(b.y) }}" width="{{ '%.1f'|format(b.width) }}" height="{{ '%.1f'|format(b.height) }}"
+          rx="2" fill="{{ 'var(--chart-forecast)' if b.token == 'forecast' else 'var(--chart-actual)' }}">
+      <title>{{ b.label }}: {{ b.value_label }}</title>
+    </rect>
+    {% endfor %}
+    {% for t in chart.ticks %}
+    <text x="{{ '%.1f'|format(t.x) }}" y="{{ t.y }}" text-anchor="middle" font-size="9.5" fill="var(--ink-3)">{{ t.label }}</text>
+    {% endfor %}
+  </svg>
+  <div class="legend">
+    <span><i style="background:var(--chart-forecast)"></i>Forecast</span>
+    <span><i style="background:var(--chart-actual)"></i>Actual</span>
+  </div>
+</figure>
+{% endif %}
+{% endmacro %}
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="wordmark">
+      <h1>{{ group.name }}</h1>
+      <span class="sub">{{ group.portfolio }} &middot; {{ group.operating_group }}</span>
+    </div>
+    <div class="period-stack">
+      <div><span class="k">Close</span><span class="v">{{ period_label }}</span></div>
+      <div><span class="k">Quarter</span><span class="v">{{ quarter_label }}</span></div>
+      <div><span class="k">Currency</span><span class="v">{{ currency }}</span></div>
+      <div><span class="k">Refreshed</span><span class="v">{{ generated }}</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+{% if seeded %}
+<div class="banner" role="note">
+  <span class="mark" aria-hidden="true">!</span>
+  <span><strong>Financial figures on this page are illustrative placeholders, not actual results.</strong>
+  No live financial source is connected yet &mdash; run <code style="font-family:var(--mono)">omegro-tracker refresh</code>
+  with Graph credentials to replace them. The governance and ITDS panes below are live:
+  they carry the published {{ itds_period }} assessment.</span>
+</div>
+{% endif %}
+
+<div class="toolbar">
+  <div class="seg" role="group" aria-label="Filter business units">
+    <button type="button" id="filter-all" data-filter="all" aria-pressed="true">All units</button>
+    {% for p in panels %}
+    <button type="button" id="filter-{{ p.key }}" data-filter="{{ p.key }}" aria-pressed="false">{{ p.short }}</button>
+    {% endfor %}
+  </div>
+  <div class="seg" role="group" aria-label="Choose reporting view">
+    <button type="button" id="view-pnl" data-view="pnl" aria-pressed="true">P&amp;L</button>
+    <button type="button" id="view-wc" data-view="wc" aria-pressed="false">Working capital</button>
+    <button type="button" id="view-gov" data-view="gov" aria-pressed="false">Governance &amp; ITDS</button>
+  </div>
+  <span class="spacer"></span>
+  <span class="hint">Variance is measured against approved forecast</span>
+</div>
+
+<!-- ------------------------------------------------------ portfolio bar -->
+<section class="portfolio" aria-labelledby="rollup-title">
+  <div class="portfolio-head">
+    <h2 id="rollup-title">Group position</h2>
+    <span class="note">{{ rollup.bu_count }} business units &middot; quarter to date vs forecast</span>
+  </div>
+  <div class="readouts">
+    <div class="readout">
+      <div class="k">Net revenue QTD</div>
+      <div class="v">{{ rollup.net_revenue.value }}</div>
+      <div class="meta">
+        <span class="chip tone-{{ rollup.net_revenue.token }}"><span class="g" aria-hidden="true">{{ rollup.net_revenue.glyph }}</span>{{ rollup.net_revenue.delta_pct }}</span>
+        <span>vs {{ rollup.net_revenue.reference }} fcst</span>
+      </div>
+    </div>
+    <div class="readout">
+      <div class="k">EBITA QTD</div>
+      <div class="v">{{ rollup.ebita.value }}</div>
+      <div class="meta">
+        <span class="chip tone-{{ rollup.ebita.token }}"><span class="g" aria-hidden="true">{{ rollup.ebita.glyph }}</span>{{ rollup.ebita.delta_pct }}</span>
+        <span>vs {{ rollup.ebita.reference }} fcst</span>
+      </div>
+    </div>
+    <div class="readout">
+      <div class="k">EBITA margin QTD</div>
+      <div class="v">{{ rollup.ebita_pct.value }}</div>
+      <div class="meta">
+        <span class="chip tone-{{ rollup.ebita_pct.token }}"><span class="g" aria-hidden="true">{{ rollup.ebita_pct.glyph }}</span>{{ rollup.ebita_pct.delta }}</span>
+        <span>vs {{ rollup.ebita_pct.reference }} fcst</span>
+      </div>
+    </div>
+    <div class="readout">
+      <div class="k">Unit status</div>
+      <div class="v">{{ rollup.counts.off_track }}<span style="font-size:15px;color:var(--ink-3);font-weight:500"> off track</span></div>
+      <div class="ledger">
+        <span class="tick tone-good">{{ rollup.counts.on_track }} on track</span>
+        <span class="tick tone-warning">{{ rollup.counts.at_risk }} at risk</span>
+        <span class="tick tone-critical">{{ rollup.counts.off_track }} off track</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- --------------------------------------------------------- BU panels -->
+{% for p in panels %}
+<section class="panel" data-bu="{{ p.key }}" data-overall="{{ p.overall }}" aria-labelledby="bu-{{ p.key }}">
+  <div class="panel-head">
+    <h3 id="bu-{{ p.key }}">{{ p.name }}</h3>
+    <span class="pill tone-{{ p.overall_token }}"><span class="g" aria-hidden="true">{{ p.overall_glyph }}</span>{{ p.overall_label }}</span>
+    <div class="facts">
+      <span><b>Lead</b> {{ p.contact }}</span>
+      <span><b>OG stage</b> {{ p.stage }}</span>
+      <span><b>Exit by</b> {{ p.expected_exit }}</span>
+      <span><b>ITDS</b> {{ p.itds_posture }}</span>
+    </div>
+  </div>
+
+  <div class="panel-body">
+    <div class="panel-main">
+
+      <!-- P&L -->
+      <div data-view-pane="pnl">
+        <div class="table-scroll">
+          <table class="data">
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Profit &amp; loss vs forecast</caption>
+            <thead>
+              <tr class="band">
+                <th></th>
+                <th colspan="2">{{ period_label }} month</th>
+                <th colspan="2" class="sep">Quarter to date</th>
+                <th colspan="2" class="sep">Year to date</th>
+                <th colspan="2" class="sep">{{ quarter_label }} outturn</th>
+                <th class="sep">{{ next_quarter_label }}</th>
+              </tr>
+              <tr>
+                <th>Metric</th>
+                <th>Actual</th><th>Var</th>
+                <th class="sep">Actual</th><th>Var</th>
+                <th class="sep">Actual</th><th>Var</th>
+                <th class="sep">Projection</th><th>Var</th>
+                <th class="sep">Forecast</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in p.pnl_rows %}
+              <tr>
+                <td>{{ r.label }}</td>
+                <td>{{ r.month.value }}</td>
+                <td>{{ chip(r.month) }}</td>
+                <td class="sep">{{ r.qtd.value }}</td>
+                <td>{{ chip(r.qtd) }}</td>
+                <td class="sep">{{ r.ytd.value }}</td>
+                <td>{{ chip(r.ytd) }}</td>
+                <td class="sep">{{ r.outturn.value }}</td>
+                <td>{{ chip(r.outturn) }}</td>
+                <td class="sep ref">{{ r.next }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="charts">
+          {{ traj(p.nr_chart, "Net revenue by month — " + quarter_label) }}
+          {{ traj(p.ebita_chart, "EBITA by month — " + quarter_label) }}
+        </div>
+      </div>
+
+      <!-- Working capital -->
+      <div data-view-pane="wc" hidden>
+        <div class="table-scroll">
+          <table class="data">
+            <caption class="block-title" style="text-align:left;padding:13px 16px 0">Working capital vs target</caption>
+            <thead>
+              <tr class="band">
+                <th></th>
+                <th colspan="3">Previous month</th>
+                <th colspan="3" class="sep">{{ period_label }}</th>
+                <th class="sep">Next</th>
+              </tr>
+              <tr>
+                <th>Metric</th>
+                <th>Target</th><th>Actual</th><th>Var</th>
+                <th class="sep">Target</th><th>Actual</th><th>Var</th>
+                <th class="sep">Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in p.wc_rows %}
+              <tr>
+                <td>{{ r.label }}</td>
+                <td class="ref">{{ r.previous.reference }}</td>
+                <td>{{ r.previous.value }}</td>
+                <td><span class="chip tone-{{ r.previous.token }}">{% if r.previous.reported %}<span class="g" aria-hidden="true">{{ r.previous.glyph }}</span>{% endif %}{{ r.previous.delta }}</span></td>
+                <td class="sep ref">{{ r.current.reference }}</td>
+                <td>{{ r.current.value }}</td>
+                <td><span class="chip tone-{{ r.current.token }}">{% if r.current.reported %}<span class="g" aria-hidden="true">{{ r.current.glyph }}</span>{% endif %}{{ r.current.delta }}</span></td>
+                <td class="sep ref">{{ r.next }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Governance pane placeholder keeps the grid stable on narrow views -->
+      <div data-view-pane="gov" hidden>
+        <div style="padding:14px 16px 16px">
+          <p class="block-title">Operational governance</p>
+          <div class="side-stat" style="margin-top:0">
+            <span><b>Stage</b> {{ p.stage }}</span>
+            <span><b>Expected exit</b> {{ p.expected_exit }}</span>
+            <span><b>Overall</b> {{ p.overall_label }}</span>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
+            Stage and expected exit come from the business unit's monthly Progress Report header and the
+            quarterly Operational Governance Scorecard. Improvement plan progress is listed below.
+          </p>
+        </div>
+      </div>
+
+      <!-- Improvement plan -->
+      <div class="initiatives">
+        <p class="block-title">Improvement plan &amp; working capital actions</p>
+        <div class="init-list">
+          {% for i in p.improvements %}
+          <div class="init">
+            <div class="title">
+              {{ i.title }}
+              {% if i.owner %}<span class="owner">{{ i.owner }}</span>{% endif %}
+            </div>
+            <div class="when">
+              <span>{{ i.target_date }}</span>
+              <span class="pill tone-{{ i.token }}"><span class="g" aria-hidden="true">{{ i.glyph }}</span>{{ i.status_label }}</span>
+            </div>
+            {% if i.measure %}<div class="measure">{{ i.measure }}</div>{% endif %}
+            {% if i.notes %}<div class="notes">{{ i.notes }}</div>{% endif %}
+          </div>
+          {% else %}
+          <p style="font-size:12.5px;color:var(--ink-3);margin:0">No initiatives reported for this period.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- ITDS side panel -->
+    <aside class="panel-side">
+      <p class="block-title">ITDS position &mdash; {{ itds_period }}</p>
+      {% if p.risk_rail %}
+      <div class="risk-head">
+        <span class="risk-score">{{ '%.0f'|format(p.itds.risk_current) }}</span>
+        <span class="risk-of">/ {{ '%.0f'|format(p.itds.risk_max) }} residual risk</span>
+        <span class="pill tone-{{ p.itds_token }}" style="margin-left:auto">{{ p.itds_posture }}</span>
+      </div>
+      <svg width="100%" height="{{ p.risk_rail.height }}" viewBox="0 0 {{ p.risk_rail.width }} {{ p.risk_rail.height }}"
+           preserveAspectRatio="none" role="img"
+           aria-label="Residual risk {{ '%.0f'|format(p.itds.risk_current) }} of {{ '%.0f'|format(p.itds.risk_max) }}{% if p.itds.risk_initial is not none %}, baseline {{ '%.0f'|format(p.itds.risk_initial) }}{% endif %}"
+           style="margin-top:10px;display:block">
+        <rect x="0" y="12" width="{{ p.risk_rail.width }}" height="14" rx="2" fill="var(--chart-grid)"/>
+        <rect x="0" y="12" width="{{ '%.1f'|format(p.risk_rail.fill_w) }}" height="14" rx="2" fill="var(--{{ p.risk_rail.token }})"/>
+        {% if p.risk_rail.initial_x is not none %}
+        <line x1="{{ '%.1f'|format(p.risk_rail.initial_x) }}" y1="7" x2="{{ '%.1f'|format(p.risk_rail.initial_x) }}" y2="31"
+              stroke="var(--ink)" stroke-width="2"/>
+        {% endif %}
+      </svg>
+      <div class="rail-labels">
+        <span>0</span>
+        {% if p.itds.risk_initial is not none %}<span>&#9474; baseline {{ '%.0f'|format(p.itds.risk_initial) }}</span>{% endif %}
+        <span>{{ '%.0f'|format(p.itds.risk_max) }}</span>
+      </div>
+      <div class="side-stat">
+        <span><b>{{ '%.0f'|format(p.itds.risk_pct * 100) }}%</b> of maximum risk</span>
+        {% if p.itds.movement is not none %}
+        <span>Movement <b style="color:var(--{{ 'critical' if p.itds.movement > 0 else 'good' }})">{{ '%+.0f'|format(p.itds.movement) }}</b> vs baseline</span>
+        {% endif %}
+        {% if p.itds.average_kri is not none %}<span>Avg KRI <b>{{ p.itds.average_kri }}</b></span>{% endif %}
+      </div>
+      {% else %}
+      <p style="font-size:12.5px;color:var(--ink-3)">No ITDS assessment published for this unit.</p>
+      {% endif %}
+
+      {% if p.control_bar %}
+      <p class="block-title" style="margin-top:18px">Control effectiveness &mdash; {{ p.control_bar.total }} assessed</p>
+      <svg width="100%" height="14" viewBox="0 0 300 14" preserveAspectRatio="none" role="img"
+           aria-label="Control effectiveness breakdown" style="display:block">
+        {% for s in p.control_bar.segments %}
+        <rect x="{{ '%.1f'|format(s.x) }}" y="0" width="{{ '%.1f'|format(s.width) }}" height="14" fill="var(--{{ s.token }})">
+          <title>{{ s.count }} controls {{ s.label }}</title>
+        </rect>
+        {% endfor %}
+      </svg>
+      <div class="control-legend">
+        {% for s in p.control_bar.segments %}
+        <span><i style="background:var(--{{ s.token }})"></i>{{ s.count }} {{ s.label }}</span>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if p.key_areas %}
+      <ul class="key-areas">
+        {% for k in p.key_areas %}
+        <li>
+          <span class="name"><span class="g" aria-hidden="true" style="color:var(--{{ k.token }})">{{ k.glyph }}</span>{{ k.name }}</span>
+          &mdash; {{ k.narrative }}
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if p.itds and p.itds.not_met is not none %}
+      <div class="side-stat" style="margin-top:14px">
+        <span>Not met <b>{{ p.itds.not_met }}</b></span>
+        <span>Largely not met <b>{{ p.itds.largely_not_met }}</b></span>
+        <span>Partially met <b>{{ p.itds.partially_met }}</b></span>
+      </div>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+{% endfor %}
+
+<!-- --------------------------------------------------------- provenance -->
+<section class="provenance" aria-labelledby="prov-title">
+  <h2 id="prov-title">Data sources</h2>
+  <div class="table-scroll">
+    <table class="sources">
+      <thead>
+        <tr><th>Source</th><th>Status</th><th>Detail</th><th>Source modified</th><th>Read</th></tr>
+      </thead>
+      <tbody>
+        {% for r in runs %}
+        <tr>
+          <td class="id">{{ r.id }}</td>
+          <td>
+            <span class="pill tone-{{ {'ok':'good','seed':'warning','missing':'muted','error':'critical'}[r.status] }}">{{ r.status }}</span>
+          </td>
+          <td class="detail">{{ r.detail }}</td>
+          <td class="detail">{{ r.modified }}</td>
+          <td class="detail">{{ r.fetched }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<p class="colophon">
+  Built by <code>omegro-tracker</code> from SharePoint sources on the Omegro tenant.
+  Financial schema follows the Nelson Portfolio Business Unit Progress Report; ITDS figures are the
+  published Portfolio Security Assessment residual risk, scored out of 400 where lower is better.
+  Variance bands: on track within &plusmn;5%, at risk to &plusmn;10%, off track beyond &mdash; percentage-point
+  metrics use &plusmn;1pt and &plusmn;3pt. Refresh with <code>omegro-tracker refresh &amp;&amp; omegro-tracker render</code>.
+</p>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var panels = Array.prototype.slice.call(document.querySelectorAll("[data-bu]"));
+  var filters = Array.prototype.slice.call(document.querySelectorAll("[data-filter]"));
+  var views = Array.prototype.slice.call(document.querySelectorAll("[data-view]"));
+
+  function press(group, active) {
+    group.forEach(function (b) { b.setAttribute("aria-pressed", String(b === active)); });
+  }
+
+  function applyFilter(key) {
+    panels.forEach(function (p) { p.hidden = key !== "all" && p.dataset.bu !== key; });
+    try { localStorage.setItem("turner.filter", key); } catch (e) { /* private mode */ }
+  }
+
+  function applyView(view) {
+    document.querySelectorAll("[data-view-pane]").forEach(function (pane) {
+      pane.hidden = pane.dataset.viewPane !== view;
+    });
+    try { localStorage.setItem("turner.view", view); } catch (e) { /* private mode */ }
+  }
+
+  filters.forEach(function (b) {
+    b.addEventListener("click", function () { press(filters, b); applyFilter(b.dataset.filter); });
+  });
+  views.forEach(function (b) {
+    b.addEventListener("click", function () { press(views, b); applyView(b.dataset.view); });
+  });
+
+  // Restore the reader's last choice, but only if it still resolves to a
+  // control that exists — the unit list changes between refreshes.
+  var savedFilter = null, savedView = null;
+  try {
+    savedFilter = localStorage.getItem("turner.filter");
+    savedView = localStorage.getItem("turner.view");
+  } catch (e) { /* private mode */ }
+
+  var f = filters.filter(function (b) { return b.dataset.filter === savedFilter; })[0];
+  if (f) { press(filters, f); applyFilter(f.dataset.filter); }
+  var v = views.filter(function (b) { return b.dataset.view === savedView; })[0];
+  if (v) { press(views, v); applyView(v.dataset.view); }
+})();
+</script>

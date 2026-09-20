@@ -1,0 +1,116 @@
+# SharePoint / Microsoft Graph source registry.
+#
+# Every id below was resolved against the Omegro tenant (ourvolaris.sharepoint.com).
+# `drive_id` + `item_id` address a file directly through Graph:
+#   GET /drives/{drive_id}/items/{item_id}/content
+# `folder` sources are resolved at refresh time by listing children and picking
+# the most recent file matching `match` — that is how the monthly submissions
+# are picked up without re-pointing config every month.
+#
+# Set OMEGRO_TRACKER_TENANT_ID / CLIENT_ID / CLIENT_SECRET (or run
+# `omegro-tracker refresh --device-code` for delegated auth) before refreshing.
+
+graph:
+  tenant_host: ourvolaris.sharepoint.com
+  scopes: ["Sites.Read.All", "Files.Read.All"]
+  # Large workbooks (the OG scorecard is ~5MB) must be downloaded and parsed
+  # locally — the Graph workbook session API times out on them.
+  download_dir: .cache/graph
+  request_timeout_seconds: 120
+
+sources:
+
+  # ---------------------------------------------------------------- financial
+
+  - id: monthly_review_template
+    kind: template
+    parser: monthly_review
+    description: >
+      Nelson Portfolio Business Unit Progress Report. Defines the canonical
+      P&L and Working Capital reporting schema for every BU in the portfolio.
+      Sheets: "P&L Progress Report", "Working Capital Progress Report",
+      "P&L Progress Report (Quarterly)".
+    site: GRPNelsonPortfolio_efmf0bAndyNelsonGroup-NelsonPortfolioFinance
+    drive_id: b!MtFdpKFsqE-DjBxSLWwBaBvRN15bhP5Blum8Y6ChNx-Ccm3_FMj0T4fxUBpqmpRP
+    item_id: 01TJCW6CSGPBJEGCERWVG3GS2MIHWSEDXX
+    path: Nelson Portfolio Finance/Presentations/Monthly Review Template.xlsx
+
+  - id: bu_monthly_submissions
+    kind: folder
+    parser: monthly_review
+    description: >
+      Completed monthly BU Progress Reports, one workbook per business unit per
+      month, due within 7 business days of month-end close. Each submission
+      carries QTD actual vs forecast, full-quarter projection (outturn) and the
+      next-quarter forecast, plus the improvement-plan initiative rows.
+    site: GRPNelsonPortfolio_efmf0bAndyNelsonGroup-NelsonPortfolioFinance
+    drive_id: b!MtFdpKFsqE-DjBxSLWwBaBvRN15bhP5Blum8Y6ChNx-Ccm3_FMj0T4fxUBpqmpRP
+    path: Nelson Portfolio Finance/Monthly Reviews
+    match: "*{bu_alias}*{period}*.xlsx"
+    required: false   # folder is being stood up; template dated Jun-26
+
+  - id: og_scorecard
+    kind: file
+    parser: og_scorecard
+    description: >
+      Quarterly Operational Governance Scorecard for the Nelson Portfolio.
+      Source of the OG stage, OG score and the core Volaris metric set
+      (Net Revenue, EBITA %, Organic Growth %, Core Ratio, WC %) per BU.
+      Large workbook — always parsed from a local download.
+    site: GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
+    drive_id: b!dSR7_AeeqEumTDDVXUh0hFz8Ec1k0qxKun28hMYRrQdDsM8Z-uSiQoBEB8FOs-4u
+    item_id: 01D6HCE5773TCAY5TTO5BJIUAAA3NW2DP7
+    path: Leadership/09. Operational Governance/Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx
+    period: 2026-Q2
+
+  - id: og_scorecard_history
+    kind: folder
+    parser: og_scorecard
+    description: Prior-quarter OG scorecards, used for stage/score trend.
+    site: OmegroNelsonPortfolio
+    drive_id: b!ayPo5FEIH0GWh0cdPGjFv4eHmM01eiBHko3XYfvDsfOWBOSnd6kvTIuh5B_-YXqX
+    path: Operational Governance/Scoring Assessment
+    match: "*Operational Governance Scorecard*.xlsx"
+    required: false
+
+  - id: qsr_submissions
+    kind: folder
+    parser: qsr
+    description: >
+      Quarterly Submission Review packs. Source of the approved forecast that
+      QTD actuals and the full-quarter projection are measured against.
+    site: OmegroLeadership
+    drive_id: b!Wqpygzjwi0CkYecDMvCqTtkywNeqj0BOmu6p9sE8eoEhjQv7d4x8QLb2bg6DLogn
+    path: Omegro Leaders Shared/QSR Submissions
+    match: "*{bu_alias}*"
+    required: false
+
+  # ------------------------------------------------- governance / ITDS / risk
+
+  - id: itds_qdsr
+    kind: file
+    parser: itds_qdsr
+    description: >
+      Andy Nelson Portfolio QDSR Q2 Validation Assessment — consolidated ITDS
+      position for all 14 portfolio VBUs. Carries current and initial risk
+      total (out of 400), posture, control-effectiveness counts, average KRI,
+      focus population and the three key-area narratives (backup resilience,
+      IAM & MFA, detection & response).
+    site: GRPNelsonPortfolio_efmf0bAndyNelsonGroup-ExecTeam
+    drive_id: b!HMr_wH8E10ixJm3mLI8ICaW7IjdWy2BKpxLUzAzdHvv5_Tr0A0HySLOXYNvqXvzV
+    item_id: 01GRPFFOOZCJ2ZM33VJRH3AEKICJGWNZMI
+    path: Andy_Nelson_Portfolio_QDSR_Q2_Validation_Assessment_Results_v2.html
+    period: 2026-Q2
+
+  - id: itds_assessments
+    kind: folder
+    parser: itds_workbook
+    description: >
+      Per-BU ITDS assessment workbooks ("ITDS Assessment - {BU} - Q2.xlsx"),
+      the underlying control-level source behind the QDSR consolidation.
+      Remediation progress and ETAs are maintained in Smartsheet by the BU.
+    site: omegroitds
+    site_id: a89fd3ed-3481-4074-97e4-32e5cade414a
+    path: Shared Documents/ITDS Assessments
+    match: "ITDS Assessment - {bu_alias} - *.xlsx"
+    required: false

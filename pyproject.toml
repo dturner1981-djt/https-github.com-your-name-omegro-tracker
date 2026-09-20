@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "omegro-tracker"
+version = "0.1.0"
+description = "Turner Group business unit performance tracker — SharePoint to HTML dashboard"
+requires-python = ">=3.11"
+dependencies = ["openpyxl>=3.1", "requests>=2.31", "PyYAML>=6.0", "Jinja2>=3.1"]
+
+[project.scripts]
+omegro-tracker = "omegro_tracker.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

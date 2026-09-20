@@ -1,0 +1,118 @@
+# Turner Group — business units, owners and thresholds.
+# Group Leader: David Turner (Nelson Portfolio, Omegro).
+#
+# `key` is the stable internal id used everywhere in the pipeline.
+# `aliases` are the spellings these businesses appear under in source
+# workbooks — BPC entity names, ITDS assessment filenames and QSR packs all
+# differ, so matching is done on the alias list rather than the display name.
+
+group:
+  name: Turner Group
+  portfolio: Nelson Portfolio
+  operating_group: Omegro
+  group_leader: David Turner
+  portfolio_cfo: Renuka Simpson
+  reporting_currency: GBP
+  # Volaris/Omegro reporting runs on calendar quarters.
+  fiscal_year_start_month: 1
+
+business_units:
+  - key: tbl
+    name: Technology Blueprint
+    short_name: TBL
+    aliases: ["TBL", "Technology Blueprint", "Technology Blueprint Ltd", "Technology Blueprint Limited", "E_TECHB"]
+    country: United Kingdom
+    currency: GBP
+    products: ["PropCo Enterprise", "PropCo Web"]
+    contact: Stephen Craig
+    reports: [pnl, working_capital]
+
+  - key: tlm
+    name: tlmNexus
+    short_name: TLM
+    aliases: ["tlmNexus", "TLM Nexus", "tlmNexus Ltd", "TLM"]
+    country: United Kingdom
+    currency: GBP
+    products: ["Observe", "Asset Management"]
+    contact: Jean Triquet
+    reports: [pnl, working_capital]
+
+  - key: grosvenor
+    name: Grosvenor Systems
+    short_name: Grosvenor
+    aliases: ["Grosvenor", "Grosvenor Systems", "Grosvenor Systems Limited", "GROSV", "E_GROSV"]
+    country: United Kingdom
+    currency: GBP
+    products: ["Propman", "Progress Maintenance"]
+    contact: Renuka Simpson
+    reports: [pnl, working_capital]
+
+# Volaris standard metrics. `direction` says which way is good; the RAG bands
+# below are read against variance-to-forecast unless `absolute` is set.
+metrics:
+  net_revenue:
+    label: Net Revenue
+    unit: kGBP
+    direction: higher
+  ebita:
+    label: EBITA
+    unit: kGBP
+    direction: higher
+  ebita_pct:
+    label: EBITA %
+    unit: pct
+    direction: higher
+  og_pct:
+    label: Organic Growth %
+    unit: pct
+    direction: higher
+  bqr_pct:
+    label: BQR %
+    unit: pct
+    direction: higher
+  wc_pct:
+    label: Working Capital %
+    unit: pct
+    direction: lower
+  wc_pct_ex_cash:
+    label: WC % (excl. cash)
+    unit: pct
+    direction: lower
+  bookings:
+    label: Bookings
+    unit: kGBP
+    direction: higher
+  overdue_ar_pct:
+    label: Overdue AR %
+    unit: pct
+    direction: lower
+  wip_over_30_pct:
+    label: WIP > 30 days %
+    unit: pct
+    direction: lower
+
+# Variance to forecast. The Monthly Review Template calls anything beyond
+# +/-5% material and requiring commentary, so that is the amber gate.
+rag:
+  variance_pct:
+    on_track: 0.05      # |var| <= 5%
+    at_risk: 0.10       # |var| <= 10%, else off track
+  # Absolute gates for metrics judged against a standard, not a forecast.
+  absolute:
+    wc_pct: { on_track: 0.10, at_risk: 0.20 }
+    ebita_pct: { on_track: 0.20, at_risk: 0.10, direction: higher }
+
+# Operational Governance stages, best to worst. Drives the governance pane.
+og_stages: [Invest, Grow, Monitor, Take Action, Escalation]
+
+# ITDS Portfolio Security Assessment: risk score out of 400, lower is better.
+itds:
+  max_score: 400
+  postures:
+    Strong: good
+    Moderate: warning
+    Needs Improvement: serious
+    Critical: critical
+  # Control scoring: each of 50 controls scored 0-10; <7 is the focus population.
+  control_count: 50
+  focus_threshold: 7
