@@ -390,7 +390,7 @@ table.sources td.detail { color: var(--ink-2); }
       <div><span class="k">Close</span><span class="v">Aug-26</span></div>
       <div><span class="k">Quarter</span><span class="v">2026 Q3</span></div>
       <div><span class="k">Currency</span><span class="v">USD</span></div>
-      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 03:13 UTC</span></div>
+      <div><span class="k">Refreshed</span><span class="v">20 Sep 2026 03:26 UTC</span></div>
     </div>
   </div>
 </header>
@@ -421,7 +421,7 @@ table.sources td.detail { color: var(--ink-2); }
     <button type="button" id="view-gov" data-view="gov" aria-pressed="false">Governance &amp; ITDS</button>
   </div>
   <span class="spacer"></span>
-  <span class="hint">Variance is measured against approved forecast</span>
+  <span class="hint">Month and quarter vs current QSR forecast &middot; full year vs start-of-year baseline</span>
 </div>
 
 <!-- ------------------------------------------------------ portfolio bar -->
@@ -468,7 +468,7 @@ table.sources td.detail { color: var(--ink-2); }
 
   <div class="table-scroll group-table-wrap">
     <table class="data group-table">
-      <caption class="block-title" style="text-align:left;padding:13px 16px 0">Group totals vs plan &mdash; USD&rsquo;000. Plan is the approved QSR forecast.</caption>
+      <caption class="block-title" style="text-align:left;padding:13px 16px 0">Group totals &mdash; USD&rsquo;000</caption>
       <thead>
         <tr class="band">
           <th></th>
@@ -478,9 +478,9 @@ table.sources td.detail { color: var(--ink-2); }
         </tr>
         <tr>
           <th>Metric</th>
-          <th >Actual</th><th>vs plan</th>
-          <th class="sep">Actual</th><th>vs plan</th>
-          <th class="sep">Projection</th><th>vs plan</th>
+          <th >Actual</th><th>vs fcst</th>
+          <th class="sep">Actual</th><th>vs fcst</th>
+          <th class="sep">Forecast</th><th>vs baseline</th>
         </tr>
       </thead>
       <tbody>
@@ -537,8 +537,10 @@ table.sources td.detail { color: var(--ink-2); }
   </div>
   <p class="table-note">
     <b>FY26 expected is not connected.</b> The monthly pack carries the quarter only.
-    A full-year outlook against plan needs the FY26 baseline and current projection
-    from the QSR pack &mdash; <code>qsr_submissions</code> in the source registry.
+    The full-year view needs two figures from the QSR pack
+    (<code>qsr_submissions</code> in the source registry): the FY26
+    <b>baseline</b> set at the start of the year, and the FY26 <b>forecast</b>
+    as most recently reiterated.
   </p>
 </section>
 </section>
@@ -1342,7 +1344,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">parsed 3 business units</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 03:13 UTC</td>
+          <td class="detail">20 Sep 2026 03:26 UTC</td>
         </tr>
         <tr>
           <td class="id">bu_monthly_submissions</td>
@@ -1351,7 +1353,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 03:13 UTC</td>
+          <td class="detail">20 Sep 2026 03:26 UTC</td>
         </tr>
         <tr>
           <td class="id">omegro_monthly</td>
@@ -1360,7 +1362,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">Omegro monthly reporting pack, periods 7 and 8 FY26 — committed extract read 2026-09-20</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 03:13 UTC</td>
+          <td class="detail">20 Sep 2026 03:26 UTC</td>
         </tr>
         <tr>
           <td class="id">og_scorecard</td>
@@ -1369,7 +1371,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">20 Sep 2026 03:13 UTC</td>
+          <td class="detail">20 Sep 2026 03:26 UTC</td>
         </tr>
       </tbody>
     </table>

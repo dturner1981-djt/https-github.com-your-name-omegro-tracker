@@ -504,7 +504,14 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
     return {
         "group_rows": group_rows,
         "group_bands": [
-            {**b, "label": b["label"] or f"{month_label(snapshot.period)} month"}
+            {
+                **b,
+                "label": b["label"]
+                or {
+                    "month": f"{month_label(snapshot.period)} month",
+                    "fy": f"FY{snapshot.period[2:4]} expected",
+                }[b["key"]],
+            }
             for b in GROUP_BANDS
         ],
         "fy_reported": any(r["cells"]["fy"]["reported"] for r in group_rows),
@@ -567,14 +574,15 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
 
 GROUP_METRICS = ["net_revenue", "opex", "ebita", "ebita_pct"]
 
-# The group summary reads across three horizons: the closed month, the quarter
-# so far, and where the year is expected to land. The last needs an FY source;
-# until one is connected the column says so rather than being dropped, because
-# its absence is itself the thing to fix.
+# The group summary reads across three horizons, and they do not compare
+# against the same thing. Month and quarter to date are measured against the
+# current QSR forecast — the latest agreed expectation. The full year is
+# measured against the start-of-year baseline, because comparing the latest
+# forecast against itself says nothing.
 GROUP_BANDS = [
-    {"key": "month", "label": None, "value_head": "Actual"},
-    {"key": "qtd", "label": "Quarter to date", "value_head": "Actual"},
-    {"key": "fy", "label": "FY26 expected", "value_head": "Projection"},
+    {"key": "month", "label": None, "value_head": "Actual", "compare_head": "vs fcst"},
+    {"key": "qtd", "label": "Quarter to date", "value_head": "Actual", "compare_head": "vs fcst"},
+    {"key": "fy", "label": None, "value_head": "Forecast", "compare_head": "vs baseline"},
 ]
 
 
@@ -599,31 +607,35 @@ def _group_rows(
         values = [snapshot.value(bu, metric, basis, measure, period) for bu in units]
         return None if not values or any(v is None for v in values) else sum(values)
 
+    # (key, basis, period, value measure, reference measure)
     horizons = [
-        ("month", "month", snapshot.period, "actual"),
-        ("qtd", "qtd", snapshot.period, "actual"),
-        ("fy", "year", snapshot.period.split("-")[0], "projection"),
+        ("month", "month", snapshot.period, "actual", "forecast"),
+        ("qtd", "qtd", snapshot.period, "actual", "forecast"),
+        ("fy", "year", snapshot.period.split("-")[0], "forecast", "baseline"),
     ]
 
     for metric in GROUP_METRICS:
         cfg = config.get("metrics", {}).get(metric, {})
         unit = "pct" if cfg.get("unit") == "pct" else "k"
         cells = {}
-        for key, basis, period, measure in horizons:
+        for key, basis, period, measure, reference in horizons:
             if metric == "ebita_pct":
                 nr_a = totals("net_revenue", basis, period, measure)
-                nr_f = totals("net_revenue", basis, period, "forecast")
+                nr_f = totals("net_revenue", basis, period, reference)
                 eb_a = totals("ebita", basis, period, measure)
-                eb_f = totals("ebita", basis, period, "forecast")
+                eb_f = totals("ebita", basis, period, reference)
+                # Both halves must be present: revenue can be reported for a
+                # horizon while EBITA is not, and dividing by a present
+                # denominator with a missing numerator is a crash, not a zero.
                 v = Variance(
-                    (eb_f / nr_f) if nr_f else None,
-                    (eb_a / nr_a) if nr_a else None,
+                    (eb_f / nr_f) if (nr_f and eb_f is not None) else None,
+                    (eb_a / nr_a) if (nr_a and eb_a is not None) else None,
                     "pct",
                     "higher",
                 )
             else:
                 v = Variance(
-                    totals(metric, basis, period, "forecast"),
+                    totals(metric, basis, period, reference),
                     totals(metric, basis, period, measure),
                     unit,
                     cfg.get("direction", "higher"),

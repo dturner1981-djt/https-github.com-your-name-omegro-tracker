@@ -89,7 +89,9 @@ All ids in `config/sources.yml` are resolved against the Omegro tenant.
 | `monthly_review_template` | The canonical P&L and WC reporting schema | Located. Drives the parser layout. |
 | `bu_monthly_submissions` | Working capital, improvement-plan initiatives, OG stage per BU | **Not yet populated.** The template was issued Jun-26; the submission folder is being stood up. This is the missing piece for the working-capital pane. Parser written and tested against the template layout. |
 | `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU | **Needs one validation pass.** See below. |
-| `qsr_submissions` | Approved quarterly forecast | Located, parser stub. |
+| `qsr_submissions` | Per-BU QSR workbooks — the only source with a **full-year** view. Full Yr yr2026 at columns 23 (current forecast) / 28 (prior iteration) / 29 (var) on the confirmed TBL workbook | Located, layout confirmed, parser stub. |
+| `qsr_baseline` | The start-of-year QSR (Q4 2025 for FY26), whose Full Yr column **is** the baseline | Registered, parser stub. |
+| `vbu_qsrs` | The portfolio's own per-quarter copy of each VBU QSR; fallback where a workbook is missing from Leaders Shared, as Grosvenor's Q2-26 is | Located, parser stub. |
 
 ### Validate the OG scorecard mapping before trusting it
 
@@ -109,9 +111,9 @@ rows it matched, so the mapping can be checked against the real workbook.
 
 ## How numbers are treated
 
-* **Variance is always against approved forecast**, per the Business Unit
-  Progress Report. On track within ±5%, at risk to ±10%, off track beyond —
-  the ±5% gate is the template's own materiality threshold for commentary.
+* **Variance bands**: on track within ±5%, at risk to ±10%, off track beyond.
+  The ±5% gate is the Business Unit Progress Report's own materiality
+  threshold for requiring commentary.
 * **Percentage-point metrics move in points, not percent.** A margin going from
   23.1% to 20.4% has fallen 2.7 points, not 12%. Those metrics use ±1pt and
   ±3pt bands.
@@ -125,8 +127,13 @@ rows it matched, so the mapping can be checked against the real workbook.
   directly comparable between units.
 * **Ratios are recomputed, not averaged.** Group EBITA margin is summed EBITA
   over summed Net Revenue.
-* **"Plan" is the approved QSR forecast**, which is the plan of record for the
-  period. The page says so on the group table.
+* **Baseline and forecast are different things.** The *baseline* is the plan
+  set at the start of the year and is fixed for the year. The *forecast* is
+  the most recent QSR iteration of the expected position and is re-cut
+  regularly. So the month and quarter are measured against the current
+  forecast — "against what we last agreed" — and the full year is measured
+  against the baseline. Measuring the year against forecast would compare the
+  latest estimate with itself.
 * **A group total needs every unit.** If one business has not reported a
   metric for a horizon, no total is shown for it — a sum over a partial set
   reads as the group's number while silently omitting a business.
@@ -168,11 +175,15 @@ August alone is the sharper read — Technology Blueprint's net revenue came in
 month EBITA against plan.
 
 **FY26 is not yet connected.** The monthly pack carries the quarter only. The
-full-year view lives in the per-BU QSR workbooks (`qsr_submissions` /
-`vbu_qsrs`): the CONSOL sheet's Full Yr columns hold the FY26 forecast and a
-prior-QSR comparison. Note that "Prior Fcst" there is the *previous quarter's*
-QSR, not a year-start baseline — if "vs plan" must mean the year-start
-baseline, the Q4-25 QSR is the column to compare against.
+full-year column needs two figures, from two different QSRs:
+
+* the FY26 **baseline** — the Full Yr yr2026 column of the **Q4 2025** QSR,
+  which is the plan set at the start of the year (`qsr_baseline`);
+* the FY26 **forecast** — the Full Yr yr2026 column of the latest QSR, the
+  most recent iteration of the expected position (`qsr_submissions`).
+
+The QSR's own "Prior Fcst" column is last quarter's iteration, not the
+baseline, so it is not a substitute.
 
 ## Current position (Q2-26 ITDS, live)
 

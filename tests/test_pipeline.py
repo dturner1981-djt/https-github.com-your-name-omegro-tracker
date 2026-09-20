@@ -409,6 +409,34 @@ def test_group_total_is_withheld_when_a_unit_has_not_reported(config):
     assert rows["net_revenue"]["cells"]["month"]["reported"] is True
 
 
+def test_full_year_is_measured_against_baseline_not_forecast(config):
+    """Baseline is the start-of-year plan and is fixed; forecast is the latest
+    iteration and moves. Measuring the year against forecast would compare the
+    latest estimate with itself."""
+    from omegro_tracker.render import GROUP_BANDS, _group_rows
+
+    bands = {b["key"]: b for b in GROUP_BANDS}
+    assert bands["fy"]["compare_head"] == "vs baseline"
+    assert bands["month"]["compare_head"] == "vs fcst"
+    assert bands["qtd"]["compare_head"] == "vs fcst"
+
+    snap = _live(config)
+    # Give one unit an FY baseline and forecast; the variance must use the
+    # baseline as the reference, not the forecast.
+    for bu, baseline, forecast in (
+        ("tbl", 4000.0, 3800.0), ("tlm", 1000.0, 1000.0), ("grosvenor", 1000.0, 1000.0),
+    ):
+        snap.facts += [
+            Fact(bu, "net_revenue", "year", "baseline", "2026", baseline, "k"),
+            Fact(bu, "net_revenue", "year", "forecast", "2026", forecast, "k"),
+        ]
+    summaries = [derive.bu_summary(snap, u, config) for u in snap.business_units]
+    fy = {r["key"]: r for r in _group_rows(snap, summaries, config, "USD")}["net_revenue"]["cells"]["fy"]
+    assert fy["reported"] is True
+    assert fy["value"] == "$5.80m"        # summed forecast
+    assert fy["display"] == "-3.3%"       # against summed baseline of 6.00m
+
+
 def test_no_exit_date_anywhere(config):
     """The group does not sell, so an "expected date to exit" is meaningless."""
     from omegro_tracker.model import Governance

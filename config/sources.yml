@@ -83,13 +83,35 @@ sources:
       Needed for the group summary's FY26 column, which is otherwise blank.
       Confirmed layout on "2026.06 - TBL - Q2 QSR - Craig Delaney.xlsx":
       Full Yr yr2026 sits at columns 23 (Fcst), 28 (Prior Fcst), 29 (Var).
-      NOTE: "Prior Fcst" is the previous quarter's QSR, not a year-start
-      baseline. If "vs plan" must mean the year-start baseline, point this at
-      the Q4-25 QSR as well and compare against that column instead.
+      IMPORTANT: column 23 "Fcst" is the CURRENT forecast — the most recent
+      iteration of the expected position, which moves every quarter. Column 28
+      "Prior Fcst" is simply last quarter's iteration. Neither is the baseline.
+      The BASELINE is the plan set at the start of the year and is fixed for
+      the year, so it must be read from the Q4-prior-year QSR (see
+      `qsr_baseline` below) and stored as measure=baseline. Comparing the
+      full year against `forecast` would compare the latest estimate with
+      itself.
     site: OmegroLeadership
     drive_id: b!Wqpygzjwi0CkYecDMvCqTtkywNeqj0BOmu6p9sE8eoEhjQv7d4x8QLb2bg6DLogn
     path: Omegro Leaders Shared/QSR Submissions/{qsr_folder}
     match: "*{bu_alias}*Q*QSR*.xlsx"
+    required: false
+
+  - id: qsr_baseline
+    kind: folder
+    parser: qsr
+    description: >
+      The start-of-year QSR, whose Full Yr column for the coming year IS the
+      baseline — the plan, fixed for the year and never re-cut. Loaded once
+      per year and stored as measure=baseline; everything else the QSR
+      publishes through the year is a forecast iteration, not a plan.
+      For FY26 this is the Q4 2025 submission.
+    site: OmegroLeadership
+    drive_id: b!Wqpygzjwi0CkYecDMvCqTtkywNeqj0BOmu6p9sE8eoEhjQv7d4x8QLb2bg6DLogn
+    path: Omegro Leaders Shared/QSR Submissions/{baseline_qsr_folder}
+    match: "*{bu_alias}*Q*QSR*.xlsx"
+    baseline_for_year: 2026
+    baseline_qsr_folder: "2025.12"
     required: false
 
   - id: vbu_qsrs

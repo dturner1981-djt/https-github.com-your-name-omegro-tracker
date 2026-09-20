@@ -20,9 +20,21 @@ from typing import Any, Iterable, Iterator, Literal
 # visibility only.
 Basis = Literal["month", "qtd", "ytd", "quarter", "next_quarter", "year"]
 
-# What the number *is*. The Monthly Review Template distinguishes the approved
-# forecast, the booked actual and the current best estimate for the full period
-# — the last of which is what the group calls the outturn.
+# What the number *is*. These are not interchangeable and the distinction
+# drives every variance on the page:
+#
+#   baseline   the plan set at the start of the year. Fixed for the year.
+#   forecast   the most recent QSR iteration of the expected position. Moves
+#              as the year progresses, so a variance against forecast says
+#              "against what we last told each other", not "against plan".
+#   actual     booked in the GL.
+#   projection the current best estimate for a period still running — what
+#              the group calls the outturn.
+#   target     an operational goal, used for working capital rather than P&L.
+#   prior      the same measure one period earlier.
+#
+# Measuring the full year against `forecast` would compare the latest estimate
+# with itself; the year is measured against `baseline`.
 Measure = Literal["forecast", "actual", "projection", "baseline", "target", "prior"]
 
 Status = Literal["on_track", "at_risk", "off_track", "unknown"]
