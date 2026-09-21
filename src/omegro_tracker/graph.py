@@ -196,6 +196,48 @@ class GraphClient:
                 yield self._item(raw)
             url = body.get("@odata.nextLink")
 
+    def send_mail(
+        self,
+        *,
+        to: list[str],
+        subject: str,
+        html_body: str,
+        sender: str | None = None,
+    ) -> None:
+        """Send through Graph.
+
+        App-only tokens have no mailbox of their own, so `sender` (a real
+        mailbox the app is allowed to send as) is required in that mode and
+        the call goes to /users/{sender}/sendMail. A delegated token sends as
+        the signed-in user via /me/sendMail. Either way the app needs the
+        Mail.Send permission, which is NOT part of the read-only set the rest
+        of this client uses.
+        """
+        endpoint = f"/users/{sender}/sendMail" if sender else "/me/sendMail"
+        payload = {
+            "message": {
+                "subject": subject,
+                "body": {"contentType": "HTML", "content": html_body},
+                "toRecipients": [{"emailAddress": {"address": a}} for a in to],
+            },
+            "saveToSentItems": True,
+        }
+        resp = self._session.post(
+            f"{GRAPH}{endpoint}",
+            headers={
+                "Authorization": f"Bearer {self._token}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=self.timeout,
+        )
+        if resp.status_code not in (200, 202):
+            raise GraphError(
+                f"sendMail failed ({resp.status_code}): {resp.text[:400]}. "
+                "Check the app has Mail.Send and, for app-only tokens, that "
+                "--mail-sender names a mailbox it may send as."
+            )
+
     def download(self, drive_id: str, item: DriveItem) -> Path:
         """Fetch to the cache directory, keyed by item id and mtime so an
         unchanged file is not re-fetched."""

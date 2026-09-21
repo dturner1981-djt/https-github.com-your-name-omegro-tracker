@@ -503,3 +503,182 @@ def test_scorecard_pick_prefers_the_values_snapshot():
 
     # Non-matching files are ignored, and an empty folder yields nothing.
     assert _pick_scorecard(FakeClient([item("Goals 2026.xlsx", "2026-11-01T00:00:00Z")]), spec) is None
+
+
+# -- weekly scan ------------------------------------------------------------
+
+
+def _drive_item(name, modified, folder=False):
+    from omegro_tracker.graph import DriveItem
+
+    return DriveItem(name, name, 1, modified, None, folder)
+
+
+class _FakeDrive:
+    """A SharePoint tree. Unknown paths 404, as Graph does."""
+
+    def __init__(self, tree):
+        self.tree = tree
+
+    def item(self, drive_id, item_id):
+        return _drive_item("QDSR_Q2_Validation_Assessment.html", "2026-08-20T14:54:16Z")
+
+    def children(self, drive_id, path):
+        from omegro_tracker.graph import GraphError
+
+        if path not in self.tree:
+            raise GraphError(f"404 {path}")
+        return iter(self.tree[path])
+
+
+_TREE = {
+    # Finance files the pack under year / month folders.
+    "Monthly Reporting": [_drive_item("2026", "2026-10-08T09:00:00Z", True)],
+    "Monthly Reporting/2026": [_drive_item("9. Sep", "2026-10-08T09:12:00Z", True)],
+    "Monthly Reporting/2026/9. Sep": [
+        _drive_item("Omegro NR P9 FY26.xlsx", "2026-10-08T09:12:00Z")
+    ],
+    "Leadership/09. Operational Governance": [
+        _drive_item("Q226 - Operational Governance Scorecard - June 2026.xlsx", "2026-08-05T13:54:11Z"),
+        _drive_item(
+            "Q226 - Operational Governance Scorecard - June 2026_VALUES.xlsx", "2026-08-05T13:54:11Z"
+        ),
+    ],
+}
+
+
+def _scan(config, tree=None, seen=None):
+    from omegro_tracker import scan as scanner
+
+    return scanner.scan(config, _FakeDrive(tree or _TREE), seen=seen)
+
+
+def test_scan_walks_into_dated_subfolders(config):
+    """The pack sits under year/month folders. Stopping at the named folder
+    finds only directories and would report the source missing every week."""
+    result, _ = _scan(config)
+    pnl = next(c for c in result.changes if c.section == "P&L")
+    assert pnl.status == "new"
+    assert pnl.file_name == "Omegro NR P9 FY26.xlsx"
+    assert pnl.web_path.endswith("Monthly Reporting/2026/9. Sep")
+
+
+def test_scan_is_quiet_when_nothing_moved(config):
+    _, seen = _scan(config)
+    result, _ = _scan(config, seen=seen)
+    assert result.sections_changed == []
+    assert not any(c.status in {"new", "updated"} for c in result.changes)
+
+
+def test_scan_reports_a_republished_workbook(config):
+    _, seen = _scan(config)
+    moved = {
+        **_TREE,
+        "Monthly Reporting/2026/9. Sep": [
+            _drive_item("Omegro NR P9 FY26.xlsx", "2026-10-13T08:30:00Z")
+        ],
+    }
+    result, _ = _scan(config, tree=moved, seen=seen)
+    assert result.sections_changed == ["P&L"]
+    assert next(c for c in result.changes if c.section == "P&L").status == "updated"
+
+
+def test_scan_prefers_the_values_snapshot(config):
+    result, _ = _scan(config)
+    og = next(c for c in result.changes if c.source_id == "og_scorecard")
+    assert "_VALUES" in og.file_name
+
+
+def test_a_source_that_cannot_be_read_does_not_abort_the_scan(config):
+    """A half-configured source is reported, not raised — one bad entry must
+    not cost us the whole Monday scan."""
+    broken_config = {
+        **config,
+        "sources": [
+            *config["sources"],
+            {"id": "broken", "section": "ITDS", "label": "Half-wired source", "path": "x"},
+        ],
+    }
+    result, _ = _scan(broken_config)
+    broken = next(c for c in result.changes if c.source_id == "broken")
+    assert broken.status == "error"
+    assert "drive_id" in broken.detail
+    # Everything else still got scanned.
+    assert any(c.status == "new" for c in result.changes)
+
+
+def test_unwatchable_sources_do_not_raise_a_weekly_false_alarm(config):
+    """A source with no drive cannot be watched. It must be left out of the
+    scan rather than erroring every week about a gap we already know about."""
+    result, _ = _scan(config)
+    assert not any(c.source_id == "itds_assessments" for c in result.changes)
+    assert result.errors == []
+
+
+def test_dry_run_must_not_advance_the_watermark(config):
+    """A preview that moves the watermark loses the change for the real run."""
+    from omegro_tracker import scan as scanner
+
+    _, seen = _scan(config)
+    before = dict(seen)
+    moved = {
+        **_TREE,
+        "Monthly Reporting/2026/9. Sep": [
+            _drive_item("Omegro NR P9 FY26.xlsx", "2026-10-13T08:30:00Z")
+        ],
+    }
+    # scan() returns updated watermarks but never persists them itself.
+    result, updated = scanner.scan(config, _FakeDrive(moved), seen=before)
+    assert result.sections_changed == ["P&L"]
+    assert before["omegro_monthly"].modified == "2026-10-08T09:12:00Z"
+    assert updated["omegro_monthly"].modified == "2026-10-13T08:30:00Z"
+
+
+def test_seen_watermarks_round_trip(tmp_path, config):
+    from omegro_tracker import scan as scanner
+
+    _, seen = _scan(config)
+    path = tmp_path / "seen.json"
+    scanner.save_seen(seen, path)
+    assert scanner.load_seen(path) == seen
+
+
+def test_subject_names_the_sections_not_just_that_it_ran(config):
+    from omegro_tracker import notify
+
+    _, seen = _scan(config)
+    moved = {
+        **_TREE,
+        "Monthly Reporting/2026/9. Sep": [
+            _drive_item("Omegro NR P9 FY26.xlsx", "2026-10-13T08:30:00Z")
+        ],
+    }
+    result, _ = _scan(config, tree=moved, seen=seen)
+    assert "P&L updated" in notify.subject(result)
+
+    quiet, _ = _scan(config, seen=seen)
+    assert "no source updates" in notify.subject(quiet)
+
+
+def test_alert_body_carries_the_dashboard_link(config):
+    from omegro_tracker import notify
+
+    result, _ = _scan(config)
+    subject, html_body, text = notify.build(result, config)
+    url = config["group"]["dashboard_url"]
+    assert url in html_body and url in text
+    assert subject and "Turner Group" in subject
+
+
+def test_alert_recipient_is_configured(config):
+    assert config["alerts"]["recipients"] == ["david.turner@omegro.com"]
+    # Monday, morning, UTC.
+    minute, hour, _, _, dow = config["alerts"]["cron"].split()
+    assert dow == "1" and 6 <= int(hour) <= 9 and minute == "0"
+
+
+def test_every_dashboard_section_is_watched(config):
+    from omegro_tracker.scan import SECTION_ORDER
+
+    watched = {s["section"] for s in config["sources"] if s.get("section")}
+    assert watched == set(SECTION_ORDER)

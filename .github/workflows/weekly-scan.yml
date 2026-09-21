@@ -1,0 +1,75 @@
+name: Weekly source scan
+
+# Monday morning. Cron is UTC, so this fires 08:00 London in summer and 07:00
+# in winter — both "Monday morning", and not worth the complexity of tracking
+# BST to keep it at exactly one local hour.
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Scan and print the email without sending it"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  # A manual run while the scheduled one is in flight would race on the
+  # watermark file and could lose a change.
+  group: weekly-scan
+  cancel-in-progress: false
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+      # Refresh first: the alert links to the dashboard, so the dashboard
+      # should already reflect whatever the scan is about to report.
+      - name: Refresh the dashboard
+        env:
+          OMEGRO_TRACKER_TENANT_ID: ${{ secrets.OMEGRO_TRACKER_TENANT_ID }}
+          OMEGRO_TRACKER_CLIENT_ID: ${{ secrets.OMEGRO_TRACKER_CLIENT_ID }}
+          OMEGRO_TRACKER_CLIENT_SECRET: ${{ secrets.OMEGRO_TRACKER_CLIENT_SECRET }}
+        run: python -m omegro_tracker.cli build
+
+      - name: Scan for source updates and email the summary
+        env:
+          OMEGRO_TRACKER_TENANT_ID: ${{ secrets.OMEGRO_TRACKER_TENANT_ID }}
+          OMEGRO_TRACKER_CLIENT_ID: ${{ secrets.OMEGRO_TRACKER_CLIENT_ID }}
+          OMEGRO_TRACKER_CLIENT_SECRET: ${{ secrets.OMEGRO_TRACKER_CLIENT_SECRET }}
+          # App-only tokens have no mailbox of their own; this names the one
+          # the app is permitted to send as.
+          OMEGRO_TRACKER_MAIL_SENDER: ${{ secrets.OMEGRO_TRACKER_MAIL_SENDER }}
+        run: |
+          python -m omegro_tracker.cli alert \
+            --out dist/last-alert.html \
+            --mail-sender "$OMEGRO_TRACKER_MAIL_SENDER" \
+            ${{ inputs.dry_run && '--dry-run' || '' }}
+
+      - name: Commit the refreshed snapshot and watermarks
+        if: ${{ !inputs.dry_run }}
+        run: |
+          git config user.name  "omegro-tracker"
+          git config user.email "noreply@omegro.com"
+          git add data/snapshot.json data/seen.json dist/index.html
+          git diff --staged --quiet || git commit -m "Weekly scan ($(date -u +%Y-%m-%d))"
+          git push
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-scan
+          path: |
+            dist/index.html
+            dist/last-alert.html

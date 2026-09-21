@@ -36,6 +36,8 @@ sources:
     path: Nelson Portfolio Finance/Presentations/Monthly Review Template.xlsx
 
   - id: bu_monthly_submissions
+    section: Working capital
+    label: "BU Progress Reports"
     kind: folder
     parser: monthly_review
     description: >
@@ -50,6 +52,8 @@ sources:
     required: false   # folder is being stood up; template dated Jun-26
 
   - id: og_scorecard
+    section: Operational governance
+    label: "OG Scorecard (Nelson leadership)"
     kind: folder
     parser: og_scorecard
     description: >
@@ -72,6 +76,8 @@ sources:
     required: false
 
   - id: og_scorecard_portfolio_copy
+    section: Operational governance
+    label: "OG Scorecard (portfolio copy)"
     kind: folder
     parser: og_scorecard
     description: >
@@ -87,6 +93,8 @@ sources:
     required: false
 
   - id: qsr_submissions
+    section: Full year
+    label: "QSR workbooks (current forecast)"
     kind: folder
     parser: qsr
     description: >
@@ -111,6 +119,8 @@ sources:
     required: false
 
   - id: qsr_baseline
+    section: Full year
+    label: "Start-of-year QSR (baseline)"
     kind: folder
     parser: qsr
     description: >
@@ -128,6 +138,8 @@ sources:
     required: false
 
   - id: vbu_qsrs
+    section: Full year
+    label: "VBU QSRs (portfolio copies)"
     kind: folder
     parser: qsr
     description: >
@@ -144,6 +156,8 @@ sources:
   # ------------------------------------------------- governance / ITDS / risk
 
   - id: itds_qdsr
+    section: ITDS
+    label: "QDSR Validation Assessment"
     kind: file
     parser: itds_qdsr
     description: >
@@ -159,6 +173,11 @@ sources:
     period: 2026-Q2
 
   - id: itds_assessments
+    # No section: this is registered by site id only and has no drive, so the
+    # weekly scan cannot watch it. Adding a section here would raise the same
+    # "could not be read" alert every Monday for a gap we already know about.
+    # Give it a drive_id and a `section: ITDS` to bring it into the scan.
+    label: "Per-BU ITDS assessment workbooks"
     kind: folder
     parser: itds_workbook
     description: >
@@ -174,6 +193,8 @@ sources:
   # ---------------------------------------------- the actual financial source
 
   - id: omegro_monthly
+    section: P&L
+    label: "Omegro monthly reporting pack"
     kind: folder
     parser: omegro_monthly
     description: >

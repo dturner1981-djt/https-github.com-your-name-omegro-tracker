@@ -21,6 +21,18 @@ group:
   finance_contacts: [Stephen Craig, Renuka Simpson, Jean Triquet]
   # Volaris/Omegro reporting runs on calendar quarters.
   fiscal_year_start_month: 1
+  # Where the published dashboard lives. The weekly alert links here, so it
+  # must be the URL that always shows the latest refresh.
+  dashboard_url: https://claude.ai/artifact/1RwvApQs22cdZJW8sGZTye
+
+alerts:
+  # Monday morning source scan. Cron is UTC, so this is 08:00 London in
+  # summer and 07:00 in winter — both "Monday morning", no DST handling.
+  cron: "0 7 * * 1"
+  recipients: [david.turner@omegro.com]
+  # Send even when nothing changed, so silence always means the scan did not
+  # run rather than that there was nothing to say.
+  send_when_unchanged: true
 
 business_units:
   - key: tbl

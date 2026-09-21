@@ -78,6 +78,56 @@ For a scheduled refresh, add the same three as repository secrets; the workflow
 in `.github/workflows/refresh.yml` runs on the 11th of each month, which is
 after the 7-business-day submission deadline.
 
+## The Monday scan
+
+Every Monday morning the tracker checks whether the workbook behind each
+dashboard section has been republished in SharePoint, refreshes the dashboard
+if so, and emails a summary.
+
+```bash
+omegro-tracker scan                # what changed, print only
+omegro-tracker scan --dry-run      # ... without advancing the watermarks
+omegro-tracker alert --dry-run     # compose the email without sending it
+omegro-tracker alert               # scan, refresh, send
+```
+
+Change detection compares against `data/seen.json`, a per-source watermark of
+the last filename and `lastModifiedDateTime` seen — deliberately not against
+the snapshot, because a workbook can be updated in a week when the refresh did
+not run and we still want to say so. A dry run never advances a watermark: if
+it did, the change would be consumed by the preview and lost to the real run.
+
+Two things the scan has to get right, both of which cost a week of silence if
+wrong:
+
+* **Dated subfolders.** Finance files the monthly pack under
+  `Monthly Reporting / <year> / <n>. <Mon>`. A scan that stops at the folder a
+  source names finds only directories and reports the source missing every
+  week, so it substitutes the period into the path and, failing that, descends
+  into the most recently modified subfolder.
+* **First appearance counts as a change.** `bu_monthly_submissions` turning up
+  for the first time is the event that finally fills the working-capital pane;
+  treated as "no change" it would pass unremarked.
+
+A source that cannot be watched at all — `itds_assessments` is registered by
+site id with no drive — is left out of the scan rather than given a section,
+so a known gap does not raise the same alert every Monday.
+
+### Two ways it runs
+
+| | Runs | Email | Needs |
+|---|---|---|---|
+| `.github/workflows/weekly-scan.yml` | Monday 07:00 UTC | The styled HTML from `notify.py`, via Graph `sendMail` | The Entra app, plus **Mail.Send** and a `OMEGRO_TRACKER_MAIL_SENDER` mailbox it may send as |
+| Claude Routine "Turner Group tracker — Monday source scan" | Monday 07:00 UTC | Claude's run summary to the account owner | The **Microsoft 365 connector attached to the Routine** — this cannot be set from a session and must be added in the claude.ai Routines UI |
+
+07:00 UTC is 08:00 London in summer and 07:00 in winter. Cron is UTC and does
+not track BST; both are Monday morning, so it is left alone.
+
+`Mail.Send` is deliberately **not** in the read-only scope set the rest of the
+client uses — granting it widens what the app can do, so it is requested only
+for the alert path. App-only tokens have no mailbox of their own, which is why
+`--mail-sender` is required there and not for delegated sign-in.
+
 ### Sources
 
 All ids in `config/sources.yml` are resolved against the Omegro tenant.

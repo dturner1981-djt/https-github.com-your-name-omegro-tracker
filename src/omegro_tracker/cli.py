@@ -4,6 +4,8 @@
     omegro-tracker render             snapshot.json -> dist/index.html
     omegro-tracker build              refresh + render
     omegro-tracker validate           report what each source parser matched
+    omegro-tracker scan               which dashboard sections have new source material
+    omegro-tracker alert              scan, then email the weekly summary
 """
 
 from __future__ import annotations
@@ -128,6 +130,90 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_scan(args: argparse.Namespace) -> int:
+    from . import notify, scan as scanner
+
+    config = load_config(Path(args.config))
+    client = _client(args, config)
+    if client is None:
+        print("error: scan needs a Graph connection.", file=sys.stderr)
+        return 1
+
+    seen = scanner.load_seen(Path(args.seen))
+    result, updated = scanner.scan(config, client, seen=seen)
+
+    for change in result.changes:
+        mark = "*" if change.notable else " "
+        print(f"{mark} [{change.status:9}] {change.section:24} {change.file_name or change.label}")
+    if result.errors:
+        print(f"\n{len(result.errors)} source(s) could not be read.", file=sys.stderr)
+
+    if args.json:
+        Path(args.json).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.json).write_text(json.dumps(result.to_dict(), indent=2))
+        print(f"\n-> {args.json}")
+
+    # A dry run must not move the watermark, or the next real scan reports
+    # nothing and the change is lost.
+    if not args.dry_run:
+        scanner.save_seen(updated, Path(args.seen))
+    else:
+        print("\ndry run: watermarks not advanced", file=sys.stderr)
+
+    print(f"\n{notify.subject(result, config['group'].get('name', 'Turner Group'))}")
+    return 0
+
+
+def cmd_alert(args: argparse.Namespace) -> int:
+    """The weekly job: scan, then email whoever is configured."""
+    from . import notify, scan as scanner
+
+    config = load_config(Path(args.config))
+    alerts = config.get("alerts", {})
+    recipients = args.to or alerts.get("recipients", [])
+    if not recipients:
+        print("error: no recipients configured or passed with --to.", file=sys.stderr)
+        return 1
+
+    client = _client(args, config)
+    if client is None:
+        print("error: alert needs a Graph connection.", file=sys.stderr)
+        return 1
+
+    seen = scanner.load_seen(Path(args.seen))
+    result, updated = scanner.scan(config, client, seen=seen)
+    subject, html_body, text = notify.build(result, config)
+
+    if not result.notable and not alerts.get("send_when_unchanged", True):
+        print(f"nothing notable; not sending. ({subject})")
+        scanner.save_seen(updated, Path(args.seen))
+        return 0
+
+    if args.out:
+        Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.out).write_text(html_body, encoding="utf-8")
+        print(f"body -> {args.out}")
+
+    if args.dry_run:
+        print(f"dry run, not sending.\n\nSubject: {subject}\n\n{text}")
+        return 0
+
+    try:
+        client.send_mail(
+            to=recipients,
+            subject=subject,
+            html_body=html_body,
+            sender=args.mail_sender or alerts.get("mail_sender"),
+        )
+    except GraphError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+
+    scanner.save_seen(updated, Path(args.seen))
+    print(f"sent to {', '.join(recipients)}: {subject}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="omegro-tracker", description=__doc__)
     parser.add_argument("--config", default=str(CONFIG_DIR), help="config directory")
@@ -150,6 +236,20 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("validate")
     p.add_argument("--source", default="og_scorecard")
     p.set_defaults(func=cmd_validate)
+
+    p = sub.add_parser("scan")
+    p.add_argument("--seen", default="data/seen.json")
+    p.add_argument("--json", default=None, help="also write the result here")
+    p.add_argument("--dry-run", action="store_true", help="do not advance watermarks")
+    p.set_defaults(func=cmd_scan)
+
+    p = sub.add_parser("alert")
+    p.add_argument("--seen", default="data/seen.json")
+    p.add_argument("--to", action="append", default=None)
+    p.add_argument("--mail-sender", default=None, help="mailbox to send as (app-only tokens)")
+    p.add_argument("--out", default=None, help="also write the HTML body here")
+    p.add_argument("--dry-run", action="store_true", help="print instead of sending")
+    p.set_defaults(func=cmd_alert)
 
     args = parser.parse_args(argv)
     return args.func(args)
