@@ -467,6 +467,48 @@ def test_og_scorecard_has_a_portfolio_fallback(config):
     assert spec["path"] == "Operational Governance/Scoring Assessment"
 
 
+def test_blocked_is_not_missing(config):
+    """A source we have found and cannot read is a different state from one we
+    have no connection to. Collapsing the two would let "we cannot read this"
+    read as "there is nothing there", and would send a reader hunting for a
+    file that is already sitting in the leadership area."""
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    run = snap.run("og_scorecard")
+    assert run is not None
+    assert run.status == "blocked"
+    assert run.status != "missing"
+    # The note carries the observation the build itself cannot make.
+    assert "_VALUES" in run.detail
+    assert run.item_modified == "2026-09-21T15:40:40Z"
+
+
+def test_blocked_scorecard_says_so_on_the_page(config):
+    """The page must name the file and the refresh date rather than claiming
+    the scorecard is not connected."""
+    from omegro_tracker.render import render
+
+    html = render(_live(config), config)
+    assert "not yet read" in html
+    assert "_VALUES.xlsx" in html
+    assert "21 Sep 2026" in html
+    assert "omegro-tracker validate --source og_scorecard" in html
+    # And it must not simultaneously claim the opposite.
+    assert "OG stage &mdash; not connected" not in html
+    assert "No governance stage is connected" not in html
+
+
+def test_a_blocked_scorecard_publishes_no_figures(config):
+    """Nothing may be inferred from a source we could not parse."""
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    assert snap.run("og_scorecard").rows == 0
+    assert not [f for f in snap.facts if f.source == "og_scorecard"]
+    assert all(g.stage is None and g.score is None for g in snap.governance)
+
+
 def test_scorecard_pick_prefers_the_values_snapshot():
     """Both copies exist for a quarter; the values snapshot is the parseable
     one, so it wins a tie on modification time."""

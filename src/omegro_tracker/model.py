@@ -170,11 +170,16 @@ class ITDS:
 @dataclass
 class SourceRun:
     """Provenance for one source in one refresh. Rendered in the dashboard
-    footer so a reader can always tell how old each pane is and whether a pane
-    is showing live data or a seeded placeholder."""
+    footer so a reader can always tell how old each pane is and where it came
+    from.
+
+    `blocked` is deliberately distinct from `missing`: the source has been
+    seen in SharePoint and is current, but could not be parsed. Collapsing the
+    two would let "we cannot read this" read as "there is nothing there".
+    """
 
     source_id: str
-    status: Literal["ok", "missing", "error", "seed"]
+    status: Literal["ok", "missing", "error", "seed", "blocked"]
     detail: str = ""
     fetched_at: str | None = None
     item_modified: str | None = None

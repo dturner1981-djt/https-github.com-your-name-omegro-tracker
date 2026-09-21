@@ -500,6 +500,19 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
     governance_reported = any(
         p["stage"] != "Not reported" for p in panels
     )
+    # "Blocked" is not "missing". The scorecard has been found in SharePoint and
+    # is current; it just could not be parsed yet. Saying "not connected" here
+    # would send a reader looking for a file that is already sitting there.
+    og_run = snapshot.run("og_scorecard")
+    governance_blocked = (
+        None
+        if governance_reported or og_run is None or og_run.status != "blocked"
+        else {
+            "file": og_run.detail.split(" — ", 1)[0],
+            "reason": og_run.detail.split(" — ", 1)[-1],
+            "modified": fmt_date(og_run.item_modified) if og_run.item_modified else None,
+        }
+    )
 
     return {
         "group_rows": group_rows,
@@ -519,6 +532,7 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
         "show_next": show_next,
         "wc_reported": wc_reported,
         "governance_reported": governance_reported,
+        "governance_blocked": governance_blocked,
         "group": snapshot.group,
         "period_label": month_label(snapshot.period),
         "quarter_label": snapshot.quarter.replace("-", " "),

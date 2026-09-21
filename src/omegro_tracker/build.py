@@ -33,6 +33,15 @@ from .parsers import itds_qdsr, monthly_review, og_scorecard, omegro_monthly
 
 CONFIG_DIR = Path("config")
 EXTRACT_DIR = Path("data/extracted")
+NOTES_PATH = Path("data/source-notes.json")
+
+
+def _note(source_id: str) -> dict[str, Any] | None:
+    """A recorded observation about a source this build cannot reach itself."""
+    if not NOTES_PATH.exists():
+        return None
+    note = json.loads(NOTES_PATH.read_text()).get(source_id)
+    return note if isinstance(note, dict) else None
 
 
 def _now() -> str:
@@ -167,6 +176,14 @@ def _load_og(
     times and either can be the one that is current.
     """
     if client is None:
+        if note := _note("og_scorecard"):
+            return [], [], SourceRun(
+                "og_scorecard",
+                note.get("state", "blocked"),
+                f"{note['file_name']} — {note['reason']}",
+                _now(),
+                note.get("modified"),
+            )
         return [], [], SourceRun("og_scorecard", "missing", "no Graph client", _now())
 
     attempts = [
@@ -203,6 +220,14 @@ def _load_og(
             len(facts),
         )
 
+    if note := _note("og_scorecard"):
+        return [], [], SourceRun(
+            "og_scorecard",
+            note.get("state", "blocked"),
+            f"{note['file_name']} — {note['reason']}",
+            _now(),
+            note.get("modified"),
+        )
     return [], [], SourceRun("og_scorecard", "missing", "; ".join(problems), _now())
 
 

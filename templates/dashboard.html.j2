@@ -325,6 +325,8 @@ svg text { font-family: var(--mono); }
 .cov-item .g { font-size: 9px; line-height: 1.8; flex: none; }
 .cov-item.ok .g { color: var(--good); }
 .cov-item.off .g { color: var(--ink-3); }
+/* Found but unread — deliberately not the same signal as "not connected". */
+.cov-item.wait .g { color: var(--warning); }
 .cov-item > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .cov-item b { font-size: 12.5px; font-weight: 600; }
 .cov-item span:not(.g) { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
@@ -428,8 +430,10 @@ table.sources td.detail { color: var(--ink-2); }
     <div><b>P&amp;L &mdash; live</b><span>{{ period_label }} close, Omegro monthly reporting pack</span></div></div>
   <div class="cov-item {{ 'ok' if wc_reported else 'off' }}"><span class="g" aria-hidden="true">{% if wc_reported %}&#9679;{% else %}&ndash;{% endif %}</span>
     <div><b>Working capital &mdash; {{ 'live' if wc_reported else 'not connected' }}</b><span>{{ 'from the monthly submission' if wc_reported else 'needs the BU Progress Report WC sheet' }}</span></div></div>
-  <div class="cov-item {{ 'ok' if governance_reported else 'off' }}"><span class="g" aria-hidden="true">{% if governance_reported %}&#9679;{% else %}&ndash;{% endif %}</span>
-    <div><b>OG stage &mdash; {{ 'live' if governance_reported else 'not connected' }}</b><span>{{ 'from the scorecard' if governance_reported else 'needs the Operational Governance Scorecard' }}</span></div></div>
+  <div class="cov-item {{ 'ok' if governance_reported else ('wait' if governance_blocked else 'off') }}"><span class="g" aria-hidden="true">{% if governance_reported %}&#9679;{% elif governance_blocked %}&#9680;{% else %}&ndash;{% endif %}</span>
+    <div>{% if governance_reported %}<b>OG stage &mdash; live</b><span>from the scorecard</span>
+      {%- elif governance_blocked %}<b>OG stage &mdash; found, not yet read</b><span>scorecard refreshed{% if governance_blocked.modified %} {{ governance_blocked.modified }}{% endif %}; awaiting an authenticated read</span>
+      {%- else %}<b>OG stage &mdash; not connected</b><span>needs the Operational Governance Scorecard</span>{% endif %}</div></div>
   <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
     <div><b>ITDS &mdash; live</b><span>published {{ itds_period }} Portfolio Security Assessment</span></div></div>
 </div>
@@ -626,7 +630,8 @@ table.sources td.detail { color: var(--ink-2); }
           <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
              monthly reporting pack. They come from the Working Capital sheet of the Business Unit
              Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
-             and this pane fills in.</p>
+             and this pane fills in.{% if governance_blocked %} The scorecard itself has now been
+             located and is current; it is waiting on an authenticated read, not on a file.{% endif %}</p>
         </div>
         {% endif %}
       </div>
@@ -641,7 +646,14 @@ table.sources td.detail { color: var(--ink-2); }
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             {% if governance_reported %}Stage comes from the quarterly Operational
-            Governance Scorecard.{% else %}No governance stage is connected. It comes from the quarterly
+            Governance Scorecard.{% elif governance_blocked %}The scorecard has been located in the
+            Nelson leadership area and is current &mdash; <code>{{ governance_blocked.file }}</code>{% if governance_blocked.modified %},
+            refreshed {{ governance_blocked.modified }}{% endif %}. It has not been read yet: the workbook
+            is too large for the SharePoint connector to return in time, so it needs the authenticated
+            Graph path (download and parse locally), and then
+            <code>omegro-tracker validate --source og_scorecard</code> to confirm the column mapping
+            before these figures are trusted. Nothing on this pane has been inferred from it.{% else %}No
+            governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             {{ p.leader }}&rsquo;s monthly Business Unit Progress Report.{% endif %}
           </p>
@@ -754,7 +766,7 @@ table.sources td.detail { color: var(--ink-2); }
         <tr>
           <td class="id">{{ r.id }}</td>
           <td>
-            <span class="pill tone-{{ {'ok':'good','seed':'warning','missing':'muted','error':'critical'}[r.status] }}">{{ r.status }}</span>
+            <span class="pill tone-{{ {'ok':'good','seed':'warning','blocked':'warning','missing':'muted','error':'critical'}[r.status] }}">{{ r.status }}</span>
           </td>
           <td class="detail">{{ r.detail }}</td>
           <td class="detail">{{ r.modified }}</td>

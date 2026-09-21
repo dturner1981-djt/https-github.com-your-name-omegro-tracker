@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-21T19:02:51+00:00",
+  "generated_at": "2026-09-21T20:49:57+00:00",
   "period": "2026-08",
   "quarter": "2026-Q3",
   "group": {
@@ -1330,7 +1330,7 @@
       "source_id": "itds_qdsr",
       "status": "ok",
       "detail": "parsed 3 business units",
-      "fetched_at": "2026-09-21T19:02:51+00:00",
+      "fetched_at": "2026-09-21T20:49:57+00:00",
       "item_modified": null,
       "rows": 3
     },
@@ -1338,7 +1338,7 @@
       "source_id": "bu_monthly_submissions",
       "status": "missing",
       "detail": "no Graph client",
-      "fetched_at": "2026-09-21T19:02:51+00:00",
+      "fetched_at": "2026-09-21T20:49:57+00:00",
       "item_modified": null,
       "rows": 0
     },
@@ -1346,16 +1346,16 @@
       "source_id": "omegro_monthly",
       "status": "ok",
       "detail": "Omegro monthly reporting pack, periods 7 and 8 FY26 \u2014 committed extract read 2026-09-20",
-      "fetched_at": "2026-09-21T19:02:51+00:00",
+      "fetched_at": "2026-09-21T20:49:57+00:00",
       "item_modified": null,
       "rows": 128
     },
     {
       "source_id": "og_scorecard",
-      "status": "missing",
-      "detail": "no Graph client",
-      "fetched_at": "2026-09-21T19:02:51+00:00",
-      "item_modified": null,
+      "status": "blocked",
+      "detail": "Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx \u2014 Refreshed 21 Sep 2026. Verified present and current, but the workbook is several megabytes of formula-heavy sheets and every attempt to read it through the SharePoint connector timed out. It needs the authenticated Graph path, which downloads and parses locally \u2014 and then `omegro-tracker validate --source og_scorecard` to confirm the column mapping before the figures are trusted.",
+      "fetched_at": "2026-09-21T20:49:57+00:00",
+      "item_modified": "2026-09-21T15:40:40Z",
       "rows": 0
     }
   ]

@@ -1,0 +1,13 @@
+{
+  "_comment": "Observations about sources the offline build cannot reach itself. A source we have SEEN in SharePoint but cannot yet parse is a different state from one we have no connection to, and the dashboard should say which. Each note is superseded the moment an authenticated refresh reads the source for real.",
+  "og_scorecard": {
+    "state": "blocked",
+    "observed_at": "2026-09-21",
+    "file_name": "Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx",
+    "site": "GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership",
+    "path": "Leadership/09. Operational Governance",
+    "modified": "2026-09-21T15:40:40Z",
+    "previous_modified": "2026-08-05T13:54:11Z",
+    "reason": "Refreshed 21 Sep 2026. Verified present and current, but the workbook is several megabytes of formula-heavy sheets and every attempt to read it through the SharePoint connector timed out. It needs the authenticated Graph path, which downloads and parses locally — and then `omegro-tracker validate --source og_scorecard` to confirm the column mapping before the figures are trusted."
+  }
+}
