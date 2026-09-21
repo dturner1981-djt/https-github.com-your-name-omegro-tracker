@@ -16,6 +16,7 @@ from typing import Any
 
 import yaml
 
+from . import governance as governance_rules
 from .graph import GraphClient, GraphError
 from .model import (
     Commentary,
@@ -352,6 +353,21 @@ def build(
         else:
             by_bu[g.bu] = g
     governance = list(by_bu.values())
+
+    # The ITDS dimension of the scorecard is ours to compute: the QDSR score
+    # is already parsed and the bands are published. A unit with a QDSR score
+    # but no governance record still gets one, so the dimension is not lost
+    # just because the scorecard workbook has not been read.
+    framework = config.get("og_framework") or {}
+    if framework:
+        by_bu = {g.bu: g for g in governance}
+        for record in itds:
+            dimension = governance_rules.itds_dimension(record, framework, quarter)
+            if dimension is None:
+                continue
+            entry = by_bu.setdefault(record.bu, Governance(bu=record.bu, period=quarter))
+            entry.itds_dimension = dimension
+        governance = list(by_bu.values())
 
     facts = [f for f in facts if f.bu in in_scope]
     commentary = [c for c in commentary if c.bu in in_scope]

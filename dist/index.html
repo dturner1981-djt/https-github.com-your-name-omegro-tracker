@@ -315,6 +315,38 @@ svg text { font-family: var(--mono); }
 .init .notes { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; line-height: 1.5; }
 .init .when { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
 
+/* ----------------------------------------- operational governance table */
+table.og-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 760px; }
+table.og-table th, table.og-table td {
+  padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle;
+}
+table.og-table thead th {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; white-space: nowrap;
+}
+table.og-table tbody tr:last-child td { border-bottom: 0; }
+table.og-table th.sep, table.og-table td.sep { border-left: 1px solid var(--line); }
+table.og-table td.num { font-family: var(--mono); text-align: right; }
+table.og-table th.dim, table.og-table td.dim { text-align: center; }
+/* A dimension we have not read is dashed and grey — visibly not a zero. */
+table.og-table td.awaiting { color: var(--ink-3); }
+table.og-table td .sub { display: block; font-size: 10.5px; color: var(--ink-3); font-weight: 400; }
+table.og-table td .pts { font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-left: 7px; }
+table.og-table .flag { color: var(--serious); font-size: 9px; }
+.og-escalations { padding: 4px 16px 12px; }
+/* On a phone the four workbook dimensions are four columns of dashes, and
+   they push the only populated columns off the edge. Drop them and say so —
+   the note below the table already carries what is outstanding. */
+.og-narrow-note { display: none; }
+@media (max-width: 760px) {
+  table.og-table { min-width: 0; }
+  table.og-table th, table.og-table td { padding: 9px 8px; }
+  table.og-table th.dim, table.og-table td.dim { display: none; }
+  table.og-table th.sep, table.og-table td.sep { border-left: 0; }
+  .og-narrow-note { display: block; }
+}
+.og-intro { margin: 0; padding: 0 16px 12px; font-size: 12.5px; color: var(--ink-2); max-width: 86ch; line-height: 1.55; }
+
 /* ------------------------------------------------- coverage & commentary */
 .coverage {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
@@ -325,6 +357,8 @@ svg text { font-family: var(--mono); }
 .cov-item .g { font-size: 9px; line-height: 1.8; flex: none; }
 .cov-item.ok .g { color: var(--good); }
 .cov-item.off .g { color: var(--ink-3); }
+/* Found but unread — deliberately not the same signal as "not connected". */
+.cov-item.wait .g { color: var(--warning); }
 .cov-item > div { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .cov-item b { font-size: 12.5px; font-weight: 600; }
 .cov-item span:not(.g) { font-size: 11.5px; color: var(--ink-2); line-height: 1.4; }
@@ -390,7 +424,7 @@ table.sources td.detail { color: var(--ink-2); }
       <div><span class="k">Close</span><span class="v">Aug-26</span></div>
       <div><span class="k">Quarter</span><span class="v">2026 Q3</span></div>
       <div><span class="k">Currency</span><span class="v">USD</span></div>
-      <div><span class="k">Refreshed</span><span class="v">21 Sep 2026 19:02 UTC</span></div>
+      <div><span class="k">Refreshed</span><span class="v">21 Sep 2026 21:21 UTC</span></div>
     </div>
   </div>
 </header>
@@ -402,8 +436,8 @@ table.sources td.detail { color: var(--ink-2); }
     <div><b>P&amp;L &mdash; live</b><span>Aug-26 close, Omegro monthly reporting pack</span></div></div>
   <div class="cov-item off"><span class="g" aria-hidden="true">&ndash;</span>
     <div><b>Working capital &mdash; not connected</b><span>needs the BU Progress Report WC sheet</span></div></div>
-  <div class="cov-item off"><span class="g" aria-hidden="true">&ndash;</span>
-    <div><b>OG stage &mdash; not connected</b><span>needs the Operational Governance Scorecard</span></div></div>
+  <div class="cov-item wait"><span class="g" aria-hidden="true">&#9680;</span>
+    <div><b>OG stage &mdash; found, locked</b><span>scorecard refreshed 21 Sep 2026; sensitivity label blocks extraction</span></div></div>
   <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
     <div><b>ITDS &mdash; live</b><span>published 2026 Q2 Portfolio Security Assessment</span></div></div>
 </div>
@@ -543,6 +577,92 @@ table.sources td.detail { color: var(--ink-2); }
     as most recently reiterated.
   </p>
 </section>
+</section>
+
+<!-- ----------------------------------------- Operational Governance -->
+<section class="portfolio og" aria-labelledby="og-title">
+  <div class="portfolio-head">
+    <h2 id="og-title">Operational governance scorecard</h2>
+    <span class="note">five dimensions &middot; 42 points from 2026 Q4</span>
+  </div>
+  <p class="og-intro">IT &amp; Data Security is scored here from the QDSR; the other four dimensions and
+     the stage they add up to come from the quarterly scorecard workbook.</p>
+
+  <div class="table-scroll">
+    <table class="data og-table">
+      <thead>
+        <tr>
+          <th>Business</th>
+<th class="dim">Financial</th><th class="dim">Leadership</th><th class="dim">Operational</th><th class="dim">Talent & Capability</th>          <th class="sep">IT &amp; Data Security</th>
+          <th>QDSR</th>
+          <th class="sep">Total</th>
+          <th>Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Technology Blueprint</b><span class="sub">Colin Ma</span></td>
+<td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td>          <td class="sep">
+            <span class="chip tone-warning"><span class="g" aria-hidden="true">▲</span>Amber</span>
+            <span class="pts">4/6</span>
+          </td>
+          <td class="num">126 <span class="flag" title="Above the target of 80">&#9650;</span></td>
+          <td class="sep awaiting">&ndash;<span class="sub">of 36</span></td>
+          <td class="awaiting">&ndash;</td>
+        </tr>
+        <tr>
+          <td><b>tlmNexus</b><span class="sub">David Appleton</span></td>
+<td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td>          <td class="sep">
+            <span class="chip tone-good"><span class="g" aria-hidden="true">●</span>Green</span>
+            <span class="pts">6/6</span>
+          </td>
+          <td class="num">22</td>
+          <td class="sep awaiting">&ndash;<span class="sub">of 36</span></td>
+          <td class="awaiting">&ndash;</td>
+        </tr>
+        <tr>
+          <td><b>Grosvenor Systems</b><span class="sub">Paula McQuilan</span></td>
+<td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td><td class="dim awaiting">&ndash;</td>          <td class="sep">
+            <span class="chip tone-serious"><span class="g" aria-hidden="true">■</span>Red</span>
+            <span class="pts">2/6</span>
+          </td>
+          <td class="num">200 <span class="flag" title="Above the target of 80">&#9650;</span></td>
+          <td class="sep awaiting">&ndash;<span class="sub">of 36</span></td>
+          <td class="awaiting">&ndash;</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="table-note og-narrow-note">
+    Financial, Leadership, Operational, Talent & Capability are not shown at this width &mdash; all four are
+    outstanding, pending the scorecard workbook.
+  </p>
+
+  <div class="og-escalations">
+    <div class="note-row">
+      <span class="note-tag">Grosvenor</span>
+      <p>
+<b>Auto-escalation applies.</b>
+        QDSR 200 is at or above the Needs Improvement threshold of 160. Escalation runs from 2026 Q3 regardless of
+        overall score, so this stands whether or not the rest of the scorecard is read. IAM & MFA is rated critical in the QDSR — confirm with IT & DS whether this is a critical control failure.      </p>
+    </div>
+  </div>
+
+  <p class="table-note">
+    <b>What is computed and what is not.</b> The IT &amp; Data Security column and the QDSR score are
+    derived here: the score comes from the 2026 Q2
+    Portfolio Security Assessment, and the bands that turn it into points were published by the CFO
+    &mdash; <span class="chip tone-good">Green ≤80 = 6</span><span class="chip tone-warning">Amber 81–160 = 4</span><span class="chip tone-serious">Red 161–200 = 2</span><span class="chip tone-critical">Black 200+ = 0</span>    against a target of 80 or below.
+For 2026 Q3 these points are <b>published for visibility only and do not
+    move the stage</b>; they begin counting in 2026 Q4, when the maximum total rises from
+    36 to 42 and the stage thresholds are adjusted
+    proportionally.    <b>Grosvenor sits exactly on a band edge</b> at 200: the published Red band reads
+    161&ndash;200 and Black reads 200+, so both claim it. It is shown here as Red, the
+    reading that favours the business &mdash; worth settling with Group Finance.    The four remaining dimensions and the overall stage are the portfolio&rsquo;s to publish and are not
+    estimated. Framework source: Katie Mansell (CFO), "Operational Governance Framework – Adding IT & Data Security from Q3-26", 14 Sep 2026, to DG Omegro Senior Leadership Team.
+Q3-26 QDSR scores are due from IT &amp; DS in October and will
+    replace the 2026 Q2 figures above.  </p>
 </section>
 
 <!-- --------------------------------------------------------- BU panels -->
@@ -701,7 +821,9 @@ table.sources td.detail { color: var(--ink-2); }
           <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
              monthly reporting pack. They come from the Working Capital sheet of the Business Unit
              Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
-             and this pane fills in.</p>
+             and this pane fills in. The scorecard itself has now been
+             located and is current, but its sensitivity label blocks extraction, so the Progress
+             Report is the realistic route to these four figures.</p>
         </div>
       </div>
 
@@ -714,9 +836,14 @@ table.sources td.detail { color: var(--ink-2); }
             <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-No governance stage is connected. It comes from the quarterly
-            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
-            Colin Ma&rsquo;s monthly Business Unit Progress Report.          </p>
+The scorecard has been located and is
+            current &mdash; <code>Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx</code>,
+            refreshed 21 Sep 2026. Microsoft Graph refuses to extract
+            its contents (<code>notSupported</code>), which is what it returns for a workbook carrying an
+            encrypting sensitivity label; every copy of the scorecard behaves the same way. Credentials
+            will not change that, so the stage is waiting on an unlabelled values copy from Group
+            Finance. Nothing on this pane has been inferred from it &mdash; see the governance scorecard
+            above for the one dimension that could be scored without it.          </p>
         </div>
       </div>
 
@@ -960,7 +1087,9 @@ No governance stage is connected. It comes from the quarterly
           <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
              monthly reporting pack. They come from the Working Capital sheet of the Business Unit
              Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
-             and this pane fills in.</p>
+             and this pane fills in. The scorecard itself has now been
+             located and is current, but its sensitivity label blocks extraction, so the Progress
+             Report is the realistic route to these four figures.</p>
         </div>
       </div>
 
@@ -973,9 +1102,14 @@ No governance stage is connected. It comes from the quarterly
             <span><b>Overall</b> Off Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-No governance stage is connected. It comes from the quarterly
-            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
-            David Appleton&rsquo;s monthly Business Unit Progress Report.          </p>
+The scorecard has been located and is
+            current &mdash; <code>Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx</code>,
+            refreshed 21 Sep 2026. Microsoft Graph refuses to extract
+            its contents (<code>notSupported</code>), which is what it returns for a workbook carrying an
+            encrypting sensitivity label; every copy of the scorecard behaves the same way. Credentials
+            will not change that, so the stage is waiting on an unlabelled values copy from Group
+            Finance. Nothing on this pane has been inferred from it &mdash; see the governance scorecard
+            above for the one dimension that could be scored without it.          </p>
         </div>
       </div>
 
@@ -1223,7 +1357,9 @@ No governance stage is connected. It comes from the quarterly
           <p>WC%, WC% excluding cash, overdue AR and WIP over 30 days are not carried in the Omegro
              monthly reporting pack. They come from the Working Capital sheet of the Business Unit
              Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
-             and this pane fills in.</p>
+             and this pane fills in. The scorecard itself has now been
+             located and is current, but its sensitivity label blocks extraction, so the Progress
+             Report is the realistic route to these four figures.</p>
         </div>
       </div>
 
@@ -1236,9 +1372,14 @@ No governance stage is connected. It comes from the quarterly
             <span><b>Overall</b> On Track</span>
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
-No governance stage is connected. It comes from the quarterly
-            Operational Governance Scorecard for the Nelson Portfolio, or from the header of
-            Paula McQuilan&rsquo;s monthly Business Unit Progress Report.          </p>
+The scorecard has been located and is
+            current &mdash; <code>Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx</code>,
+            refreshed 21 Sep 2026. Microsoft Graph refuses to extract
+            its contents (<code>notSupported</code>), which is what it returns for a workbook carrying an
+            encrypting sensitivity label; every copy of the scorecard behaves the same way. Credentials
+            will not change that, so the stage is waiting on an unlabelled values copy from Group
+            Finance. Nothing on this pane has been inferred from it &mdash; see the governance scorecard
+            above for the one dimension that could be scored without it.          </p>
         </div>
       </div>
 
@@ -1344,7 +1485,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">parsed 3 business units</td>
           <td class="detail">—</td>
-          <td class="detail">21 Sep 2026 19:02 UTC</td>
+          <td class="detail">21 Sep 2026 21:21 UTC</td>
         </tr>
         <tr>
           <td class="id">bu_monthly_submissions</td>
@@ -1353,7 +1494,7 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">no Graph client</td>
           <td class="detail">—</td>
-          <td class="detail">21 Sep 2026 19:02 UTC</td>
+          <td class="detail">21 Sep 2026 21:21 UTC</td>
         </tr>
         <tr>
           <td class="id">omegro_monthly</td>
@@ -1362,16 +1503,16 @@ No governance stage is connected. It comes from the quarterly
           </td>
           <td class="detail">Omegro monthly reporting pack, periods 7 and 8 FY26 — committed extract read 2026-09-20</td>
           <td class="detail">—</td>
-          <td class="detail">21 Sep 2026 19:02 UTC</td>
+          <td class="detail">21 Sep 2026 21:21 UTC</td>
         </tr>
         <tr>
           <td class="id">og_scorecard</td>
           <td>
-            <span class="pill tone-muted">missing</span>
+            <span class="pill tone-warning">blocked</span>
           </td>
-          <td class="detail">no Graph client</td>
-          <td class="detail">—</td>
-          <td class="detail">21 Sep 2026 19:02 UTC</td>
+          <td class="detail">Q226 - Operational Governance Scorecard - June 2026 - Nelson Portfolio_VALUES.xlsx — Refreshed 21 Sep 2026 and verified present. Microsoft Graph refuses to convert the workbook for text extraction, returning `notSupported` — what it returns for a file carrying an encrypting sensitivity label. Every copy of the scorecard behaves the same way, so this is a property of the scorecard rather than of one file, and credentials do not change it: a service principal without rights to the label reads ciphertext. The unblock is an unlabelled values copy from Group Finance, or the three rows saved out by someone whose own permissions open the file.</td>
+          <td class="detail">21 Sep 2026</td>
+          <td class="detail">21 Sep 2026 21:21 UTC</td>
         </tr>
       </tbody>
     </table>

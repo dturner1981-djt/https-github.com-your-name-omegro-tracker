@@ -143,6 +143,61 @@ rag:
 # Operational Governance stages, best to worst. Drives the governance pane.
 og_stages: [Invest, Grow, Monitor, Take Action, Escalation]
 
+# The Operational Governance framework itself, as published — not scores.
+#
+# Source: Katie Mansell (CFO, Omegro) to DG Omegro Senior Leadership Team,
+# "Operational Governance Framework – Adding IT & Data Security from Q3-26",
+# 14 September 2026. Quoted rather than summarised wherever it sets a rule,
+# because these bands decide whether a business is escalated.
+#
+# This block is the FRAMEWORK. The per-BU dimension scores and the resulting
+# stage live in the quarterly scorecard workbook and are not reproduced here.
+# The one dimension the tracker can compute for itself is ITDS, because the
+# QDSR score it is scored from is already parsed from the Q2 validation
+# assessment — so that column is derived, and the other four stay blank until
+# the workbook is read.
+og_framework:
+  source: >
+    Katie Mansell (CFO), "Operational Governance Framework – Adding IT & Data
+    Security from Q3-26", 14 Sep 2026, to DG Omegro Senior Leadership Team.
+  dimensions: [Financial, Leadership, Operational, Talent & Capability, IT & Data Security]
+  # Each of the original four dimensions is scored out of 6 (36 total). ITDS
+  # takes the total to 42 — but not yet: see `itds_dimension` below.
+  points_per_dimension: 6
+  points_max_before: 36
+  points_max_after: 42
+  itds_dimension:
+    # Published Q3-26: visible alongside the scorecard, no effect on stage.
+    published_from: 2026-Q3
+    # Q4-26: contributes to the stage calculation, "with stage thresholds
+    # adjusted proportionally".
+    counts_from: 2026-Q4
+    # Scored from the QDSR security maturity score (same 0-400 scale the
+    # Portfolio Security Assessment publishes; lower is better).
+    scored_from: qdsr
+    target: 80
+    # `range` is the band as the CFO wrote it and is what the page shows;
+    # `max` is what the code compares against. They disagree at exactly 200,
+    # because the published Red and Black bands both claim it — which is
+    # where Grosvenor sits. Keeping the published wording verbatim is the
+    # point: the overlap is real and belongs in front of the reader.
+    bands:
+      - { name: Green,  max: 80,   points: 6, range: "≤80" }
+      - { name: Amber,  max: 160,  points: 4, range: "81–160" }
+      - { name: Red,    max: 200,  points: 2, range: "161–200" }
+      - { name: Black,  max: null, points: 0, range: "200+" }
+    escalation:
+      # "Auto-escalation applies from Q3-26 regardless of overall score."
+      from: 2026-Q3
+      # Limb one is unambiguous and computable.
+      qdsr_at_or_above: 160
+      # Limb two names two controls but not the test that decides a failure.
+      # The QDSR key-area ratings are the nearest published equivalent, so a
+      # `critical` rating on either is treated as MEETING THE LIMB ON ITS FACE
+      # and flagged for confirmation — never asserted as an escalation on its
+      # own. See `governance.py`.
+      critical_control_areas: ["IAM & MFA", "Detection & Response"]
+
 # ITDS Portfolio Security Assessment: risk score out of 400, lower is better.
 itds:
   max_score: 400

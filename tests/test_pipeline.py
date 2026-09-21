@@ -490,10 +490,16 @@ def test_blocked_scorecard_says_so_on_the_page(config):
     from omegro_tracker.render import render
 
     html = render(_live(config), config)
-    assert "not yet read" in html
+    assert "found, locked" in html
     assert "_VALUES.xlsx" in html
     assert "21 Sep 2026" in html
-    assert "omegro-tracker validate --source og_scorecard" in html
+    # The reason must be the real one. Graph refuses to convert the workbook;
+    # that is a sensitivity label, not a size limit, and no credential fixes
+    # it — saying otherwise would send someone to provision secrets for
+    # nothing.
+    assert "notSupported" in html
+    assert "sensitivity label" in html
+    assert "too large" not in html
     # And it must not simultaneously claim the opposite.
     assert "OG stage &mdash; not connected" not in html
     assert "No governance stage is connected" not in html
@@ -507,6 +513,131 @@ def test_a_blocked_scorecard_publishes_no_figures(config):
     assert snap.run("og_scorecard").rows == 0
     assert not [f for f in snap.facts if f.source == "og_scorecard"]
     assert all(g.stage is None and g.score is None for g in snap.governance)
+
+
+# -- OG framework: the ITDS dimension ---------------------------------------
+#
+# Published by Katie Mansell (CFO) on 14 Sep 2026. These assert the framework
+# as circulated, not our interpretation of it.
+
+
+def _framework(config):
+    return config["og_framework"]
+
+
+@pytest.mark.parametrize(
+    "bu,qdsr,band,points",
+    [("tlm", 22.0, "Green", 6.0), ("tbl", 126.0, "Amber", 4.0), ("grosvenor", 200.0, "Red", 2.0)],
+)
+def test_itds_dimension_scores_against_the_published_bands(config, bu, qdsr, band, points):
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    dim = snap.governance_for(bu).itds_dimension
+    assert dim.qdsr == qdsr
+    assert dim.band == band
+    assert dim.points == points
+    assert dim.points_max == 6.0
+
+
+def test_itds_points_do_not_count_until_q4(config):
+    """Q3-26 publishes the score for visibility; it moves the stage from
+    Q4-26. Showing the points as if they counted would overstate them."""
+    from omegro_tracker import governance as gov
+
+    framework = _framework(config)
+    assert gov.points_max(framework, "2026-Q3") == 36
+    assert gov.points_max(framework, "2026-Q4") == 42
+
+
+def test_itds_dimension_is_absent_before_it_is_published(config, itds_records):
+    from omegro_tracker import governance as gov
+
+    framework = _framework(config)
+    record = itds_records["tlm"]
+    assert gov.itds_dimension(record, framework, "2026-Q2") is None
+    assert gov.itds_dimension(record, framework, "2026-Q3") is not None
+
+
+def test_auto_escalation_fires_on_the_published_threshold(config):
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    assert snap.governance_for("grosvenor").itds_dimension.escalated is True
+    # 126 and 22 are both below the 160 floor.
+    assert snap.governance_for("tbl").itds_dimension.escalated is False
+    assert snap.governance_for("tlm").itds_dimension.escalated is False
+
+
+def test_a_critical_control_area_is_a_question_not_an_escalation(config):
+    """The framework names EDR coverage and MFA enforcement but defines no
+    test for a failure. A critical QDSR key area is raised for confirmation;
+    it must never be the thing that escalates a business on its own."""
+    from omegro_tracker import governance as gov
+
+    framework = _framework(config)
+    from omegro_tracker.model import ITDS, KeyArea
+
+    record = ITDS(
+        bu="x",
+        period="2026-Q2",
+        risk_current=40.0,          # comfortably Green, well under the floor
+        key_areas=[KeyArea(name="IAM & MFA", status="critical", narrative="...")],
+    )
+    dim = gov.itds_dimension(record, framework, "2026-Q3")
+    assert dim.band == "Green"
+    assert dim.escalated is False
+    assert dim.escalation_reasons == []
+    assert len(dim.escalation_queries) == 1
+
+
+def test_the_band_boundary_at_200_is_flagged_not_hidden(config):
+    """Red reads "161-200" and Black reads "200+", so both claim exactly 200.
+    Grosvenor sits on it, so the page has to say so rather than pick."""
+    from omegro_tracker import governance as gov
+
+    bands = _framework(config)["itds_dimension"]["bands"]
+    assert gov.band_for(200.0, bands)["name"] == "Red"
+    assert gov.on_a_band_boundary(200.0, bands) is True
+    assert gov.on_a_band_boundary(199.0, bands) is False
+    # The page quotes the published wording, overlap and all — not a tidied
+    # 201+ that would hide the very thing the note explains.
+    assert [b["range"] for b in bands] == ["≤80", "81–160", "161–200", "200+"]
+
+    from omegro_tracker.build import build
+    from omegro_tracker.render import render
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    html = render(snap, config)
+    assert "sits exactly on a band edge" in html
+
+
+def test_the_scorecard_publishes_only_the_dimension_it_can_source(config):
+    """Four dimensions and the stage come from the workbook. None of them may
+    appear with a number while the workbook is unreadable."""
+    from omegro_tracker.build import build
+    from omegro_tracker.render import _og_scorecard
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    og = _og_scorecard(snap, config)
+    assert og["pending_dimensions"] == [
+        "Financial",
+        "Leadership",
+        "Operational",
+        "Talent & Capability",
+    ]
+    assert all(r["stage"] is None and r["score"] is None for r in og["rows"])
+    assert all(r["itds"] is not None for r in og["rows"])
+
+
+def test_the_scorecard_names_the_quarter_its_qdsr_came_from(config):
+    """The Q3 scorecard is being read against the Q2 assessment until IT & DS
+    publish Q3 scores in October. Silently labelling them Q3 would be wrong."""
+    from omegro_tracker.build import build
+
+    snap = build(period="2026-08", config_dir=ROOT / "config", offline=ROOT / ".cache/graph")
+    assert snap.quarter == "2026-Q3"
+    assert all(g.itds_dimension.qdsr_period == "2026-Q2" for g in snap.governance)
 
 
 def test_scorecard_pick_prefers_the_values_snapshot():

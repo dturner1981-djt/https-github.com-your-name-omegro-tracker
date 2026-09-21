@@ -8,6 +8,9 @@
     "path": "Leadership/09. Operational Governance",
     "modified": "2026-09-21T15:40:40Z",
     "previous_modified": "2026-08-05T13:54:11Z",
-    "reason": "Refreshed 21 Sep 2026. Verified present and current, but the workbook is several megabytes of formula-heavy sheets and every attempt to read it through the SharePoint connector timed out. It needs the authenticated Graph path, which downloads and parses locally — and then `omegro-tracker validate --source og_scorecard` to confirm the column mapping before the figures are trusted."
+    "graph_error": "notSupported",
+    "reason": "Refreshed 21 Sep 2026 and verified present. Microsoft Graph refuses to convert the workbook for text extraction, returning `notSupported` — what it returns for a file carrying an encrypting sensitivity label. Every copy of the scorecard behaves the same way, so this is a property of the scorecard rather than of one file, and credentials do not change it: a service principal without rights to the label reads ciphertext. The unblock is an unlabelled values copy from Group Finance, or the three rows saved out by someone whose own permissions open the file.",
+    "_superseded_diagnosis": "An earlier note recorded this as a size/timeout problem needing the authenticated Graph download path. That was wrong — the reads did time out repeatedly, but the definitive Graph response is notSupported, and provisioning app credentials would not have helped. Kept here so the mistake is not quietly rewritten; not rendered on the dashboard.",
+    "verified_open_in_browser": "https://ourvolaris.sharepoint.com/sites/OmegroNelsonPortfolio/_layouts/15/Doc.aspx?sourcedoc=%7B3A1F0329-C3D3-4CD0-AA10-F949D66CBD4F%7D&file=Q226%20-%20Operational%20Governance%20Scorecard%20-%20June%202026.xlsx&action=default&mobileredirect=true"
   }
 }

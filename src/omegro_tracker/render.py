@@ -16,6 +16,7 @@ from typing import Any
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from . import derive
+from . import governance as governance_rules
 from .derive import Variance
 from .model import (
     STATUS_LABELS,
@@ -533,6 +534,7 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
         "wc_reported": wc_reported,
         "governance_reported": governance_reported,
         "governance_blocked": governance_blocked,
+        "og": _og_scorecard(snapshot, config),
         "group": snapshot.group,
         "period_label": month_label(snapshot.period),
         "quarter_label": snapshot.quarter.replace("-", " "),
@@ -583,6 +585,90 @@ def build_view(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any]:
             else None
         ),
         "itds_period": (snapshot.itds[0].period if snapshot.itds else "—").replace("-", " "),
+    }
+
+
+ITDS_BAND_TOKEN = {"Green": "good", "Amber": "warning", "Red": "serious", "Black": "critical"}
+ITDS_BAND_GLYPH = {"Green": "●", "Amber": "▲", "Red": "■", "Black": "■"}
+
+
+def _og_scorecard(snapshot: Snapshot, config: dict[str, Any]) -> dict[str, Any] | None:
+    """The summary Operational Governance scorecard for the three units.
+
+    Four of the five dimensions and the overall stage come only from the
+    quarterly scorecard workbook. The fifth, IT & Data Security, is computed
+    from the QDSR score we already hold against the published bands — so the
+    row is part real and part outstanding, and the table has to show which is
+    which rather than averaging over the difference.
+    """
+    framework = config.get("og_framework") or {}
+    if not framework:
+        return None
+
+    rows = []
+    for unit in snapshot.business_units:
+        gov = snapshot.governance_for(unit["key"])
+        dim = gov.itds_dimension if gov else None
+        rows.append(
+            {
+                "key": unit["key"],
+                "name": unit["name"],
+                "short": unit.get("short_name", unit["name"]),
+                "leader": unit.get("leader") or "—",
+                "stage": gov.stage if gov and gov.stage else None,
+                "score": gov.score if gov else None,
+                "itds": (
+                    {
+                        "qdsr": f"{dim.qdsr:.0f}",
+                        "qdsr_period": dim.qdsr_period.replace("-", " "),
+                        "band": dim.band,
+                        "token": ITDS_BAND_TOKEN.get(dim.band, "muted"),
+                        "glyph": ITDS_BAND_GLYPH.get(dim.band, "–"),
+                        "points": f"{dim.points:g}/{dim.points_max:g}",
+                        "counts": dim.counts,
+                        "over_target": dim.qdsr > dim.target,
+                        "escalated": dim.escalated,
+                        "reasons": dim.escalation_reasons,
+                        "queries": dim.escalation_queries,
+                        "boundary": governance_rules.on_a_band_boundary(
+                            dim.qdsr, (framework.get("itds_dimension") or {}).get("bands") or []
+                        ),
+                    }
+                    if dim
+                    else None
+                ),
+            }
+        )
+
+    spec = framework.get("itds_dimension") or {}
+    return {
+        "rows": rows,
+        "dimensions": framework.get("dimensions", []),
+        # The four the workbook owns, in published order.
+        "pending_dimensions": [d for d in framework.get("dimensions", []) if "Security" not in d],
+        "source": " ".join((framework.get("source") or "").split()),
+        "target": spec.get("target"),
+        "published_from": (spec.get("published_from") or "").replace("-", " "),
+        "counts_from": (spec.get("counts_from") or "").replace("-", " "),
+        "points_max_before": framework.get("points_max_before"),
+        "points_max_after": framework.get("points_max_after"),
+        "points_max_now": governance_rules.points_max(framework, snapshot.quarter),
+        "counts_now": any(r["itds"] and r["itds"]["counts"] for r in rows),
+        # Bands are shown in the CFO's own wording, not re-derived from the
+        # comparison ceilings — deriving them would quietly close the 200
+        # overlap that the page goes on to point out.
+        "bands": [
+            {
+                "name": b["name"],
+                "points": b["points"],
+                "token": ITDS_BAND_TOKEN.get(b["name"], "muted"),
+                "range": b["range"],
+            }
+            for b in (spec.get("bands") or [])
+        ],
+        "escalation_floor": ((spec.get("escalation") or {}).get("qdsr_at_or_above")),
+        "any_escalated": any(r["itds"] and r["itds"]["escalated"] for r in rows),
+        "any_query": any(r["itds"] and r["itds"]["queries"] for r in rows),
     }
 
 

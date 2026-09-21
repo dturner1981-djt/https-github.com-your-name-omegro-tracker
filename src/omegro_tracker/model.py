@@ -106,6 +106,39 @@ class Commentary:
 
 
 @dataclass
+class ITDSDimension:
+    """The IT & Data Security dimension of the OG scorecard, for one BU.
+
+    This is the one dimension the tracker scores itself. The QDSR security
+    maturity score it is derived from is already parsed from the Portfolio
+    Security Assessment, and the bands that turn that score into points were
+    published by the CFO, so the arithmetic is reproducible from two sources
+    we hold. The other four dimensions come only from the scorecard workbook.
+
+    `counts` is False for Q3-26: the score is published alongside the
+    scorecard but does not move the stage until Q4-26. Showing the points
+    without that caveat would overstate what they currently do.
+    """
+
+    qdsr: float
+    # The quarter the QDSR score itself was assessed in. Not necessarily the
+    # scorecard's quarter: Q3-26 scores are due from IT & DS in October, so
+    # the Q3 scorecard is being read against the Q2 assessment until then.
+    qdsr_period: str
+    band: str
+    points: float
+    points_max: float
+    counts: bool
+    target: float
+    escalated: bool = False
+    escalation_reasons: list[str] = field(default_factory=list)
+    # Conditions that meet the framework's wording on their face but that the
+    # framework does not define a test for. Surfaced for confirmation, never
+    # reported as an escalation.
+    escalation_queries: list[str] = field(default_factory=list)
+
+
+@dataclass
 class Governance:
     """Operational Governance position for one BU at one quarter end."""
 
@@ -116,6 +149,7 @@ class Governance:
     score_max: float | None = None
     overall_status: Status = "unknown"
     commentary: str = ""
+    itds_dimension: ITDSDimension | None = None
 
 
 @dataclass
@@ -287,7 +321,19 @@ class Snapshot:
             facts=[Fact(**f) for f in d.get("facts", [])],
             initiatives=[Initiative(**i) for i in d.get("initiatives", [])],
             commentary=[Commentary(**c) for c in d.get("commentary", [])],
-            governance=[Governance(**g) for g in d.get("governance", [])],
+            governance=[
+                Governance(
+                    **{
+                        **{k: v for k, v in g.items() if k != "itds_dimension"},
+                        "itds_dimension": (
+                            ITDSDimension(**g["itds_dimension"])
+                            if g.get("itds_dimension")
+                            else None
+                        ),
+                    }
+                )
+                for g in d.get("governance", [])
+            ],
             itds=[
                 ITDS(
                     **{

@@ -138,31 +138,47 @@ All ids in `config/sources.yml` are resolved against the Omegro tenant.
 | `itds_qdsr` | ITDS residual risk, posture, control effectiveness, key-area narratives, for all 14 Nelson VBUs | **Live.** Parsed and unit-tested against the published Q2-26 assessment. |
 | `monthly_review_template` | The canonical P&L and WC reporting schema | Located. Drives the parser layout. |
 | `bu_monthly_submissions` | Working capital, improvement-plan initiatives, OG stage per BU | **Not yet populated.** The template was issued Jun-26; the submission folder is being stood up. This is the missing piece for the working-capital pane. Parser written and tested against the template layout. |
-| `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU. Read from the **Nelson leadership area**, resolved as a folder so each new quarter is picked up automatically | **Needs one validation pass.** See below. |
-| `og_scorecard_portfolio_copy` | Fallback copy on the portfolio site, and the history | Registered. |
+| `og_scorecard` | OG stage, OG score, the core Volaris metric set per BU. Read from the **Nelson leadership area**, resolved as a folder so each new quarter is picked up automatically | **Blocked by a sensitivity label.** See below. |
+| `og_scorecard_portfolio_copy` | The same scorecards on the portfolio site — the folder circulated as "the link for the operational governance reports" | Registered. Same label, same block. |
+| *(derived)* `og_framework` | The OG framework itself, as published by the CFO: five dimensions, the QDSR bands, the escalation rules. Lets the tracker score the **IT & Data Security** dimension from the QDSR data it already holds | **Live.** Unit-tested against the circulated bands. |
 | `qsr_submissions` | Per-BU QSR workbooks — the only source with a **full-year** view. Full Yr yr2026 at columns 23 (current forecast) / 28 (prior iteration) / 29 (var) on the confirmed TBL workbook | Located, layout confirmed, parser stub. |
 | `qsr_baseline` | The start-of-year QSR (Q4 2025 for FY26), whose Full Yr column **is** the baseline | Registered, parser stub. |
 | `vbu_qsrs` | The portfolio's own per-quarter copy of each VBU QSR; fallback where a workbook is missing from Leaders Shared, as Grosvenor's Q2-26 is | Located, parser stub. |
 
-### Validate the OG scorecard mapping before trusting it
+### The OG scorecard is locked, and credentials will not unlock it
 
-The scorecard lives in the Nelson leadership area:
+The scorecard exists in two places, both registered:
 
     GRPNelsonPortfolioFinanceRenukaSimpsonGroup-Leadership
-      Shared Documents / Leadership / 09. Operational Governance
+      Shared Documents / Leadership / 09. Operational Governance   (_VALUES snapshots)
 
-The portfolio site keeps its own copy under `Operational Governance / Scoring
-Assessment`, registered as a fallback. The two are cut at different times and
-either can be the more current — the leadership area holds the `_VALUES`
-snapshot (formula-free, so it parses cleanly) and the portfolio site holds the
-formula master.
+    OmegroNelsonPortfolio
+      Portfolio Documents / Operational Governance / Scoring Assessment   (formula masters)
 
-The scorecard is a wide matrix that is rebuilt every quarter, so the parser
-scans for the header row and matches BU rows by alias rather than indexing
-fixed cells. Those heuristics were written against the published metric
-vocabulary, not against a downloaded copy — the workbook is several megabytes,
-which is why it has to be downloaded and parsed locally rather than read
-through a workbook session. Before anyone acts on figures from it:
+Both were located and both are current. Neither can be read. Microsoft Graph
+answers a content request with **`notSupported`**, which is what it returns for
+a file carrying an **encrypting sensitivity label**: Microsoft blocks conversion
+for any application that cannot decrypt the file.
+
+This matters for how it gets fixed. It is *not* a size or timeout problem, and
+**adding app-only Graph credentials will not resolve it** — a service principal
+without rights to the label reads ciphertext. (An earlier version of this file
+said the opposite. It was wrong.) The routes that do work:
+
+* Group Finance publishes a values copy **without** the label; or
+* someone whose own permissions open the workbook in the browser saves the
+  three Turner Group rows out, and they are committed under
+  `data/extracted/` like the monthly pack already is.
+
+Until then the dashboard scores the one dimension it can source by itself —
+IT & Data Security, from the QDSR — and shows the other four and the stage as
+outstanding rather than estimating them.
+
+The parser is written and waiting. The scorecard is a wide matrix rebuilt every
+quarter, so it scans for the header row and matches BU rows by alias rather
+than indexing fixed cells, and those heuristics have never been run against a
+real copy. Whenever a readable copy does arrive, before anyone acts on figures
+from it:
 
 ```bash
 omegro-tracker validate --source og_scorecard
@@ -170,6 +186,38 @@ omegro-tracker validate --source og_scorecard
 
 That prints the header row, the column-to-metric mapping and the business-unit
 rows it matched, so the mapping can be checked against the real workbook.
+
+### The OG framework (and the one dimension we can score)
+
+From **Q3-26** the framework gains a fifth dimension, IT & Data Security,
+scored from the QDSR security maturity score. Published by Katie Mansell (CFO)
+to the Senior Leadership Team on 14 Sep 2026, and held in `config/portfolio.yml`
+under `og_framework`:
+
+| QDSR score | Band | Points |
+|---|---|---|
+| ≤ 80 | Green | 6 |
+| 81–160 | Amber | 4 |
+| 161–200 | Red | 2 |
+| 200+ | Black | 0 |
+
+* **Q3-26**: published for visibility only — it does not move the stage.
+* **Q4-26**: it counts. Maximum total rises 36 → 42, thresholds adjusted
+  proportionally.
+* **Auto-escalation from Q3-26**, regardless of overall score: QDSR ≥ 160, or a
+  critical control failure in EDR coverage or MFA enforcement.
+* Target for every business: **80 or below**.
+
+Because the QDSR scores are already parsed from the Q2-26 Portfolio Security
+Assessment, this dimension is computed rather than waited for. Two deliberate
+restraints in `governance.py`:
+
+* The framework names EDR coverage and MFA enforcement but defines no test for
+  a "failure". A `critical` QDSR key area is therefore raised as a **question to
+  confirm with IT & DS**, never asserted as an escalation on its own.
+* Red reads `161–200` and Black reads `200+`, so both claim exactly 200 —
+  which is precisely where Grosvenor sits. It is shown as Red, the reading that
+  favours the business, and the page says so rather than quietly picking.
 
 ## How numbers are treated
 

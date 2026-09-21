@@ -82,10 +82,21 @@ sources:
     parser: og_scorecard
     description: >
       The portfolio site's own copy, kept as a fallback and for history. This
-      holds the formula master rather than the values snapshot, and at the time
-      of writing carried a more recent modification than the leadership copy
-      (Q226 touched 2026-09-16 against 2026-08-05) — so if the leadership area
-      looks behind, check here before assuming the quarter has not been cut.
+      holds the formula master rather than the values snapshot.
+
+      This is the folder the group leader circulates as "the link for the
+      operational governance reports":
+      https://ourvolaris.sharepoint.com/:f:/r/sites/OmegroNelsonPortfolio/Portfolio%20Documents/Operational%20Governance/Scoring%20Assessment
+      It holds one workbook per quarter (Q126 March, Q226 June as at Sep-26).
+
+      READ STATUS 2026-09-21: Graph returns `notSupported` when asked to
+      convert either workbook for text extraction, which is what it returns
+      for a file carrying an encrypting Purview sensitivity label. The same
+      applies to the leadership copies. This is NOT a size or timeout
+      problem, and app-only credentials do not resolve it — a service
+      principal without rights to the label reads ciphertext. Until Group
+      Finance publishes an unlabelled values copy, the four non-ITDS
+      dimensions and the stage cannot be parsed from here.
     site: OmegroNelsonPortfolio
     drive_id: b!ayPo5FEIH0GWh0cdPGjFv4eHmM01eiBHko3XYfvDsfOWBOSnd6kvTIuh5B_-YXqX
     path: Operational Governance/Scoring Assessment

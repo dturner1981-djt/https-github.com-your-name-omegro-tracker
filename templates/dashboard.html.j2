@@ -315,6 +315,38 @@ svg text { font-family: var(--mono); }
 .init .notes { font-size: 12.5px; color: var(--ink-2); grid-column: 1 / -1; line-height: 1.5; }
 .init .when { font-family: var(--mono); font-size: 10.5px; color: var(--ink-3); display: flex; align-items: center; gap: 8px; }
 
+/* ----------------------------------------- operational governance table */
+table.og-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 760px; }
+table.og-table th, table.og-table td {
+  padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: middle;
+}
+table.og-table thead th {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink-3); font-weight: 600; white-space: nowrap;
+}
+table.og-table tbody tr:last-child td { border-bottom: 0; }
+table.og-table th.sep, table.og-table td.sep { border-left: 1px solid var(--line); }
+table.og-table td.num { font-family: var(--mono); text-align: right; }
+table.og-table th.dim, table.og-table td.dim { text-align: center; }
+/* A dimension we have not read is dashed and grey — visibly not a zero. */
+table.og-table td.awaiting { color: var(--ink-3); }
+table.og-table td .sub { display: block; font-size: 10.5px; color: var(--ink-3); font-weight: 400; }
+table.og-table td .pts { font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-left: 7px; }
+table.og-table .flag { color: var(--serious); font-size: 9px; }
+.og-escalations { padding: 4px 16px 12px; }
+/* On a phone the four workbook dimensions are four columns of dashes, and
+   they push the only populated columns off the edge. Drop them and say so —
+   the note below the table already carries what is outstanding. */
+.og-narrow-note { display: none; }
+@media (max-width: 760px) {
+  table.og-table { min-width: 0; }
+  table.og-table th, table.og-table td { padding: 9px 8px; }
+  table.og-table th.dim, table.og-table td.dim { display: none; }
+  table.og-table th.sep, table.og-table td.sep { border-left: 0; }
+  .og-narrow-note { display: block; }
+}
+.og-intro { margin: 0; padding: 0 16px 12px; font-size: 12.5px; color: var(--ink-2); max-width: 86ch; line-height: 1.55; }
+
 /* ------------------------------------------------- coverage & commentary */
 .coverage {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
@@ -432,7 +464,7 @@ table.sources td.detail { color: var(--ink-2); }
     <div><b>Working capital &mdash; {{ 'live' if wc_reported else 'not connected' }}</b><span>{{ 'from the monthly submission' if wc_reported else 'needs the BU Progress Report WC sheet' }}</span></div></div>
   <div class="cov-item {{ 'ok' if governance_reported else ('wait' if governance_blocked else 'off') }}"><span class="g" aria-hidden="true">{% if governance_reported %}&#9679;{% elif governance_blocked %}&#9680;{% else %}&ndash;{% endif %}</span>
     <div>{% if governance_reported %}<b>OG stage &mdash; live</b><span>from the scorecard</span>
-      {%- elif governance_blocked %}<b>OG stage &mdash; found, not yet read</b><span>scorecard refreshed{% if governance_blocked.modified %} {{ governance_blocked.modified }}{% endif %}; awaiting an authenticated read</span>
+      {%- elif governance_blocked %}<b>OG stage &mdash; found, locked</b><span>scorecard refreshed{% if governance_blocked.modified %} {{ governance_blocked.modified }}{% endif %}; sensitivity label blocks extraction</span>
       {%- else %}<b>OG stage &mdash; not connected</b><span>needs the Operational Governance Scorecard</span>{% endif %}</div></div>
   <div class="cov-item ok"><span class="g" aria-hidden="true">&#9679;</span>
     <div><b>ITDS &mdash; live</b><span>published {{ itds_period }} Portfolio Security Assessment</span></div></div>
@@ -538,6 +570,91 @@ table.sources td.detail { color: var(--ink-2); }
 </section>
 </section>
 
+<!-- ----------------------------------------- Operational Governance -->
+{% if og %}
+<section class="portfolio og" aria-labelledby="og-title">
+  <div class="portfolio-head">
+    <h2 id="og-title">Operational governance scorecard</h2>
+    <span class="note">five dimensions &middot; {{ og.points_max_after }} points from {{ og.counts_from }}</span>
+  </div>
+  <p class="og-intro">IT &amp; Data Security is scored here from the QDSR; the other four dimensions and
+     the stage they add up to come from the quarterly scorecard workbook.</p>
+
+  <div class="table-scroll">
+    <table class="data og-table">
+      <thead>
+        <tr>
+          <th>Business</th>
+          {% for d in og.pending_dimensions %}<th class="dim">{{ d }}</th>{% endfor %}
+          <th class="sep">IT &amp; Data Security</th>
+          <th>QDSR</th>
+          <th class="sep">Total</th>
+          <th>Stage</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in og.rows %}
+        <tr>
+          <td><b>{{ r.name }}</b><span class="sub">{{ r.leader }}</span></td>
+          {% for d in og.pending_dimensions %}<td class="dim awaiting">&ndash;</td>{% endfor %}
+          <td class="sep">
+            {% if r.itds %}
+            <span class="chip tone-{{ r.itds.token }}"><span class="g" aria-hidden="true">{{ r.itds.glyph }}</span>{{ r.itds.band }}</span>
+            <span class="pts">{{ r.itds.points }}</span>
+            {% else %}&ndash;{% endif %}
+          </td>
+          <td class="num">{% if r.itds %}{{ r.itds.qdsr }}{% if r.itds.over_target %} <span class="flag" title="Above the target of {{ og.target }}">&#9650;</span>{% endif %}{% else %}&ndash;{% endif %}</td>
+          <td class="sep awaiting">&ndash;<span class="sub">of {{ og.points_max_now | int }}</span></td>
+          <td class="awaiting">{{ r.stage or '&ndash;' | safe }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="table-note og-narrow-note">
+    {{ og.pending_dimensions | join(', ') }} are not shown at this width &mdash; all four are
+    outstanding, pending the scorecard workbook.
+  </p>
+
+  {% if og.any_escalated or og.any_query %}
+  <div class="og-escalations">
+    {% for r in og.rows %}{% if r.itds and (r.itds.escalated or r.itds.queries) %}
+    <div class="note-row">
+      <span class="note-tag">{{ r.short }}</span>
+      <p>
+        {% if r.itds.escalated %}<b>Auto-escalation applies.</b>
+        {{ r.itds.reasons | join('; ') }}. Escalation runs from {{ og.published_from }} regardless of
+        overall score, so this stands whether or not the rest of the scorecard is read.{% endif %}
+        {% for q in r.itds.queries %}{% if not loop.first or r.itds.escalated %} {% endif %}{{ q }}.{% endfor %}
+      </p>
+    </div>
+    {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+
+  <p class="table-note">
+    <b>What is computed and what is not.</b> The IT &amp; Data Security column and the QDSR score are
+    derived here: the score comes from the {{ og.rows[0].itds.qdsr_period if og.rows and og.rows[0].itds else 'QDSR' }}
+    Portfolio Security Assessment, and the bands that turn it into points were published by the CFO
+    &mdash; {% for b in og.bands %}<span class="chip tone-{{ b.token }}">{{ b.name }} {{ b.range }} = {{ b.points }}</span>{% endfor %}
+    against a target of {{ og.target }} or below.
+    {% if not og.counts_now %}For {{ og.published_from }} these points are <b>published for visibility only and do not
+    move the stage</b>; they begin counting in {{ og.counts_from }}, when the maximum total rises from
+    {{ og.points_max_before }} to {{ og.points_max_after }} and the stage thresholds are adjusted
+    proportionally.{% endif %}
+    {% for r in og.rows %}{% if r.itds and r.itds.boundary %}
+    <b>{{ r.short }} sits exactly on a band edge</b> at {{ r.itds.qdsr }}: the published Red band reads
+    161&ndash;200 and Black reads 200+, so both claim it. It is shown here as {{ r.itds.band }}, the
+    reading that favours the business &mdash; worth settling with Group Finance.{% endif %}{% endfor %}
+    The four remaining dimensions and the overall stage are the portfolio&rsquo;s to publish and are not
+    estimated. Framework source: {{ og.source }}
+    {% if og.rows and og.rows[0].itds %}Q3-26 QDSR scores are due from IT &amp; DS in October and will
+    replace the {{ og.rows[0].itds.qdsr_period }} figures above.{% endif %}
+  </p>
+</section>
+{% endif %}
+
 <!-- --------------------------------------------------------- BU panels -->
 {% for p in panels %}
 <section class="panel" data-bu="{{ p.key }}" data-overall="{{ p.overall }}" aria-labelledby="bu-{{ p.key }}">
@@ -631,7 +748,8 @@ table.sources td.detail { color: var(--ink-2); }
              monthly reporting pack. They come from the Working Capital sheet of the Business Unit
              Progress Report, or from the quarterly Operational Governance Scorecard. Connect either
              and this pane fills in.{% if governance_blocked %} The scorecard itself has now been
-             located and is current; it is waiting on an authenticated read, not on a file.{% endif %}</p>
+             located and is current, but its sensitivity label blocks extraction, so the Progress
+             Report is the realistic route to these four figures.{% endif %}</p>
         </div>
         {% endif %}
       </div>
@@ -646,13 +764,14 @@ table.sources td.detail { color: var(--ink-2); }
           </div>
           <p style="font-size:12.5px;color:var(--ink-2);margin:12px 0 0;max-width:62ch">
             {% if governance_reported %}Stage comes from the quarterly Operational
-            Governance Scorecard.{% elif governance_blocked %}The scorecard has been located in the
-            Nelson leadership area and is current &mdash; <code>{{ governance_blocked.file }}</code>{% if governance_blocked.modified %},
-            refreshed {{ governance_blocked.modified }}{% endif %}. It has not been read yet: the workbook
-            is too large for the SharePoint connector to return in time, so it needs the authenticated
-            Graph path (download and parse locally), and then
-            <code>omegro-tracker validate --source og_scorecard</code> to confirm the column mapping
-            before these figures are trusted. Nothing on this pane has been inferred from it.{% else %}No
+            Governance Scorecard.{% elif governance_blocked %}The scorecard has been located and is
+            current &mdash; <code>{{ governance_blocked.file }}</code>{% if governance_blocked.modified %},
+            refreshed {{ governance_blocked.modified }}{% endif %}. Microsoft Graph refuses to extract
+            its contents (<code>notSupported</code>), which is what it returns for a workbook carrying an
+            encrypting sensitivity label; every copy of the scorecard behaves the same way. Credentials
+            will not change that, so the stage is waiting on an unlabelled values copy from Group
+            Finance. Nothing on this pane has been inferred from it &mdash; see the governance scorecard
+            above for the one dimension that could be scored without it.{% else %}No
             governance stage is connected. It comes from the quarterly
             Operational Governance Scorecard for the Nelson Portfolio, or from the header of
             {{ p.leader }}&rsquo;s monthly Business Unit Progress Report.{% endif %}
